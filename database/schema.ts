@@ -29,7 +29,7 @@ export class AnalisisIaSchema extends BaseModel {
 }
 
 export class AplicacionesTratamientoSchema extends BaseModel {
-  static $columns = ['dosis', 'fechaActualizacion', 'fechaRegistro', 'frecuencia', 'idAplicacion', 'idTratamiento', 'observaciones'] as const
+  static $columns = ['dosis', 'fechaActualizacion', 'fechaRegistro', 'frecuencia', 'idAplicacion', 'idTratamiento', 'idUsuario', 'observaciones'] as const
   $columns = AplicacionesTratamientoSchema.$columns
   @column()
   declare dosis: string
@@ -43,6 +43,8 @@ export class AplicacionesTratamientoSchema extends BaseModel {
   declare idAplicacion: number
   @column()
   declare idTratamiento: number | null
+  @column()
+  declare idUsuario: number | null
   @column()
   declare observaciones: string | null
 }
