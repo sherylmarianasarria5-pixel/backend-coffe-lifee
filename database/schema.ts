@@ -256,7 +256,7 @@ export class MonitoreoSchema extends BaseModel {
 }
 
 export class RecomendacioneSchema extends BaseModel {
-  static $columns = ['descripcion', 'fechaActualizacion', 'fechaLimite', 'fechaRegistro', 'idExpertoEmisor', 'idMonitoreo', 'idRecomendacion', 'idTipo'] as const
+  static $columns = ['descripcion', 'fechaActualizacion', 'fechaLimite', 'fechaRegistro', 'idExpertoEmisor', 'idMonitoreo', 'idPrioridad', 'idRecomendacion', 'idTipo'] as const
   $columns = RecomendacioneSchema.$columns
   @column()
   declare descripcion: string | null
@@ -270,6 +270,8 @@ export class RecomendacioneSchema extends BaseModel {
   declare idExpertoEmisor: number | null
   @column()
   declare idMonitoreo: number | null
+  @column()
+  declare idPrioridad: number | null
   @column({ isPrimary: true })
   declare idRecomendacion: number
   @column()
