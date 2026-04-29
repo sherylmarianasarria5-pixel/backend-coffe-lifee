@@ -1,4 +1,4 @@
-import BaseSchema from '@adonisjs/lucid/schema'
+import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
   protected tableName = 'analisis_ias'
@@ -17,14 +17,14 @@ export default class extends BaseSchema {
       table
         .integer('idEstado')
         .unsigned()
-        .references('idEstado')
+        .references('id_estado')
         .inTable('cat_estados_analisis')
 
       table.text('resultado')
       table.decimal('porcentajeConfianza', 5, 2)
 
-      table.timestamp('fechaRegistro')
-      table.timestamp('fechaActualizacion')
+      table.timestamp('fechaRegistro').nullable()
+      table.timestamp('fechaActualizacion').nullable()
     })
   }
 

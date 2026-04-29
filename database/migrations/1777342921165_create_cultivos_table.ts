@@ -18,8 +18,8 @@ export default class extends BaseSchema {
         .inTable('fincas')
         .onDelete('SET NULL')
 
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table.timestamp('created_at').nullable()
+      table.timestamp('updated_at').nullable()
     })
   }
 

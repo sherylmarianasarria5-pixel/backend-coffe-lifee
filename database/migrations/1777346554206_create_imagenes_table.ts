@@ -1,4 +1,4 @@
-import BaseSchema from '@adonisjs/lucid/schema'
+import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
   protected tableName = 'imagenes'
@@ -12,12 +12,12 @@ export default class extends BaseSchema {
       table
         .integer('idMonitoreo')
         .unsigned()
-        .references('idMonitoreo')
+        .references('id_monitoreo')
         .inTable('monitoreos')
         .onDelete('CASCADE')
 
-      table.timestamp('fechaRegistro')
-      table.timestamp('fechaActualizacion')
+      table.timestamp('fechaRegistro').nullable()
+      table.timestamp('fechaActualizacion').nullable()
     })
   }
 

@@ -15,17 +15,16 @@ export default class extends BaseSchema {
         .onDelete('CASCADE')
 
       table
-        .integer('id_tratamiento')
+        .integer('id_aplicacion')
         .unsigned()
-        .references('id_tratamiento')
-        .inTable('tratamientos')
+        .references('id_aplicacion')
+        .inTable('aplicaciones_tratamientos')
         .onDelete('CASCADE')
 
       table.string('dosis_ajustada', 100).nullable()
       table.text('notas').nullable()
-
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table.timestamp('created_at').nullable()
+      table.timestamp('updated_at').nullable()
     })
   }
 
