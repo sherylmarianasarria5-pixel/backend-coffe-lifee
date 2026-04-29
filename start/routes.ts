@@ -11,6 +11,7 @@ import CatPrioridadesController from '#controllers/cat_prioridades_controller'
 import CatTiposRecomendacionsController from '#controllers/cat_tipos_recomendacions_controller'
 import CatEstadosAnalisisController from '#controllers/cat_estados_analises_controller'
 import CatEstadosCultivosController from '#controllers/cat_estados_cultivos_controller'
+import RecomendacionTratamientosController from '#controllers/recomendacion_tratamientos_controller'
 
 const usuariosController = new UsuariosController()
 const monitoreosController = new MonitoreosController()
@@ -23,6 +24,7 @@ const catPrioridadesController = new CatPrioridadesController()
 const catTiposRecomendacionsController = new CatTiposRecomendacionsController()
 const catEstadosAnalisisController = new CatEstadosAnalisisController()
 const catEstadosCultivosController = new CatEstadosCultivosController()
+const recomendacionTratamientosController = new RecomendacionTratamientosController()
 
 router.get('/', async () => {
   return { mensaje: 'API Coffee Life funcionando correctamente' }
@@ -148,3 +150,14 @@ router.post('/monitoreos', monitoreosController.store)
 router.get('/monitoreos/:id', monitoreosController.show)
 router.put('/monitoreos/:id', monitoreosController.update)
 router.delete('/monitoreos/:id', monitoreosController.destroy)
+
+/*
+|--------------------------------------------------------------------------
+| Recomendacion Tratamientos
+|--------------------------------------------------------------------------
+*/
+router.get('/recomendacion_tratamientos', recomendacionTratamientosController.index)
+router.post('/recomendacion_tratamientos', recomendacionTratamientosController.store)
+router.get('/recomendacion_tratamientos/:id', recomendacionTratamientosController.show)
+router.put('/recomendacion_tratamientos/:id', recomendacionTratamientosController.update)
+router.delete('/recomendacion_tratamientos/:id', recomendacionTratamientosController.destroy)

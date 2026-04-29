@@ -17,5 +17,6 @@ export const controllers = {
   Monitoreos: () => import('#controllers/monitoreos_controller'),
   NewAccount: () => import('#controllers/new_account_controller'),
   Profile: () => import('#controllers/profile_controller'),
+  RecomendacionTratamientos: () => import('#controllers/recomendacion_tratamientos_controller'),
   Usuarios: () => import('#controllers/usuarios_controller'),
 }

@@ -1,45 +1,41 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
-
 import Recomendacione from '#models/recomendacione'
-import Tratamiento from '#models/tratamiento'
+import AplicacionesTratamiento from '#models/aplicaciones_tratamiento'
 
 export default class RecomendacionTratamiento extends BaseModel {
   public static table = 'recomendacion_tratamientos'
-  public static primaryKey = 'id_detalle'
+  public static primaryKey = 'id_rec_tratamiento'
 
-  @column({ isPrimary: true, columnName: 'id_detalle' })
-  declare idDetalle: number
+  @column({ isPrimary: true, columnName: 'id_rec_tratamiento' })
+  declare idRecTratamiento: number
 
   @column({ columnName: 'id_recomendacion' })
   declare idRecomendacion: number
 
-  @column({ columnName: 'id_tratamiento' })
-  declare idTratamiento: number
+  @column({ columnName: 'id_aplicacion' })
+  declare idAplicacion: number
 
-  @column()
-  declare dosis: string | null
-
-  @column()
-  declare frecuencia: string | null
-
-  @column()
-  declare duracion: string | null
+  @column({ columnName: 'dosis_ajustada' })
+  declare dosisAjustada: string | null
 
   @column()
   declare notas: string | null
+
+  @column.dateTime({ autoCreate: true, columnName: 'created_at' })
+  declare createdAt: DateTime
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true, columnName: 'updated_at' })
+  declare updatedAt: DateTime
 
   @belongsTo(() => Recomendacione, {
     foreignKey: 'idRecomendacion',
   })
   declare recomendacion: BelongsTo<typeof Recomendacione>
 
-  @belongsTo(() => Tratamiento, {
-    foreignKey: 'idTratamiento',
+  @belongsTo(() => AplicacionesTratamiento, {
+    foreignKey: 'idAplicacion',
   })
-  declare tratamiento: BelongsTo<typeof Tratamiento>
-
-  @column.dateTime({ autoCreate: true, columnName: 'fecha_registro' })
-  declare fechaRegistro: DateTime
+  declare aplicacion: BelongsTo<typeof AplicacionesTratamiento>
 }
