@@ -26,7 +26,7 @@ export default class CatRol extends BaseModel {
   declare descripcion: string | null
 
   @hasMany(() => Usuario, {
-    foreignKey: 'id_rol',
+    foreignKey: 'idRol',
   })
   declare usuarios: HasMany<typeof Usuario>
 

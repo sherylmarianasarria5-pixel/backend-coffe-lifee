@@ -10,10 +10,7 @@ export default class CatRolesController {
   async store({ request, response }: HttpContext) {
     const data = request.only(['nombreRol', 'descripcion'])
 
-    const rol = await CatRol.create({
-      nombreRol: data.nombreRol,
-      descripcion: data.descripcion,
-    })
+    const rol = await CatRol.create(data)
 
     return response.created({
       message: 'Rol creado correctamente',
@@ -32,7 +29,10 @@ export default class CatRolesController {
     const data = request.only(['nombreRol', 'descripcion'])
 
     rol.merge(data)
+
     await rol.save()
+
+    await rol.refresh()
 
     return response.ok({
       message: 'Rol actualizado correctamente',
@@ -42,6 +42,7 @@ export default class CatRolesController {
 
   async destroy({ params, response }: HttpContext) {
     const rol = await CatRol.findOrFail(params.id)
+
     await rol.delete()
 
     return response.ok({
