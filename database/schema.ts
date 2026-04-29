@@ -8,7 +8,7 @@ import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
 export class AnalisisIaSchema extends BaseModel {
-  static $columns = ['fechaActualizacion', 'fechaRegistro', 'idAnalisis', 'idEstado', 'idImagen', 'porcentajeConfianza', 'resultado'] as const
+  static $columns = ['fechaActualizacion', 'fechaRegistro', 'idAnalisis', 'idEstado', 'idImagen', 'idNivelRoya', 'porcentajeConfianza', 'resultado'] as const
   $columns = AnalisisIaSchema.$columns
   @column.dateTime()
   declare fechaActualizacion: DateTime | null
@@ -20,6 +20,8 @@ export class AnalisisIaSchema extends BaseModel {
   declare idEstado: number | null
   @column()
   declare idImagen: number | null
+  @column()
+  declare idNivelRoya: number | null
   @column()
   declare porcentajeConfianza: string | null
   @column()
@@ -276,6 +278,25 @@ export class RecomendacioneSchema extends BaseModel {
   declare idRecomendacion: number
   @column()
   declare idTipo: number | null
+}
+
+export class RecomendacionTratamientoSchema extends BaseModel {
+  static $columns = ['createdAt', 'dosisAjustada', 'idAplicacion', 'idRecTratamiento', 'idRecomendacion', 'notas', 'updatedAt'] as const
+  $columns = RecomendacionTratamientoSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column()
+  declare dosisAjustada: string | null
+  @column()
+  declare idAplicacion: number | null
+  @column({ isPrimary: true })
+  declare idRecTratamiento: number
+  @column()
+  declare idRecomendacion: number | null
+  @column()
+  declare notas: string | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
 }
 
 export class TratamientoSchema extends BaseModel {
