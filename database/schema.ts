@@ -176,12 +176,14 @@ export class CatTiposTratamientoSchema extends BaseModel {
 }
 
 export class CultivoSchema extends BaseModel {
-  static $columns = ['createdAt', 'idCultivo', 'idFinca', 'nombreCultivo', 'tipoCultivo', 'updatedAt'] as const
+  static $columns = ['createdAt', 'idCultivo', 'idEstado', 'idFinca', 'nombreCultivo', 'tipoCultivo', 'updatedAt'] as const
   $columns = CultivoSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
   @column({ isPrimary: true })
   declare idCultivo: number
+  @column()
+  declare idEstado: number | null
   @column()
   declare idFinca: number | null
   @column()
