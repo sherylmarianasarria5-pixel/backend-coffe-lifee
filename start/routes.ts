@@ -1,4 +1,5 @@
 import router from '@adonisjs/core/services/router'
+import AuthController from '#controllers/auth_controller'
 
 import UsuariosController from '#controllers/usuarios_controller'
 import MonitoreosController from '#controllers/monitoreos_controller'
@@ -25,6 +26,7 @@ const catTiposRecomendacionsController = new CatTiposRecomendacionsController()
 const catEstadosAnalisisController = new CatEstadosAnalisisController()
 const catEstadosCultivosController = new CatEstadosCultivosController()
 const recomendacionTratamientosController = new RecomendacionTratamientosController()
+const authController = new AuthController()
 
 router.get('/', async () => {
   return { mensaje: 'API Coffee Life funcionando correctamente' }
@@ -40,6 +42,16 @@ router.post('/usuarios', usuariosController.store)
 router.get('/usuarios/:id', usuariosController.show)
 router.put('/usuarios/:id', usuariosController.update)
 router.delete('/usuarios/:id', usuariosController.destroy)
+
+/*
+|--------------------------------------------------------------------------
+| Autenticación
+|--------------------------------------------------------------------------
+*/
+router.post('/register', authController.register)
+router.post('/login', authController.login)
+router.post('/recuperar-password', authController.recuperarPassword)
+router.post('/reset-password', authController.resetPassword)
 
 /*
 |--------------------------------------------------------------------------

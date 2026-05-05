@@ -5,6 +5,7 @@
 
 export const controllers = {
   AccessTokens: () => import('#controllers/access_tokens_controller'),
+  Auth: () => import('#controllers/auth_controller'),
   CatEstadosAnalises: () => import('#controllers/cat_estados_analises_controller'),
   CatEstadosCultivos: () => import('#controllers/cat_estados_cultivos_controller'),
   CatNivelesRoyas: () => import('#controllers/cat_niveles_royas_controller'),
