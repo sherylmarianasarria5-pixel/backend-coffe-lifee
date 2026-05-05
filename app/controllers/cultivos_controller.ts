@@ -1,50 +1,73 @@
-import Cultivo from '#models/cultivo'
 import type { HttpContext } from '@adonisjs/core/http'
+import Cultivo from '#models/cultivo'
 
 export default class CultivosController {
 
   async index({ response }: HttpContext) {
-    const cultivos = await Cultivo.all()
-    return response.json(cultivos)
+    try {
+      const cultivos = await Cultivo.query().preload('finca')
+      return response.ok(cultivos)
+    } catch (error: any) {
+      return response.internalServerError({ message: 'Error al obtener cultivos', error: error.message })
+    }
   }
 
   async store({ request, response }: HttpContext) {
-    const data = request.only(['nombreCultivo', 'tipoCultivo'])
+    try {
+      const data = request.only(['id_finca', 'nombre_cultivo', 'tipo_cultivo'])
 
-    const cultivo = await Cultivo.create(data)
+      if (!data.id_finca)       return response.badRequest({ message: 'El id_finca es obligatorio' })
+      if (!data.nombre_cultivo) return response.badRequest({ message: 'El nombre_cultivo es obligatorio' })
+      if (!data.tipo_cultivo)   return response.badRequest({ message: 'El tipo_cultivo es obligatorio' })
 
-    return response.json({
-      message: 'Cultivo creado correctamente',
-      data: cultivo,
-    })
+      const cultivo = await Cultivo.create({
+        idFinca: data.id_finca,
+        nombreCultivo: data.nombre_cultivo,
+        tipoCultivo: data.tipo_cultivo,
+      })
+      return response.created({ message: 'Cultivo creado correctamente', data: cultivo })
+    } catch (error: any) {
+      return response.internalServerError({ message: 'Error al crear cultivo', error: error.message })
+    }
   }
 
   async show({ params, response }: HttpContext) {
-    const cultivo = await Cultivo.findOrFail(params.id)
-    return response.json(cultivo)
+    try {
+      const cultivo = await Cultivo.query()
+        .where('id_cultivo', params.id)
+        .preload('finca')
+        .firstOrFail()
+      return response.ok(cultivo)
+    } catch {
+      return response.notFound({ message: 'Cultivo no encontrado' })
+    }
   }
 
   async update({ params, request, response }: HttpContext) {
-    const cultivo = await Cultivo.findOrFail(params.id)
+    try {
+      const cultivo = await Cultivo.findOrFail(params.id)
+      const data = request.only(['nombre_cultivo', 'tipo_cultivo', 'id_finca'])
 
-    const data = request.only(['nombreCultivo', 'tipoCultivo'])
+      const payload: Record<string, any> = {}
+      if (data.nombre_cultivo !== undefined) payload.nombreCultivo = data.nombre_cultivo
+      if (data.tipo_cultivo !== undefined)   payload.tipoCultivo = data.tipo_cultivo
+      if (data.id_finca !== undefined)       payload.idFinca = data.id_finca
 
-    cultivo.merge(data)
-    await cultivo.save()
-
-    return response.json({
-      message: 'Cultivo actualizado correctamente',
-      data: cultivo,
-    })
+      cultivo.merge(payload)
+      await cultivo.save()
+      return response.ok({ message: 'Cultivo actualizado correctamente', data: cultivo })
+    } catch (error: any) {
+      return response.internalServerError({ message: 'Error al actualizar cultivo', error: error.message })
+    }
   }
 
   async destroy({ params, response }: HttpContext) {
-    const cultivo = await Cultivo.findOrFail(params.id)
-
-    await cultivo.delete()
-
-    return response.json({
-      message: 'Cultivo eliminado correctamente',
-    })
+    try {
+      const cultivo = await Cultivo.findOrFail(params.id)
+      await cultivo.delete()
+      return response.ok({ message: 'Cultivo eliminado correctamente' })
+    } catch (error: any) {
+      return response.internalServerError({ message: 'Error al eliminar cultivo', error: error.message })
+    }
   }
 }
