@@ -1,98 +1,49 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Usuario from '#models/usuario'
 import hash from '@adonisjs/core/services/hash'
-import Jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import env from '#start/env'
-import mail from '@adonisjs/mail/services/main'
 
 export default class AuthController {
-
-  async register({ request, response }: HttpContext) {
-    try {
-      const datos = request.only([
-        'nombre',
-        'apellido',
-        'correo',
-        'telefono',
-        'passwordHash',
-        'idRol',
-        'observaciones',
-      ])
-
-      // Verificar si el correo ya existe
-      const existe = await Usuario.query().where('correo', datos.correo).first()
-      if (existe) {
-        return response.conflict({
-          message: 'El correo ya está registrado',
-        })
-      }
-
-      // Crear el usuario (el beforeSave del modelo hashea la contraseña automáticamente)
-      const usuario = await Usuario.create({
-        nombre: datos.nombre,
-        apellido: datos.apellido,
-        correo: datos.correo,
-        telefono: datos.telefono ?? null,
-        passwordHash: datos.passwordHash,
-        idRol: datos.idRol ?? null,
-        observaciones: datos.observaciones ?? null,
-        activo: true,
-      })
-
-      return response.created({
-        message: 'Usuario registrado correctamente',
-        data: {
-          id: usuario.idUsuario,
-          nombre: usuario.nombre,
-          apellido: usuario.apellido,
-          correo: usuario.correo,
-          idRol: usuario.idRol,
-          passwordHash: usuario.passwordHash,
-        },
-      })
-    } catch (error: any) {
-      return response.internalServerError({
-        message: 'Error al registrar usuario',
-        error: error.message,
-      })
-    }
-  }
-
+  // ─── LOGIN ───────────────────────────────────────────────
   async login({ request, response }: HttpContext) {
     try {
-      const { correo, password } = request.only(['correo', 'password'])
+      const data = request.only(['correo', 'password'])
 
-      // Buscar el usuario
-      const usuario = await Usuario.query().where('correo', correo).first()
+      if (!data.correo) return response.badRequest({ message: 'El correo es obligatorio' })
+      if (!data.password) return response.badRequest({ message: 'La contraseña es obligatoria' })
+
+      const usuario = await Usuario.query()
+        .where('correo', data.correo)
+        .where('activo', true)
+        .preload('rol')
+        .first()
+
       if (!usuario) {
-        return response.unauthorized({
-          message: 'Usuario no encontrado',
-        })
+        return response.unauthorized({ message: 'Credenciales incorrectas' })
       }
 
-      // Verificar contraseña contra el campo password_hash
-      const passwordValido = await hash.verify(usuario.passwordHash, password)
+      const passwordValido = await hash.verify(usuario.passwordHash, data.password)
+
       if (!passwordValido) {
-        return response.unauthorized({
-          message: 'Contraseña incorrecta',
-        })
+        return response.unauthorized({ message: 'Credenciales incorrectas' })
       }
 
-      // Generar token JWT
-      const token = Jwt.sign(
-        { id: usuario.idUsuario, correo: usuario.correo },
+      const token = jwt.sign(
+        { id: usuario.idUsuario, correo: usuario.correo, rol: usuario.rol },
         env.get('JWT_SECRET'),
-        { expiresIn: '1h' }
+        { expiresIn: '8h' }
       )
 
       return response.ok({
         message: 'Login exitoso',
-        token,
+        token: token,
         data: {
-          id: usuario.idUsuario,
+          idUsuario: usuario.idUsuario,
           nombre: usuario.nombre,
           apellido: usuario.apellido,
           correo: usuario.correo,
+          rol: usuario.rol,
         },
       })
     } catch (error: any) {
@@ -103,73 +54,110 @@ export default class AuthController {
     }
   }
 
+  // ─── REGISTER ────────────────────────────────────────────
+  async register({ request, response }: HttpContext) {
+    try {
+      const data = request.only(['nombre', 'apellido', 'correo', 'password', 'telefono', 'idRol'])
+
+      if (!data.nombre) return response.badRequest({ message: 'El nombre es obligatorio' })
+      if (!data.apellido) return response.badRequest({ message: 'El apellido es obligatorio' })
+      if (!data.correo) return response.badRequest({ message: 'El correo es obligatorio' })
+      if (!data.password) return response.badRequest({ message: 'La contraseña es obligatoria' })
+
+      const existe = await Usuario.query().where('correo', data.correo).first()
+      if (existe) {
+        return response.conflict({ message: 'Ya existe un usuario con ese correo' })
+      }
+
+      const usuario = await Usuario.create({
+        nombre: data.nombre,
+        apellido: data.apellido,
+        correo: data.correo,
+        passwordHash: data.password,
+        telefono: data.telefono ?? null,
+        idRol: data.idRol ?? null,
+        activo: true,
+      })
+
+      return response.created({
+        message: 'Usuario registrado correctamente',
+        data: {
+          idUsuario: usuario.idUsuario,
+          nombre: usuario.nombre,
+          apellido: usuario.apellido,
+          correo: usuario.correo,
+        },
+      })
+    } catch (error: any) {
+      return response.internalServerError({
+        message: 'Error al registrar usuario',
+        error: error.message,
+      })
+    }
+  }
+  //recuperar contraseña//
   async recuperarPassword({ request, response }: HttpContext) {
     try {
       const { correo } = request.only(['correo'])
 
-      // Verificar si el usuario existe
+      if (!correo) return response.badRequest({ message: 'El correo es obligatorio' })
+
       const usuario = await Usuario.query().where('correo', correo).first()
+
       if (!usuario) {
-        return response.notFound({
-          message: 'No existe una cuenta con ese correo',
-        })
+        return response.notFound({ message: 'No existe un usuario con ese correo' })
       }
 
-      // Generar token temporal de 15 minutos
-      const token = Jwt.sign(
+      const token = jwt.sign(
         { id: usuario.idUsuario, correo: usuario.correo },
         env.get('JWT_SECRET'),
         { expiresIn: '15m' }
       )
 
-      // Enviar correo
-      await mail.send((message) => {
-        message
-          .to(correo)
-          .from(env.get('MAIL_FROM_ADDRESS'))
-          .subject('Recuperación de contraseña - Coffee Life')
-          .html(`
-            <h2>Recuperación de contraseña</h2>
-            <p>Hola <b>${usuario.nombre}</b>,</p>
-            <p>Recibimos una solicitud para restablecer tu contraseña.</p>
-            <p>Tu token de recuperación es:</p>
-            <h3>${token}</h3>
-            <p>Este token expira en <b>15 minutos</b>.</p>
-            <p>Si no solicitaste esto, ignora este correo.</p>
-          `)
-      })
-
+      // Aquí normalmente se enviaría un correo con el token
+      // Por ahora lo retornamos directamente para pruebas
       return response.ok({
-        message: 'Correo de recuperación enviado correctamente',
+        message: 'Token de recuperación generado. Úsalo en /restablecer-password',
+        token: token,
       })
     } catch (error: any) {
       return response.internalServerError({
-        message: 'Error al enviar el correo',
+        message: 'Error al recuperar contraseña',
         error: error.message,
       })
     }
   }
 
-  async resetPassword({ request, response }: HttpContext) {
+  async restablecerPassword({ request, response }: HttpContext) {
     try {
-      const { token, password } = request.only(['token', 'password'])
+      const { token, nuevaPassword } = request.only(['token', 'nuevaPassword'])
 
-      // Verificar el token
-      const payload = Jwt.verify(token, env.get('JWT_SECRET')) as { id: number, correo: string }
+      if (!token) return response.badRequest({ message: 'El token es obligatorio' })
+      if (!nuevaPassword) return response.badRequest({ message: 'La nueva contraseña es obligatoria' })
 
-      // Buscar el usuario
-      const usuario = await Usuario.findOrFail(payload.id)
+      let payload: any
 
-      // Actualizar la contraseña (el beforeSave la hashea automáticamente)
-      usuario.passwordHash = password
+      try {
+        payload = jwt.verify(token, env.get('JWT_SECRET'))
+      } catch {
+        return response.unauthorized({ message: 'Token inválido o expirado' })
+      }
+
+      const usuario = await Usuario.find(payload.id)
+
+      if (!usuario) {
+        return response.notFound({ message: 'Usuario no encontrado' })
+      }
+
+      usuario.passwordHash = nuevaPassword
       await usuario.save()
 
       return response.ok({
-        message: 'Contraseña actualizada correctamente',
+        message: 'Contraseña restablecida correctamente',
       })
     } catch (error: any) {
       return response.internalServerError({
-        message: 'Token inválido o expirado',
+        message: 'Error al restablecer contraseña',
         error: error.message,
       })
     }

@@ -1,31 +1,38 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Usuario from '#models/usuario'
+import CatRol from '#models/cat_rol'
 
-export default class UsuariosController {
+export default class CafeterosController {
 
   async index({ response }: HttpContext) {
     try {
-      const usuarios = await Usuario.query().preload('rol')
+      const usuarios = await Usuario.query()
+        .whereHas('rol', (query: any) => {
+          query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero'])
+        })
+        .preload('rol')
       return response.ok(usuarios)
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener usuarios', error: error.message })
+      return response.internalServerError({ message: 'Error al obtener cafeteros', error: error.message })
     }
   }
 
   async store({ request, response }: HttpContext) {
     try {
-      const data = request.only(['id_rol', 'nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
+      const data = request.only(['nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
 
       if (!data.nombre)   return response.badRequest({ message: 'El nombre es obligatorio' })
       if (!data.correo)   return response.badRequest({ message: 'El correo es obligatorio' })
       if (!data.password) return response.badRequest({ message: 'La contraseña es obligatoria' })
-      if (!data.id_rol)   return response.badRequest({ message: 'El id_rol es obligatorio' })
 
       const existe = await Usuario.findBy('correo', data.correo)
       if (existe) return response.badRequest({ message: 'El correo ya existe' })
 
+      const rolCafetero = await CatRol.query()
+        .whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero'])
+        .firstOrFail()
+
       const usuario = await Usuario.create({
-        idRol:         data.id_rol,
         nombre:        data.nombre,
         apellido:      data.apellido,
         correo:        data.correo,
@@ -33,10 +40,11 @@ export default class UsuariosController {
         passwordHash:  data.password,
         observaciones: data.observaciones,
         activo:        data.activo ?? true,
+        idRol:         rolCafetero.idRol,
       })
-      return response.created({ message: 'Usuario creado correctamente', data: usuario })
+      return response.created({ message: 'Cafetero creado correctamente', data: usuario })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al crear usuario', error: error.message })
+      return response.internalServerError({ message: 'Error al crear cafetero', error: error.message })
     }
   }
 
@@ -44,18 +52,27 @@ export default class UsuariosController {
     try {
       const usuario = await Usuario.query()
         .where('id_usuario', params.id)
+        .whereHas('rol', (query: any) => {
+          query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero'])
+        })
         .preload('rol')
         .firstOrFail()
       return response.ok(usuario)
     } catch {
-      return response.notFound({ message: 'Usuario no encontrado' })
+      return response.notFound({ message: 'Cafetero no encontrado' })
     }
   }
 
   async update({ params, request, response }: HttpContext) {
     try {
-      const usuario = await Usuario.findOrFail(params.id)
-      const data = request.only(['id_rol', 'nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
+      const usuario = await Usuario.query()
+        .where('id_usuario', params.id)
+        .whereHas('rol', (query: any) => {
+          query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero'])
+        })
+        .firstOrFail()
+
+      const data = request.only(['nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
 
       if (data.correo && data.correo !== usuario.correo) {
         const existe = await Usuario.findBy('correo', data.correo)
@@ -63,7 +80,6 @@ export default class UsuariosController {
       }
 
       const payload: Record<string, any> = {}
-      if (data.id_rol        !== undefined) payload.idRol         = data.id_rol
       if (data.nombre        !== undefined) payload.nombre        = data.nombre
       if (data.apellido      !== undefined) payload.apellido      = data.apellido
       if (data.correo        !== undefined) payload.correo        = data.correo
@@ -74,19 +90,24 @@ export default class UsuariosController {
 
       usuario.merge(payload)
       await usuario.save()
-      return response.ok({ message: 'Usuario actualizado correctamente', data: usuario })
+      return response.ok({ message: 'Cafetero actualizado correctamente', data: usuario })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al actualizar usuario', error: error.message })
+      return response.internalServerError({ message: 'Error al actualizar cafetero', error: error.message })
     }
   }
 
   async destroy({ params, response }: HttpContext) {
     try {
-      const usuario = await Usuario.findOrFail(params.id)
+      const usuario = await Usuario.query()
+        .where('id_usuario', params.id)
+        .whereHas('rol', (query: any) => {
+          query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero'])
+        })
+        .firstOrFail()
       await usuario.delete()
-      return response.ok({ message: 'Usuario eliminado correctamente' })
+      return response.ok({ message: 'Cafetero eliminado correctamente' })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al eliminar usuario', error: error.message })
+      return response.internalServerError({ message: 'Error al eliminar cafetero', error: error.message })
     }
   }
 }
