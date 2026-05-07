@@ -1,22 +1,34 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import Finca from '#models/finca'
 
 export default class Cultivo extends BaseModel {
-  @column({ isPrimary: true, columnName: 'id_cultivo' })
+  public static table = 'cultivos'
+
+  @column({ isPrimary: true })
   declare idCultivo: number
 
-  @column({ columnName: 'nombre_cultivo' })
+  @column()
   declare nombreCultivo: string
 
-  @column({ columnName: 'tipo_cultivo' })
+  @column()
   declare tipoCultivo: string
 
-  @column({ columnName: 'id_finca' })
+  @column()
   declare idFinca: number | null
 
-  @column.dateTime({ autoCreate: true, columnName: 'created_at' })
+  @column()
+  declare idEstado: number | null
+
+  @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true, columnName: 'updated_at' })
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @belongsTo(() => Finca, {
+    foreignKey: 'idFinca',
+  })
+  declare finca: BelongsTo<typeof Finca>
 }
