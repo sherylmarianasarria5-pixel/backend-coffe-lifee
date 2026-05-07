@@ -1,11 +1,27 @@
-import { ImageneSchema } from '#database/schema'
-import { belongsTo, hasMany } from '@adonisjs/lucid/orm'
+import { DateTime } from 'luxon'
+import { BaseModel, column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
-
 import Monitoreo from '#models/monitoreo'
 import AnalisisIa from '#models/analisis_ia'
 
-export default class Imagene extends ImageneSchema {
+export default class Imagene extends BaseModel {
+  public static table = 'imagenes'
+
+  @column({ isPrimary: true, columnName: 'idImagen' })
+  declare idImagen: number
+
+  @column({ columnName: 'idMonitoreo' })
+  declare idMonitoreo: number | null
+
+  @column({ columnName: 'rutaImagen' })
+  declare rutaImagen: string
+
+  @column.dateTime({ autoCreate: true, columnName: 'fechaRegistro' })
+  declare fechaRegistro: DateTime | null
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true, columnName: 'fechaActualizacion' })
+  declare fechaActualizacion: DateTime | null
+
   @belongsTo(() => Monitoreo, {
     foreignKey: 'idMonitoreo',
   })

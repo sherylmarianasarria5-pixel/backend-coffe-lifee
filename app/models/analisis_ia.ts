@@ -1,19 +1,44 @@
-import { AnalisisIaSchema } from '#database/schema'
-import { belongsTo } from '@adonisjs/lucid/orm'
+import { DateTime } from 'luxon'
+import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
-
 import Imagene from '#models/imagene'
 import CatEstadoAnalisis from '#models/cat_estado_analisis'
 import CatNivelRoya from '#models/cat_nivel_roya'
 
-export default class AnalisisIa extends AnalisisIaSchema {
+export default class AnalisisIa extends BaseModel {
+  public static table = 'analisis_ias'
+
+  @column({ isPrimary: true, columnName: 'idAnalisis' })
+  declare idAnalisis: number
+
+  @column({ columnName: 'idImagen' })
+  declare idImagen: number | null
+
+  @column({ columnName: 'idEstado' })
+  declare idEstado: number | null
+
+  @column({ columnName: 'resultado' })
+  declare resultado: string | null
+
+  @column({ columnName: 'porcentajeConfianza' })
+  declare porcentajeConfianza: string | null
+
+  @column.dateTime({ autoCreate: true, columnName: 'fechaRegistro' })
+  declare fechaRegistro: DateTime | null
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true, columnName: 'fechaActualizacion' })
+  declare fechaActualizacion: DateTime | null
+
+  @column({ columnName: 'idNivelRoya' })
+  declare idNivelRoya: number | null
+
   @belongsTo(() => Imagene, {
     foreignKey: 'idImagen',
   })
   declare imagen: BelongsTo<typeof Imagene>
 
   @belongsTo(() => CatEstadoAnalisis, {
-    foreignKey: 'idEstadoAnalisis',
+    foreignKey: 'idEstado',
   })
   declare estadoAnalisis: BelongsTo<typeof CatEstadoAnalisis>
 

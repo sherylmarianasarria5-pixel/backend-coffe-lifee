@@ -21,27 +21,27 @@ export default class AnalisisIaController {
   async store({ request, response }: HttpContext) {
     try {
       const data = request.only([
-        'id_imagen',
-        'id_estado',
+        'idImagen',
+        'idEstado',
         'resultado',
-        'porcentaje_confianza',
-        'id_nivel_roya',
+        'porcentajeConfianza',
+        'idNivelRoya',
       ])
 
-      if (!data.id_imagen) {
-        return response.badRequest({ message: 'El id_imagen es obligatorio' })
+      if (!data.idImagen) {
+        return response.badRequest({ message: 'El idImagen es obligatorio' })
       }
 
-      if (!data.id_estado) {
-        return response.badRequest({ message: 'El id_estado es obligatorio' })
+      if (!data.idEstado) {
+        return response.badRequest({ message: 'El idEstado es obligatorio' })
       }
 
       const analisis = await AnalisisIa.create({
-        idImagen:            data.id_imagen,
-        idEstadoAnalisis:    data.id_estado,
-        resultado:           data.resultado,
-        porcentajeConfianza: data.porcentaje_confianza,
-        idNivelRoya:         data.id_nivel_roya,
+        idImagen:            data.idImagen,
+        idEstado:            data.idEstado,
+        resultado:           data.resultado ?? null,
+        porcentajeConfianza: data.porcentajeConfianza ?? null,
+        idNivelRoya:         data.idNivelRoya ?? null,
       })
 
       return response.created({
@@ -59,7 +59,7 @@ export default class AnalisisIaController {
   async show({ params, response }: HttpContext) {
     try {
       const analisis = await AnalisisIa.query()
-        .where('idAnalisis', params.id)
+        .where('id_analisis', params.id)
         .preload('imagen')
         .preload('estadoAnalisis')
         .preload('nivelRoya')
@@ -74,17 +74,17 @@ export default class AnalisisIaController {
     try {
       const analisis = await AnalisisIa.findOrFail(params.id)
       const data = request.only([
-        'id_estado',
+        'idEstado',
         'resultado',
-        'porcentaje_confianza',
-        'id_nivel_roya',
+        'porcentajeConfianza',
+        'idNivelRoya',
       ])
 
       const payload: Record<string, any> = {}
-      if (data.id_estado            !== undefined) payload.idEstadoAnalisis    = data.id_estado
-      if (data.resultado            !== undefined) payload.resultado           = data.resultado
-      if (data.porcentaje_confianza !== undefined) payload.porcentajeConfianza = data.porcentaje_confianza
-      if (data.id_nivel_roya        !== undefined) payload.idNivelRoya         = data.id_nivel_roya
+      if (data.idEstado            !== undefined) payload.idEstado            = data.idEstado
+      if (data.resultado           !== undefined) payload.resultado           = data.resultado
+      if (data.porcentajeConfianza !== undefined) payload.porcentajeConfianza = data.porcentajeConfianza
+      if (data.idNivelRoya         !== undefined) payload.idNivelRoya         = data.idNivelRoya
 
       analisis.merge(payload)
       await analisis.save()
