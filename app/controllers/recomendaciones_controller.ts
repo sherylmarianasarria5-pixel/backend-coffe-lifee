@@ -2,21 +2,17 @@ import type { HttpContext } from '@adonisjs/core/http'
 import RecomendacionTratamiento from '#models/recomendacion_tratamiento'
 
 export default class RecomendacionTratamientosController {
-
   // =========================================
   // GET /recomendacion-tratamientos
   // =========================================
   async index({ response }: HttpContext) {
     try {
-
       const items = await RecomendacionTratamiento.query()
         .preload('recomendacion')
         .preload('tratamiento')
 
       return response.ok(items)
-
     } catch (error: any) {
-
       return response.internalServerError({
         message: 'Error al obtener recomendacion tratamientos',
         error: error.message,
@@ -29,13 +25,7 @@ export default class RecomendacionTratamientosController {
   // =========================================
   async store({ request, response }: HttpContext) {
     try {
-
-      const data = request.only([
-        'id_recomendacion',
-        'id_tratamiento',
-        'dosis_ajustada',
-        'notas',
-      ])
+      const data = request.only(['id_recomendacion', 'id_tratamiento', 'dosis_ajustada', 'notas'])
 
       if (!data.id_recomendacion) {
         return response.badRequest({ message: 'El id_recomendacion es obligatorio' })
@@ -56,9 +46,7 @@ export default class RecomendacionTratamientosController {
         message: 'Recomendacion tratamiento creado correctamente',
         data: item,
       })
-
     } catch (error: any) {
-
       return response.internalServerError({
         message: 'Error al crear recomendacion tratamiento',
         error: error.message,
@@ -71,7 +59,6 @@ export default class RecomendacionTratamientosController {
   // =========================================
   async show({ params, response }: HttpContext) {
     try {
-
       const item = await RecomendacionTratamiento.query()
         .where('id_rec_tratamiento', params.id)
         .preload('recomendacion')
@@ -79,9 +66,7 @@ export default class RecomendacionTratamientosController {
         .firstOrFail()
 
       return response.ok(item)
-
     } catch (error: any) {
-
       return response.notFound({
         message: 'Recomendacion tratamiento no encontrado',
       })
@@ -93,17 +78,13 @@ export default class RecomendacionTratamientosController {
   // =========================================
   async update({ params, request, response }: HttpContext) {
     try {
-
       const item = await RecomendacionTratamiento.findOrFail(params.id)
 
-      const data = request.only([
-        'dosis_ajustada',
-        'notas',
-      ])
+      const data = request.only(['dosis_ajustada', 'notas'])
 
       const payload: Record<string, any> = {}
       if (data.dosis_ajustada !== undefined) payload.dosisAjustada = data.dosis_ajustada
-      if (data.notas !== undefined)          payload.notas = data.notas
+      if (data.notas !== undefined) payload.notas = data.notas
 
       item.merge(payload)
       await item.save()
@@ -112,9 +93,7 @@ export default class RecomendacionTratamientosController {
         message: 'Recomendacion tratamiento actualizado correctamente',
         data: item,
       })
-
     } catch (error: any) {
-
       return response.internalServerError({
         message: 'Error al actualizar recomendacion tratamiento',
         error: error.message,
@@ -127,7 +106,6 @@ export default class RecomendacionTratamientosController {
   // =========================================
   async destroy({ params, response }: HttpContext) {
     try {
-
       const item = await RecomendacionTratamiento.findOrFail(params.id)
 
       await item.delete()
@@ -135,9 +113,7 @@ export default class RecomendacionTratamientosController {
       return response.ok({
         message: 'Recomendacion tratamiento eliminado correctamente',
       })
-
     } catch (error: any) {
-
       return response.internalServerError({
         message: 'Error al eliminar recomendacion tratamiento',
         error: error.message,

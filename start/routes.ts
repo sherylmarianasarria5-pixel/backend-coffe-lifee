@@ -1,6 +1,9 @@
 import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
 
 const AuthController                      = () => import('#controllers/auth_controller')
+const MiPerfilController                  = () => import('#controllers/mi_perfil_controller')
+const DashboardController                 = () => import('#controllers/dashboard_controller')
 const UsuariosController                  = () => import('#controllers/usuarios_controller')
 const AdminController                     = () => import('#controllers/admin_controller')
 const CafeterosController                 = () => import('#controllers/cafeteros_controller')
@@ -22,166 +25,204 @@ const AplicacionesTratamientosController  = () => import('#controllers/aplicacio
 const ImagenesController                  = () => import('#controllers/imagenes_controller')
 const AnalisisIaController                = () => import('#controllers/analisis_ia_controller')
 const RecomendacionesController           = () => import('#controllers/recomendaciones_controller')
+const AsignacionesExpertosController      = () => import('#controllers/asignaciones_expertos_controller')
 
-router.get('/', async () => {
-  return { mensaje: 'API Coffee Life funcionando correctamente' }
-})
+// ── HEALTH CHECK ──────────────────────────────────────────────────────────────
+router.get('/', async () => ({
+  mensaje: 'API Coffee Life funcionando',
+  version: '2.0',
+}))
 
-// AUTH
-router.post('/login',                  [AuthController, 'login']).as('auth.login')
-router.post('/register',               [AuthController, 'register']).as('auth.register')
-router.post('/recuperar-password',     [AuthController, 'recuperarPassword']).as('auth.recuperarPassword')
-router.post('/restablecer-password',   [AuthController, 'restablecerPassword']).as('auth.restablecerPassword')
+// ── 1. RUTAS PÚBLICAS — sin token ─────────────────────────────────────────────
+router.post('/login',                [AuthController, 'login'])
+router.post('/register',             [AuthController, 'register'])
+router.post('/recuperar-password',   [AuthController, 'recuperarPassword'])
+router.post('/restablecer-password', [AuthController, 'restablecerPassword'])
 
-// USUARIOS
-router.get   ('/usuarios',     [UsuariosController, 'index']).as('usuarios.index')
-router.post  ('/usuarios',     [UsuariosController, 'store']).as('usuarios.store')
-router.get   ('/usuarios/:id', [UsuariosController, 'show']).as('usuarios.show')
-router.put   ('/usuarios/:id', [UsuariosController, 'update']).as('usuarios.update')
-router.delete('/usuarios/:id', [UsuariosController, 'destroy']).as('usuarios.destroy')
+// ── 2. PERFIL PROPIO — cualquier rol autenticado ──────────────────────────────
+router.group(() => {
+  router.get ('/mi-perfil',                  [MiPerfilController, 'show'])
+  router.put ('/mi-perfil',                  [MiPerfilController, 'update'])
+  router.post('/mi-perfil/cambiar-password', [MiPerfilController, 'cambiarPassword'])
+}).use(middleware.jwtAuth())
 
-// ADMINS
-router.get   ('/admins',     [AdminController, 'index']).as('admins.index')
-router.post  ('/admins',     [AdminController, 'store']).as('admins.store')
-router.get   ('/admins/:id', [AdminController, 'show']).as('admins.show')
-router.put   ('/admins/:id', [AdminController, 'update']).as('admins.update')
-router.delete('/admins/:id', [AdminController, 'destroy']).as('admins.destroy')
+// ── 3. CATÁLOGOS — lectura para cualquier autenticado ─────────────────────────
+router.group(() => {
+  router.get('/cat_roles',                     [CatRolesController,               'index'])
+  router.get('/cat_roles/:id',                 [CatRolesController,               'show'])
+  router.get('/cat_tipos_tratamiento',         [CatTiposTratamientosController,   'index'])
+  router.get('/cat_tipos_tratamiento/:id',     [CatTiposTratamientosController,   'show'])
+  router.get('/cat_niveles_roya',              [CatNivelesRoyasController,        'index'])
+  router.get('/cat_niveles_roya/:id',          [CatNivelesRoyasController,        'show'])
+  router.get('/cat_prioridades',               [CatPrioridadesController,         'index'])
+  router.get('/cat_prioridades/:id',           [CatPrioridadesController,         'show'])
+  router.get('/cat_tipos_recomendacion',       [CatTiposRecomendacionsController, 'index'])
+  router.get('/cat_tipos_recomendacion/:id',   [CatTiposRecomendacionsController, 'show'])
+  router.get('/cat_estados_analisis',          [CatEstadosAnalisisController,     'index'])
+  router.get('/cat_estados_analisis/:id',      [CatEstadosAnalisisController,     'show'])
+  router.get('/cat_estados_cultivo',           [CatEstadosCultivosController,     'index'])
+  router.get('/cat_estados_cultivo/:id',       [CatEstadosCultivosController,     'show'])
+  router.get('/categorias',                    [CategoriasController,             'index'])
+  router.get('/categorias/:id',                [CategoriasController,             'show'])
+}).use(middleware.jwtAuth())
 
-// CAFETEROS
-router.get   ('/cafeteros',     [CafeterosController, 'index']).as('cafeteros.index')
-router.post  ('/cafeteros',     [CafeterosController, 'store']).as('cafeteros.store')
-router.get   ('/cafeteros/:id', [CafeterosController, 'show']).as('cafeteros.show')
-router.put   ('/cafeteros/:id', [CafeterosController, 'update']).as('cafeteros.update')
-router.delete('/cafeteros/:id', [CafeterosController, 'destroy']).as('cafeteros.destroy')
+// ── 4. SOLO ADMIN ─────────────────────────────────────────────────────────────
+router.group(() => {
 
-// EXPERTOS
-router.get   ('/expertos',     [ExpertosController, 'index']).as('expertos.index')
-router.post  ('/expertos',     [ExpertosController, 'store']).as('expertos.store')
-router.get   ('/expertos/:id', [ExpertosController, 'show']).as('expertos.show')
-router.put   ('/expertos/:id', [ExpertosController, 'update']).as('expertos.update')
-router.delete('/expertos/:id', [ExpertosController, 'destroy']).as('expertos.destroy')
+  // Dashboard estadísticas
+  router.get('/dashboard', [DashboardController, 'index'])
 
-// ROLES — funciona con /roles Y /cat_roles
-router.get   ('/roles',         [CatRolesController, 'index']).as('roles.index')
-router.post  ('/roles',         [CatRolesController, 'store']).as('roles.store')
-router.get   ('/roles/:id',     [CatRolesController, 'show']).as('roles.show')
-router.put   ('/roles/:id',     [CatRolesController, 'update']).as('roles.update')
-router.delete('/roles/:id',     [CatRolesController, 'destroy']).as('roles.destroy')
+  // Usuarios
+  router.get   ('/usuarios',     [UsuariosController, 'index'])
+  router.post  ('/usuarios',     [UsuariosController, 'store'])
+  router.get   ('/usuarios/:id', [UsuariosController, 'show'])
+  router.put   ('/usuarios/:id', [UsuariosController, 'update'])
+  router.delete('/usuarios/:id', [UsuariosController, 'destroy'])
 
-router.get   ('/cat_roles',     [CatRolesController, 'index']).as('cat_roles.index')
-router.post  ('/cat_roles',     [CatRolesController, 'store']).as('cat_roles.store')
-router.get   ('/cat_roles/:id', [CatRolesController, 'show']).as('cat_roles.show')
-router.put   ('/cat_roles/:id', [CatRolesController, 'update']).as('cat_roles.update')
-router.delete('/cat_roles/:id', [CatRolesController, 'destroy']).as('cat_roles.destroy')
+  // Admins
+  router.get   ('/admins',       [AdminController, 'index'])
+  router.post  ('/admins',       [AdminController, 'store'])
+  router.get   ('/admins/:id',   [AdminController, 'show'])
+  router.put   ('/admins/:id',   [AdminController, 'update'])
+  router.delete('/admins/:id',   [AdminController, 'destroy'])
 
-// TIPOS TRATAMIENTO
-router.get   ('/cat_tipos_tratamiento',     [CatTiposTratamientosController, 'index']).as('cat_tipos_tratamiento.index')
-router.post  ('/cat_tipos_tratamiento',     [CatTiposTratamientosController, 'store']).as('cat_tipos_tratamiento.store')
-router.get   ('/cat_tipos_tratamiento/:id', [CatTiposTratamientosController, 'show']).as('cat_tipos_tratamiento.show')
-router.put   ('/cat_tipos_tratamiento/:id', [CatTiposTratamientosController, 'update']).as('cat_tipos_tratamiento.update')
-router.delete('/cat_tipos_tratamiento/:id', [CatTiposTratamientosController, 'destroy']).as('cat_tipos_tratamiento.destroy')
+  // Expertos
+  router.get   ('/expertos',     [ExpertosController, 'index'])
+  router.post  ('/expertos',     [ExpertosController, 'store'])
+  router.get   ('/expertos/:id', [ExpertosController, 'show'])
+  router.put   ('/expertos/:id', [ExpertosController, 'update'])
+  router.delete('/expertos/:id', [ExpertosController, 'destroy'])
 
-// NIVELES ROYA
-router.get   ('/cat_niveles_roya',     [CatNivelesRoyasController, 'index']).as('cat_niveles_roya.index')
-router.post  ('/cat_niveles_roya',     [CatNivelesRoyasController, 'store']).as('cat_niveles_roya.store')
-router.get   ('/cat_niveles_roya/:id', [CatNivelesRoyasController, 'show']).as('cat_niveles_roya.show')
-router.put   ('/cat_niveles_roya/:id', [CatNivelesRoyasController, 'update']).as('cat_niveles_roya.update')
-router.delete('/cat_niveles_roya/:id', [CatNivelesRoyasController, 'destroy']).as('cat_niveles_roya.destroy')
+  // Asignaciones de expertos
+  router.get   ('/asignaciones_expertos',     [AsignacionesExpertosController, 'index'])
+  router.post  ('/asignaciones_expertos',     [AsignacionesExpertosController, 'store'])
+  router.get   ('/asignaciones_expertos/:id', [AsignacionesExpertosController, 'show'])
+  router.put   ('/asignaciones_expertos/:id', [AsignacionesExpertosController, 'update'])
+  router.delete('/asignaciones_expertos/:id', [AsignacionesExpertosController, 'destroy'])
 
-// PRIORIDADES
-router.get   ('/cat_prioridades',     [CatPrioridadesController, 'index']).as('cat_prioridades.index')
-router.post  ('/cat_prioridades',     [CatPrioridadesController, 'store']).as('cat_prioridades.store')
-router.get   ('/cat_prioridades/:id', [CatPrioridadesController, 'show']).as('cat_prioridades.show')
-router.put   ('/cat_prioridades/:id', [CatPrioridadesController, 'update']).as('cat_prioridades.update')
-router.delete('/cat_prioridades/:id', [CatPrioridadesController, 'destroy']).as('cat_prioridades.destroy')
+  // Catálogos — escritura
+  router.post  ('/cat_roles',                     [CatRolesController,               'store'])
+  router.put   ('/cat_roles/:id',                 [CatRolesController,               'update'])
+  router.delete('/cat_roles/:id',                 [CatRolesController,               'destroy'])
 
-// TIPOS RECOMENDACION
-router.get   ('/cat_tipos_recomendacion',     [CatTiposRecomendacionsController, 'index']).as('cat_tipos_recomendacion.index')
-router.post  ('/cat_tipos_recomendacion',     [CatTiposRecomendacionsController, 'store']).as('cat_tipos_recomendacion.store')
-router.get   ('/cat_tipos_recomendacion/:id', [CatTiposRecomendacionsController, 'show']).as('cat_tipos_recomendacion.show')
-router.put   ('/cat_tipos_recomendacion/:id', [CatTiposRecomendacionsController, 'update']).as('cat_tipos_recomendacion.update')
-router.delete('/cat_tipos_recomendacion/:id', [CatTiposRecomendacionsController, 'destroy']).as('cat_tipos_recomendacion.destroy')
+  router.post  ('/cat_tipos_tratamiento',         [CatTiposTratamientosController,   'store'])
+  router.put   ('/cat_tipos_tratamiento/:id',     [CatTiposTratamientosController,   'update'])
+  router.delete('/cat_tipos_tratamiento/:id',     [CatTiposTratamientosController,   'destroy'])
 
-// ESTADOS ANALISIS
-router.get   ('/cat_estados_analisis',     [CatEstadosAnalisisController, 'index']).as('cat_estados_analisis.index')
-router.post  ('/cat_estados_analisis',     [CatEstadosAnalisisController, 'store']).as('cat_estados_analisis.store')
-router.get   ('/cat_estados_analisis/:id', [CatEstadosAnalisisController, 'show']).as('cat_estados_analisis.show')
-router.put   ('/cat_estados_analisis/:id', [CatEstadosAnalisisController, 'update']).as('cat_estados_analisis.update')
-router.delete('/cat_estados_analisis/:id', [CatEstadosAnalisisController, 'destroy']).as('cat_estados_analisis.destroy')
+  router.post  ('/cat_niveles_roya',              [CatNivelesRoyasController,        'store'])
+  router.put   ('/cat_niveles_roya/:id',          [CatNivelesRoyasController,        'update'])
+  router.delete('/cat_niveles_roya/:id',          [CatNivelesRoyasController,        'destroy'])
 
-// ESTADOS CULTIVO
-router.get   ('/cat_estados_cultivo',     [CatEstadosCultivosController, 'index']).as('cat_estados_cultivo.index')
-router.post  ('/cat_estados_cultivo',     [CatEstadosCultivosController, 'store']).as('cat_estados_cultivo.store')
-router.get   ('/cat_estados_cultivo/:id', [CatEstadosCultivosController, 'show']).as('cat_estados_cultivo.show')
-router.put   ('/cat_estados_cultivo/:id', [CatEstadosCultivosController, 'update']).as('cat_estados_cultivo.update')
-router.delete('/cat_estados_cultivo/:id', [CatEstadosCultivosController, 'destroy']).as('cat_estados_cultivo.destroy')
+  router.post  ('/cat_prioridades',               [CatPrioridadesController,         'store'])
+  router.put   ('/cat_prioridades/:id',           [CatPrioridadesController,         'update'])
+  router.delete('/cat_prioridades/:id',           [CatPrioridadesController,         'destroy'])
 
-// CATEGORIAS
-router.get   ('/categorias',     [CategoriasController, 'index']).as('categorias.index')
-router.post  ('/categorias',     [CategoriasController, 'store']).as('categorias.store')
-router.get   ('/categorias/:id', [CategoriasController, 'show']).as('categorias.show')
-router.put   ('/categorias/:id', [CategoriasController, 'update']).as('categorias.update')
-router.delete('/categorias/:id', [CategoriasController, 'destroy']).as('categorias.destroy')
+  router.post  ('/cat_tipos_recomendacion',       [CatTiposRecomendacionsController, 'store'])
+  router.put   ('/cat_tipos_recomendacion/:id',   [CatTiposRecomendacionsController, 'update'])
+  router.delete('/cat_tipos_recomendacion/:id',   [CatTiposRecomendacionsController, 'destroy'])
 
-// FINCAS
-router.get   ('/fincas',     [FincasController, 'index']).as('fincas.index')
-router.post  ('/fincas',     [FincasController, 'store']).as('fincas.store')
-router.get   ('/fincas/:id', [FincasController, 'show']).as('fincas.show')
-router.put   ('/fincas/:id', [FincasController, 'update']).as('fincas.update')
-router.delete('/fincas/:id', [FincasController, 'destroy']).as('fincas.destroy')
+  router.post  ('/cat_estados_analisis',          [CatEstadosAnalisisController,     'store'])
+  router.put   ('/cat_estados_analisis/:id',      [CatEstadosAnalisisController,     'update'])
+  router.delete('/cat_estados_analisis/:id',      [CatEstadosAnalisisController,     'destroy'])
 
-// CULTIVOS
-router.get   ('/cultivos',     [CultivosController, 'index']).as('cultivos.index')
-router.post  ('/cultivos',     [CultivosController, 'store']).as('cultivos.store')
-router.get   ('/cultivos/:id', [CultivosController, 'show']).as('cultivos.show')
-router.put   ('/cultivos/:id', [CultivosController, 'update']).as('cultivos.update')
-router.delete('/cultivos/:id', [CultivosController, 'destroy']).as('cultivos.destroy')
+  router.post  ('/cat_estados_cultivo',           [CatEstadosCultivosController,     'store'])
+  router.put   ('/cat_estados_cultivo/:id',       [CatEstadosCultivosController,     'update'])
+  router.delete('/cat_estados_cultivo/:id',       [CatEstadosCultivosController,     'destroy'])
 
-// MONITOREOS
-router.get   ('/monitoreos',     [MonitoreosController, 'index']).as('monitoreos.index')
-router.post  ('/monitoreos',     [MonitoreosController, 'store']).as('monitoreos.store')
-router.get   ('/monitoreos/:id', [MonitoreosController, 'show']).as('monitoreos.show')
-router.put   ('/monitoreos/:id', [MonitoreosController, 'update']).as('monitoreos.update')
-router.delete('/monitoreos/:id', [MonitoreosController, 'destroy']).as('monitoreos.destroy')
+  router.post  ('/categorias',                    [CategoriasController,             'store'])
+  router.put   ('/categorias/:id',                [CategoriasController,             'update'])
+  router.delete('/categorias/:id',                [CategoriasController,             'destroy'])
 
-// RECOMENDACION TRATAMIENTOS
-router.get   ('/recomendacion_tratamientos',     [RecomendacionTratamientosController, 'index']).as('recomendacion_tratamientos.index')
-router.post  ('/recomendacion_tratamientos',     [RecomendacionTratamientosController, 'store']).as('recomendacion_tratamientos.store')
-router.get   ('/recomendacion_tratamientos/:id', [RecomendacionTratamientosController, 'show']).as('recomendacion_tratamientos.show')
-router.put   ('/recomendacion_tratamientos/:id', [RecomendacionTratamientosController, 'update']).as('recomendacion_tratamientos.update')
-router.delete('/recomendacion_tratamientos/:id', [RecomendacionTratamientosController, 'destroy']).as('recomendacion_tratamientos.destroy')
+}).use(middleware.role(['admin']))
 
-// TRATAMIENTOS
-router.get   ('/tratamientos',     [TratamientosController, 'index']).as('tratamientos.index')
-router.post  ('/tratamientos',     [TratamientosController, 'store']).as('tratamientos.store')
-router.get   ('/tratamientos/:id', [TratamientosController, 'show']).as('tratamientos.show')
-router.put   ('/tratamientos/:id', [TratamientosController, 'update']).as('tratamientos.update')
-router.delete('/tratamientos/:id', [TratamientosController, 'destroy']).as('tratamientos.destroy')
+// ── 5. ADMIN + EXPERTO ────────────────────────────────────────────────────────
+router.group(() => {
 
-// APLICACIONES TRATAMIENTOS
-router.get   ('/aplicaciones_tratamientos',     [AplicacionesTratamientosController, 'index']).as('aplicaciones_tratamientos.index')
-router.post  ('/aplicaciones_tratamientos',     [AplicacionesTratamientosController, 'store']).as('aplicaciones_tratamientos.store')
-router.get   ('/aplicaciones_tratamientos/:id', [AplicacionesTratamientosController, 'show']).as('aplicaciones_tratamientos.show')
-router.put   ('/aplicaciones_tratamientos/:id', [AplicacionesTratamientosController, 'update']).as('aplicaciones_tratamientos.update')
-router.delete('/aplicaciones_tratamientos/:id', [AplicacionesTratamientosController, 'destroy']).as('aplicaciones_tratamientos.destroy')
+  // Ver cafeteros
+  router.get('/cafeteros',     [CafeterosController, 'index'])
+  router.get('/cafeteros/:id', [CafeterosController, 'show'])
 
-// IMAGENES
-router.get   ('/imagenes',     [ImagenesController, 'index']).as('imagenes.index')
-router.post  ('/imagenes',     [ImagenesController, 'store']).as('imagenes.store')
-router.get   ('/imagenes/:id', [ImagenesController, 'show']).as('imagenes.show')
-router.put   ('/imagenes/:id', [ImagenesController, 'update']).as('imagenes.update')
-router.delete('/imagenes/:id', [ImagenesController, 'destroy']).as('imagenes.destroy')
+  // Monitoreos — crear, editar, eliminar
+  router.post  ('/monitoreos',     [MonitoreosController, 'store'])
+  router.put   ('/monitoreos/:id', [MonitoreosController, 'update'])
+  router.delete('/monitoreos/:id', [MonitoreosController, 'destroy'])
 
-// ANALISIS IA
-router.get   ('/analisis_ia',     [AnalisisIaController, 'index']).as('analisis_ia.index')
-router.post  ('/analisis_ia',     [AnalisisIaController, 'store']).as('analisis_ia.store')
-router.get   ('/analisis_ia/:id', [AnalisisIaController, 'show']).as('analisis_ia.show')
-router.put   ('/analisis_ia/:id', [AnalisisIaController, 'update']).as('analisis_ia.update')
-router.delete('/analisis_ia/:id', [AnalisisIaController, 'destroy']).as('analisis_ia.destroy')
+  // Análisis IA — crear, editar, eliminar
+  router.post  ('/analisis_ia',     [AnalisisIaController, 'store'])
+  router.put   ('/analisis_ia/:id', [AnalisisIaController, 'update'])
+  router.delete('/analisis_ia/:id', [AnalisisIaController, 'destroy'])
 
-// RECOMENDACIONES
-router.get   ('/recomendaciones',     [RecomendacionesController, 'index']).as('recomendaciones.index')
-router.post  ('/recomendaciones',     [RecomendacionesController, 'store']).as('recomendaciones.store')
-router.get   ('/recomendaciones/:id', [RecomendacionesController, 'show']).as('recomendaciones.show')
-router.put   ('/recomendaciones/:id', [RecomendacionesController, 'update']).as('recomendaciones.update')
-router.delete('/recomendaciones/:id', [RecomendacionesController, 'destroy']).as('recomendaciones.destroy')
+  // Recomendaciones — crear, editar, eliminar
+  router.post  ('/recomendaciones',     [RecomendacionesController, 'store'])
+  router.put   ('/recomendaciones/:id', [RecomendacionesController, 'update'])
+  router.delete('/recomendaciones/:id', [RecomendacionesController, 'destroy'])
+
+  // Tratamientos — crear, editar, eliminar
+  router.post  ('/tratamientos',     [TratamientosController, 'store'])
+  router.put   ('/tratamientos/:id', [TratamientosController, 'update'])
+  router.delete('/tratamientos/:id', [TratamientosController, 'destroy'])
+
+  // Aplicaciones tratamientos — crear, editar, eliminar
+  router.post  ('/aplicaciones_tratamientos',     [AplicacionesTratamientosController, 'store'])
+  router.put   ('/aplicaciones_tratamientos/:id', [AplicacionesTratamientosController, 'update'])
+  router.delete('/aplicaciones_tratamientos/:id', [AplicacionesTratamientosController, 'destroy'])
+
+  // Recomendacion tratamientos — crear, editar, eliminar
+  router.post  ('/recomendacion_tratamientos',     [RecomendacionTratamientosController, 'store'])
+  router.put   ('/recomendacion_tratamientos/:id', [RecomendacionTratamientosController, 'update'])
+  router.delete('/recomendacion_tratamientos/:id', [RecomendacionTratamientosController, 'destroy'])
+
+  // Imágenes — editar y eliminar
+  router.put   ('/imagenes/:id', [ImagenesController, 'update'])
+  router.delete('/imagenes/:id', [ImagenesController, 'destroy'])
+
+}).use(middleware.role(['admin', 'experto']))
+
+// ── 6. TODOS LOS ROLES — admin + experto + cafetero ──────────────────────────
+router.group(() => {
+
+  // Cafeteros — gestión
+  router.post  ('/cafeteros',     [CafeterosController, 'store'])
+  router.put   ('/cafeteros/:id', [CafeterosController, 'update'])
+  router.delete('/cafeteros/:id', [CafeterosController, 'destroy'])
+
+  // Fincas
+  router.get   ('/fincas',       [FincasController, 'index'])
+  router.post  ('/fincas',       [FincasController, 'store'])
+  router.get   ('/fincas/:id',   [FincasController, 'show'])
+  router.put   ('/fincas/:id',   [FincasController, 'update'])
+  router.delete('/fincas/:id',   [FincasController, 'destroy'])
+
+  // Cultivos
+  router.get   ('/cultivos',     [CultivosController, 'index'])
+  router.post  ('/cultivos',     [CultivosController, 'store'])
+  router.get   ('/cultivos/:id', [CultivosController, 'show'])
+  router.put   ('/cultivos/:id', [CultivosController, 'update'])
+  router.delete('/cultivos/:id', [CultivosController, 'destroy'])
+
+  // Monitoreos — solo ver
+  router.get('/monitoreos',     [MonitoreosController, 'index'])
+  router.get('/monitoreos/:id', [MonitoreosController, 'show'])
+
+  // Análisis IA — solo ver
+  router.get('/analisis_ia',         [AnalisisIaController,      'index'])
+  router.get('/analisis_ia/:id',     [AnalisisIaController,      'show'])
+
+  // Recomendaciones — solo ver
+  router.get('/recomendaciones',     [RecomendacionesController, 'index'])
+  router.get('/recomendaciones/:id', [RecomendacionesController, 'show'])
+
+  // Tratamientos — solo ver
+  router.get('/tratamientos',                   [TratamientosController,             'index'])
+  router.get('/tratamientos/:id',               [TratamientosController,             'show'])
+  router.get('/aplicaciones_tratamientos',      [AplicacionesTratamientosController, 'index'])
+  router.get('/aplicaciones_tratamientos/:id',  [AplicacionesTratamientosController, 'show'])
+  router.get('/recomendacion_tratamientos',     [RecomendacionTratamientosController,'index'])
+  router.get('/recomendacion_tratamientos/:id', [RecomendacionTratamientosController,'show'])
+
+  // Imágenes — ver y subir
+  router.get ('/imagenes',     [ImagenesController, 'index'])
+  router.get ('/imagenes/:id', [ImagenesController, 'show'])
+  router.post('/imagenes',     [ImagenesController, 'store'])
+
+}).use(middleware.role(['admin', 'experto', 'cafetero']))

@@ -2,6 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Tratamiento from '#models/tratamiento'
+import Usuario from '#models/usuario'
 
 export default class AplicacionesTratamiento extends BaseModel {
   public static table = 'aplicaciones_tratamientos'
@@ -12,6 +13,9 @@ export default class AplicacionesTratamiento extends BaseModel {
 
   @column({ columnName: 'id_tratamiento' })
   declare idTratamiento: number | null
+
+  @column({ columnName: 'id_usuario' })
+  declare idUsuario: number | null
 
   @column()
   declare dosis: string
@@ -32,4 +36,9 @@ export default class AplicacionesTratamiento extends BaseModel {
     foreignKey: 'idTratamiento',
   })
   declare tratamiento: BelongsTo<typeof Tratamiento>
+
+  @belongsTo(() => Usuario, {
+    foreignKey: 'idUsuario',
+  })
+  declare usuario: BelongsTo<typeof Usuario>
 }

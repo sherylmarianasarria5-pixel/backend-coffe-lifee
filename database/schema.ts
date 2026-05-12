@@ -49,6 +49,23 @@ export class AplicacionesTratamientoSchema extends BaseModel {
   declare observaciones: string | null
 }
 
+export class AsignacionesExpertoSchema extends BaseModel {
+  static $columns = ['fechaActualizacion', 'fechaAsignada', 'fechaRegistro', 'idAsignacion', 'idExperto', 'idFinca'] as const
+  $columns = AsignacionesExpertoSchema.$columns
+  @column.dateTime()
+  declare fechaActualizacion: DateTime
+  @column.date()
+  declare fechaAsignada: DateTime
+  @column.dateTime()
+  declare fechaRegistro: DateTime
+  @column({ isPrimary: true })
+  declare idAsignacion: number
+  @column()
+  declare idExperto: number
+  @column()
+  declare idFinca: number
+}
+
 export class AuthAccessTokenSchema extends BaseModel {
   static $columns = ['abilities', 'createdAt', 'expiresAt', 'hash', 'id', 'lastUsedAt', 'name', 'tokenableId', 'type', 'updatedAt'] as const
   $columns = AuthAccessTokenSchema.$columns

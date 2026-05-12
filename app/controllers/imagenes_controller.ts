@@ -1,12 +1,23 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Imagene from '#models/imagene'
+import app from '@adonisjs/core/services/app'
+import { subirImagen } from '#services/cloudinary_service'
 
 export default class ImagenesController {
-
-  async index({ response }: HttpContext) {
+  // GET /imagenes?page=1&limit=10&id_monitoreo=2
+  async index({ request, response }: HttpContext) {
     try {
-      const imagenes = await Imagene.query()
+      const page        = Number(request.input('page', 1))
+      const limit       = Number(request.input('limit', 10))
+      const idMonitoreo = request.input('id_monitoreo')
+
+      const query = Imagene.query()
         .preload('monitoreo')
+        .orderBy('created_at', 'desc')
+
+      if (idMonitoreo) query.where('id_monitoreo', idMonitoreo)
+
+      const imagenes = await query.paginate(page, limit)
       return response.ok(imagenes)
     } catch (error: any) {
       return response.internalServerError({
@@ -16,64 +27,77 @@ export default class ImagenesController {
     }
   }
 
+  // POST /imagenes  (multipart/form-data con campo "imagen" + "id_monitoreo")
   async store({ request, response }: HttpContext) {
     try {
-      const data = request.only(['id_monitoreo', 'ruta_imagen'])
+      const archivo = request.file('imagen', {
+        size: '10mb',
+        extnames: ['jpg', 'jpeg', 'png', 'webp'],
+      })
 
-      if (!data.id_monitoreo) {
-        return response.badRequest({ message: 'El id_monitoreo es obligatorio' })
+      if (!archivo) {
+        return response.badRequest({ message: 'Debes enviar un archivo con el campo "imagen"' })
+      }
+      if (!archivo.isValid) {
+        return response.badRequest({
+          message: 'Archivo inválido',
+          errors: archivo.errors,
+        })
       }
 
-      if (!data.ruta_imagen) {
-        return response.badRequest({ message: 'La ruta_imagen es obligatoria' })
+      const idMonitoreo = request.input('id_monitoreo')
+      const descripcion = request.input('descripcion', null)
+
+      if (!idMonitoreo) {
+        return response.badRequest({ message: 'id_monitoreo es obligatorio' })
       }
+
+      // Mover a carpeta temporal y subir a Cloudinary
+      await archivo.move(app.tmpPath('uploads'))
+      const urlImagen = await subirImagen(archivo.filePath!)
 
       const imagen = await Imagene.create({
-        idMonitoreo: data.id_monitoreo,
-        rutaImagen:  data.ruta_imagen,
+        idMonitoreo: idMonitoreo,
+        urlImagen:   urlImagen,
+        descripcion: descripcion,
       })
 
       return response.created({
-        message: 'Imagen creada correctamente',
+        message: 'Imagen subida correctamente',
         data: imagen,
       })
     } catch (error: any) {
       return response.internalServerError({
-        message: 'Error al crear imagen',
+        message: 'Error al subir imagen',
         error: error.message,
       })
     }
   }
 
+  // GET /imagenes/:id
   async show({ params, response }: HttpContext) {
     try {
       const imagen = await Imagene.query()
-        .where('idImagen', params.id)
+        .where('id_imagen', params.id)
         .preload('monitoreo')
-        .preload('analisis')
         .firstOrFail()
+
       return response.ok(imagen)
     } catch {
       return response.notFound({ message: 'Imagen no encontrada' })
     }
   }
 
+  // PUT /imagenes/:id  (solo actualiza la descripción)
   async update({ params, request, response }: HttpContext) {
     try {
       const imagen = await Imagene.findOrFail(params.id)
-      const data = request.only(['ruta_imagen', 'id_monitoreo'])
+      const descripcion = request.input('descripcion')
 
-      const payload: Record<string, any> = {}
-      if (data.ruta_imagen  !== undefined) payload.rutaImagen  = data.ruta_imagen
-      if (data.id_monitoreo !== undefined) payload.idMonitoreo = data.id_monitoreo
+      if (descripcion !== undefined) imagen.descripcion = descripcion
 
-      imagen.merge(payload)
       await imagen.save()
-
-      return response.ok({
-        message: 'Imagen actualizada correctamente',
-        data: imagen,
-      })
+      return response.ok({ message: 'Imagen actualizada correctamente', data: imagen })
     } catch (error: any) {
       return response.internalServerError({
         message: 'Error al actualizar imagen',
@@ -82,6 +106,7 @@ export default class ImagenesController {
     }
   }
 
+  // DELETE /imagenes/:id
   async destroy({ params, response }: HttpContext) {
     try {
       const imagen = await Imagene.findOrFail(params.id)

@@ -4,13 +4,11 @@ import CatRol from '#models/cat_rol'
 import hash from '@adonisjs/core/services/hash'
 
 export default class CafeterosController {
-
   // =========================================
   // GET /cafeteros
   // =========================================
   async index({ response }: HttpContext) {
     try {
-
       const usuarios = await Usuario.query()
         .whereHas('rol', (query: any) => {
           query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero'])
@@ -18,9 +16,7 @@ export default class CafeterosController {
         .preload('rol')
 
       return response.ok(usuarios)
-
     } catch (error: any) {
-
       return response.internalServerError({
         message: 'Error al obtener cafeteros',
         error: error.message,
@@ -33,7 +29,6 @@ export default class CafeterosController {
   // =========================================
   async store({ request, response }: HttpContext) {
     try {
-
       const data = request.only([
         'nombre',
         'apellido',
@@ -83,9 +78,7 @@ export default class CafeterosController {
         message: 'Cafetero creado correctamente',
         data: usuario,
       })
-
     } catch (error: any) {
-
       return response.internalServerError({
         message: 'Error al crear cafetero',
         error: error.message,
@@ -98,7 +91,6 @@ export default class CafeterosController {
   // =========================================
   async show({ params, response }: HttpContext) {
     try {
-
       const usuario = await Usuario.query()
         .where('id_usuario', params.id)
         .whereHas('rol', (query: any) => {
@@ -108,9 +100,7 @@ export default class CafeterosController {
         .firstOrFail()
 
       return response.ok(usuario)
-
     } catch (error: any) {
-
       return response.notFound({
         message: 'Cafetero no encontrado',
       })
@@ -122,7 +112,6 @@ export default class CafeterosController {
   // =========================================
   async update({ params, request, response }: HttpContext) {
     try {
-
       const usuario = await Usuario.query()
         .where('id_usuario', params.id)
         .whereHas('rol', (query: any) => {
@@ -148,12 +137,12 @@ export default class CafeterosController {
       }
 
       const payload: Record<string, any> = {}
-      if (data.nombre !== undefined)        payload.nombre = data.nombre
-      if (data.apellido !== undefined)      payload.apellido = data.apellido
-      if (data.correo !== undefined)        payload.correo = data.correo
-      if (data.telefono !== undefined)      payload.telefono = data.telefono
+      if (data.nombre !== undefined) payload.nombre = data.nombre
+      if (data.apellido !== undefined) payload.apellido = data.apellido
+      if (data.correo !== undefined) payload.correo = data.correo
+      if (data.telefono !== undefined) payload.telefono = data.telefono
       if (data.observaciones !== undefined) payload.observaciones = data.observaciones
-      if (data.activo !== undefined)        payload.activo = data.activo
+      if (data.activo !== undefined) payload.activo = data.activo
 
       if (data.password) {
         payload.passwordHash = await hash.make(data.password)
@@ -166,9 +155,7 @@ export default class CafeterosController {
         message: 'Cafetero actualizado correctamente',
         data: usuario,
       })
-
     } catch (error: any) {
-
       return response.internalServerError({
         message: 'Error al actualizar cafetero',
         error: error.message,
@@ -181,7 +168,6 @@ export default class CafeterosController {
   // =========================================
   async destroy({ params, response }: HttpContext) {
     try {
-
       const usuario = await Usuario.query()
         .where('id_usuario', params.id)
         .whereHas('rol', (query: any) => {
@@ -194,9 +180,7 @@ export default class CafeterosController {
       return response.ok({
         message: 'Cafetero eliminado correctamente',
       })
-
     } catch (error: any) {
-
       return response.internalServerError({
         message: 'Error al eliminar cafetero',
         error: error.message,

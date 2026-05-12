@@ -2,7 +2,6 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Usuario from '#models/usuario'
 
 export default class UsuariosController {
-
   async index({ response }: HttpContext) {
     try {
       const usuarios = await Usuario.query().preload('rol')
@@ -16,23 +15,23 @@ export default class UsuariosController {
     try {
       const data = request.only(['id_rol', 'nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
 
-      if (!data.nombre)   return response.badRequest({ message: 'El nombre es obligatorio' })
-      if (!data.correo)   return response.badRequest({ message: 'El correo es obligatorio' })
+      if (!data.nombre) return response.badRequest({ message: 'El nombre es obligatorio' })
+      if (!data.correo) return response.badRequest({ message: 'El correo es obligatorio' })
       if (!data.password) return response.badRequest({ message: 'La contraseña es obligatoria' })
-      if (!data.id_rol)   return response.badRequest({ message: 'El id_rol es obligatorio' })
+      if (!data.id_rol) return response.badRequest({ message: 'El id_rol es obligatorio' })
 
       const existe = await Usuario.findBy('correo', data.correo)
       if (existe) return response.badRequest({ message: 'El correo ya existe' })
 
       const usuario = await Usuario.create({
-        idRol:         data.id_rol,
-        nombre:        data.nombre,
-        apellido:      data.apellido,
-        correo:        data.correo,
-        telefono:      data.telefono,
-        passwordHash:  data.password,
+        idRol: data.id_rol,
+        nombre: data.nombre,
+        apellido: data.apellido,
+        correo: data.correo,
+        telefono: data.telefono,
+        passwordHash: data.password,
         observaciones: data.observaciones,
-        activo:        data.activo ?? true,
+        activo: data.activo ?? true,
       })
       return response.created({ message: 'Usuario creado correctamente', data: usuario })
     } catch (error: any) {
@@ -63,14 +62,14 @@ export default class UsuariosController {
       }
 
       const payload: Record<string, any> = {}
-      if (data.id_rol        !== undefined) payload.idRol         = data.id_rol
-      if (data.nombre        !== undefined) payload.nombre        = data.nombre
-      if (data.apellido      !== undefined) payload.apellido      = data.apellido
-      if (data.correo        !== undefined) payload.correo        = data.correo
-      if (data.telefono      !== undefined) payload.telefono      = data.telefono
+      if (data.id_rol !== undefined) payload.idRol = data.id_rol
+      if (data.nombre !== undefined) payload.nombre = data.nombre
+      if (data.apellido !== undefined) payload.apellido = data.apellido
+      if (data.correo !== undefined) payload.correo = data.correo
+      if (data.telefono !== undefined) payload.telefono = data.telefono
       if (data.observaciones !== undefined) payload.observaciones = data.observaciones
-      if (data.activo        !== undefined) payload.activo        = data.activo
-      if (data.password)                    payload.passwordHash  = data.password
+      if (data.activo !== undefined) payload.activo = data.activo
+      if (data.password) payload.passwordHash = data.password
 
       usuario.merge(payload)
       await usuario.save()

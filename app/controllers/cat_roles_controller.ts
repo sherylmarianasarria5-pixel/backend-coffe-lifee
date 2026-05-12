@@ -1,11 +1,14 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import CatRol from '#models/cat_rol'
+import { catalogoStoreValidator, catalogoUpdateValidator } from '#validators/validators'
 
 export default class CatRolesController {
 
-  async index({ response }: HttpContext) {
+  async index({ request, response }: HttpContext) {
     try {
-      const roles = await CatRol.all()
+      const page  = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 20))
+      const roles = await CatRol.query().paginate(page, limit)
       return response.ok(roles)
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener roles', error: error.message })
@@ -14,24 +17,13 @@ export default class CatRolesController {
 
   async store({ request, response }: HttpContext) {
     try {
-      const data = request.only(['nombre_rol', 'descripcion'])
-
-      if (!data.nombre_rol)
-        return response.badRequest({ message: 'El nombre_rol es obligatorio' })
-
-      const existe = await CatRol.query()
-        .whereRaw('LOWER(TRIM(nombre_rol)) = ?', [data.nombre_rol.toLowerCase().trim()])
-        .first()
-
-      if (existe)
-        return response.badRequest({ message: 'El rol ya existe' })
-
-      const rol = await CatRol.create({
-        nombreRol: data.nombre_rol,
-        descripcion: data.descripcion,
-      })
+      const data = await request.validateUsing(catalogoStoreValidator)
+      const rol  = await CatRol.create({ nombreRol: data.nombre, descripcion: data.descripcion ?? null })
       return response.created({ message: 'Rol creado correctamente', data: rol })
     } catch (error: any) {
+      if (error.code === 'E_VALIDATION_ERROR') {
+        return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
+      }
       return response.internalServerError({ message: 'Error al crear rol', error: error.message })
     }
   }
@@ -47,25 +39,16 @@ export default class CatRolesController {
 
   async update({ params, request, response }: HttpContext) {
     try {
-      const rol = await CatRol.findOrFail(params.id)
-      const data = request.only(['nombre_rol', 'descripcion'])
-
-      if (data.nombre_rol && data.nombre_rol.toLowerCase().trim() !== rol.nombreRol.toLowerCase().trim()) {
-        const existe = await CatRol.query()
-          .whereRaw('LOWER(TRIM(nombre_rol)) = ?', [data.nombre_rol.toLowerCase().trim()])
-          .first()
-        if (existe)
-          return response.badRequest({ message: 'Ya existe un rol con ese nombre' })
-      }
-
-      const payload: Record<string, any> = {}
-      if (data.nombre_rol !== undefined)  payload.nombreRol = data.nombre_rol
-      if (data.descripcion !== undefined) payload.descripcion = data.descripcion
-
-      rol.merge(payload)
+      const rol  = await CatRol.findOrFail(params.id)
+      const data = await request.validateUsing(catalogoUpdateValidator)
+      if (data.nombre      !== undefined) rol.nombreRol   = data.nombre
+      if (data.descripcion !== undefined) rol.descripcion = data.descripcion ?? null
       await rol.save()
       return response.ok({ message: 'Rol actualizado correctamente', data: rol })
     } catch (error: any) {
+      if (error.code === 'E_VALIDATION_ERROR') {
+        return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
+      }
       return response.internalServerError({ message: 'Error al actualizar rol', error: error.message })
     }
   }

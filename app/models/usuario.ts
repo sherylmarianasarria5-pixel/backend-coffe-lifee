@@ -42,6 +42,9 @@ export default class Usuario extends BaseModel {
   @column()
   declare observaciones: string | null
 
+  @column({ columnName: 'foto_perfil' })
+  declare fotoPerfil: string | null
+
   @column()
   declare activo: boolean
 

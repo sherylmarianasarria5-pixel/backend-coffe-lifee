@@ -1,14 +1,26 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Monitoreo from '#models/monitoreo'
+import { monitoreoStoreValidator, monitoreoUpdateValidator } from '#validators/validators'
 
 export default class MonitoreosController {
 
-  async index({ response }: HttpContext) {
+  async index({ request, response }: HttpContext) {
     try {
-      const monitoreos = await Monitoreo.query()
+      const page      = Number(request.input('page', 1))
+      const limit     = Number(request.input('limit', 10))
+      const idCultivo = request.input('id_cultivo')
+      const idExperto = request.input('id_experto')
+
+      const query = Monitoreo.query()
         .preload('cultivo')
         .preload('experto')
         .preload('imagenes')
+        .orderBy('fecha_monitoreo', 'desc')
+
+      if (idCultivo) query.where('id_cultivo', idCultivo)
+      if (idExperto) query.where('id_experto', idExperto)
+
+      const monitoreos = await query.paginate(page, limit)
       return response.ok(monitoreos)
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener monitoreos', error: error.message })
@@ -17,19 +29,18 @@ export default class MonitoreosController {
 
   async store({ request, response }: HttpContext) {
     try {
-      const data = request.only(['id_cultivo', 'id_experto', 'fecha_monitoreo', 'observaciones'])
-
-      if (!data.id_cultivo)      return response.badRequest({ message: 'El id_cultivo es obligatorio' })
-      if (!data.fecha_monitoreo) return response.badRequest({ message: 'La fecha_monitoreo es obligatoria' })
-
+      const data = await request.validateUsing(monitoreoStoreValidator)
       const monitoreo = await Monitoreo.create({
-        idCultivo: data.id_cultivo,
-        idExperto: data.id_experto,
+        idCultivo:      data.id_cultivo,
+        idExperto:      data.id_experto ?? null,
         fechaMonitoreo: data.fecha_monitoreo,
-        observaciones: data.observaciones,
+        observaciones:  data.observaciones ?? null,
       })
       return response.created({ message: 'Monitoreo creado correctamente', data: monitoreo })
     } catch (error: any) {
+      if (error.code === 'E_VALIDATION_ERROR') {
+        return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
+      }
       return response.internalServerError({ message: 'Error al crear monitoreo', error: error.message })
     }
   }
@@ -41,6 +52,7 @@ export default class MonitoreosController {
         .preload('cultivo')
         .preload('experto')
         .preload('imagenes')
+        .preload('analisisIas')
         .firstOrFail()
       return response.ok(monitoreo)
     } catch {
@@ -51,16 +63,19 @@ export default class MonitoreosController {
   async update({ params, request, response }: HttpContext) {
     try {
       const monitoreo = await Monitoreo.findOrFail(params.id)
-      const data = request.only(['observaciones', 'fecha_monitoreo'])
+      const data      = await request.validateUsing(monitoreoUpdateValidator)
 
       const payload: Record<string, any> = {}
-      if (data.observaciones !== undefined)   payload.observaciones = data.observaciones
+      if (data.observaciones   !== undefined) payload.observaciones  = data.observaciones
       if (data.fecha_monitoreo !== undefined) payload.fechaMonitoreo = data.fecha_monitoreo
 
       monitoreo.merge(payload)
       await monitoreo.save()
       return response.ok({ message: 'Monitoreo actualizado correctamente', data: monitoreo })
     } catch (error: any) {
+      if (error.code === 'E_VALIDATION_ERROR') {
+        return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
+      }
       return response.internalServerError({ message: 'Error al actualizar monitoreo', error: error.message })
     }
   }

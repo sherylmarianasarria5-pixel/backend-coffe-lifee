@@ -3,7 +3,6 @@ import Usuario from '#models/usuario'
 import CatRol from '#models/cat_rol'
 
 export default class AdminController {
-
   async index({ response }: HttpContext) {
     try {
       const usuarios = await Usuario.query()
@@ -21,8 +20,8 @@ export default class AdminController {
     try {
       const data = request.only(['nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
 
-      if (!data.nombre)   return response.badRequest({ message: 'El nombre es obligatorio' })
-      if (!data.correo)   return response.badRequest({ message: 'El correo es obligatorio' })
+      if (!data.nombre) return response.badRequest({ message: 'El nombre es obligatorio' })
+      if (!data.correo) return response.badRequest({ message: 'El correo es obligatorio' })
       if (!data.password) return response.badRequest({ message: 'La contraseña es obligatoria' })
 
       const existe = await Usuario.findBy('correo', data.correo)
@@ -33,14 +32,14 @@ export default class AdminController {
         .firstOrFail()
 
       const usuario = await Usuario.create({
-        nombre:        data.nombre,
-        apellido:      data.apellido,
-        correo:        data.correo,
-        telefono:      data.telefono,
-        passwordHash:  data.password,
+        nombre: data.nombre,
+        apellido: data.apellido,
+        correo: data.correo,
+        telefono: data.telefono,
+        passwordHash: data.password,
         observaciones: data.observaciones,
-        activo:        data.activo ?? true,
-        idRol:         rolAdmin.idRol,
+        activo: data.activo ?? true,
+        idRol: rolAdmin.idRol,
       })
       return response.created({ message: 'Administrador creado correctamente', data: usuario })
     } catch (error: any) {
@@ -80,13 +79,13 @@ export default class AdminController {
       }
 
       const payload: Record<string, any> = {}
-      if (data.nombre        !== undefined) payload.nombre        = data.nombre
-      if (data.apellido      !== undefined) payload.apellido      = data.apellido
-      if (data.correo        !== undefined) payload.correo        = data.correo
-      if (data.telefono      !== undefined) payload.telefono      = data.telefono
+      if (data.nombre !== undefined) payload.nombre = data.nombre
+      if (data.apellido !== undefined) payload.apellido = data.apellido
+      if (data.correo !== undefined) payload.correo = data.correo
+      if (data.telefono !== undefined) payload.telefono = data.telefono
       if (data.observaciones !== undefined) payload.observaciones = data.observaciones
-      if (data.activo        !== undefined) payload.activo        = data.activo
-      if (data.password)                    payload.passwordHash  = data.password
+      if (data.activo !== undefined) payload.activo = data.activo
+      if (data.password) payload.passwordHash = data.password
 
       usuario.merge(payload)
       await usuario.save()
