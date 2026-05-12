@@ -3,12 +3,11 @@ import Finca from '#models/finca'
 import { fincaStoreValidator, fincaUpdateValidator } from '#validators/validators'
 
 export default class FincasController {
-
   async index({ request, response }: HttpContext) {
     try {
-      const page      = Number(request.input('page', 1))
-      const limit     = Number(request.input('limit', 10))
-      const search    = request.input('search', '')
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 10))
+      const search = request.input('search', '')
       const idUsuario = request.input('id_usuario')
 
       const query = Finca.query().preload('usuario')

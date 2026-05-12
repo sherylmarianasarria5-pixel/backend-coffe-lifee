@@ -1,10 +1,5 @@
 import { DateTime } from 'luxon'
-import {
-  BaseModel,
-  column,
-  beforeSave,
-  belongsTo
-} from '@adonisjs/lucid/orm'
+import { BaseModel, column, beforeSave, belongsTo } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import hash from '@adonisjs/core/services/hash'
 import CatRol from '#models/cat_rol'

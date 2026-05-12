@@ -16,7 +16,6 @@ export default class MiPerfilController {
     } catch { return null }
   }
 
-  // GET /mi-perfil
   async show({ request, response }: HttpContext) {
     try {
       const id = this.getIdFromToken(request)
@@ -33,7 +32,6 @@ export default class MiPerfilController {
     }
   }
 
-  // PUT /mi-perfil
   async update({ request, response }: HttpContext) {
     try {
       const id = this.getIdFromToken(request)
@@ -66,7 +64,6 @@ export default class MiPerfilController {
     }
   }
 
-  // POST /mi-perfil/cambiar-password
   async cambiarPassword({ request, response }: HttpContext) {
     try {
       const id = this.getIdFromToken(request)

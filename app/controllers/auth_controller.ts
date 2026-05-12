@@ -16,18 +16,11 @@ export default class AuthController {
 
       const usuario = await Usuario.query().where('correo', data.correo).preload('rol').first()
 
-      if (!usuario) {
-        return response.unauthorized({ message: 'Correo o contraseña incorrectos' })
-      }
-
-      if (!usuario.activo) {
-        return response.unauthorized({ message: 'Tu cuenta está desactivada. Contacta al administrador.' })
-      }
+      if (!usuario) return response.unauthorized({ message: 'Correo o contraseña incorrectos' })
+      if (!usuario.activo) return response.unauthorized({ message: 'Tu cuenta está desactivada. Contacta al administrador.' })
 
       const esValida = await hash.verify(usuario.passwordHash, data.password)
-      if (!esValida) {
-        return response.unauthorized({ message: 'Correo o contraseña incorrectos' })
-      }
+      if (!esValida) return response.unauthorized({ message: 'Correo o contraseña incorrectos' })
 
       const token = jwt.sign(
         {
@@ -71,10 +64,6 @@ export default class AuthController {
         'nombre', 'apellido', 'correo', 'password', 'telefono', 'idRol',
       ])
 
-      // LOG TEMPORAL
-      console.log('ARCHIVO RECIBIDO:', request.file('foto_perfil'))
-      console.log('TODOS LOS ARCHIVOS:', request.allFiles())
-
       if (!nombre)   return response.badRequest({ message: 'El nombre es obligatorio' })
       if (!apellido) return response.badRequest({ message: 'El apellido es obligatorio' })
       if (!correo)   return response.badRequest({ message: 'El correo es obligatorio' })
@@ -83,19 +72,6 @@ export default class AuthController {
       const existe = await Usuario.findBy('correo', correo)
       if (existe) return response.conflict({ message: 'El correo ya está registrado' })
 
-      let fotoPerfil: string | null = null
-      const foto = request.file('foto_perfil', {
-        extnames: ['jpg', 'jpeg', 'png', 'webp'],
-        size: '5mb',
-      })
-      if (foto) {
-        if (!foto.isValid) {
-          return response.badRequest({ message: 'Archivo inválido', errors: foto.errors })
-        }
-        await foto.move(app.tmpPath('uploads'))
-        fotoPerfil = await subirImagen(foto.filePath!)
-      }
-
       const usuario = await Usuario.create({
         idRol:        idRol ?? 3,
         nombre,
@@ -103,7 +79,6 @@ export default class AuthController {
         correo,
         telefono:     telefono ?? null,
         passwordHash: password,
-        fotoPerfil,
         activo:       true,
       })
 
@@ -134,11 +109,10 @@ export default class AuthController {
       return response.created({
         message: 'Usuario registrado correctamente',
         data: {
-          id:         usuario.idUsuario,
-          nombre:     usuario.nombre,
-          correo:     usuario.correo,
-          fotoPerfil: usuario.fotoPerfil,
-          rol:        usuario.rol.nombreRol,
+          id:      usuario.idUsuario,
+          nombre:  usuario.nombre,
+          correo:  usuario.correo,
+          rol:     usuario.rol.nombreRol,
         },
       })
     } catch (error: any) {
@@ -150,12 +124,9 @@ export default class AuthController {
   async recuperarPassword({ request, response }: HttpContext) {
     try {
       const data = await request.validateUsing(recuperarPasswordValidator)
-
       const usuario = await Usuario.findBy('correo', data.correo)
 
-      if (!usuario) {
-        return response.ok({ message: 'Si el correo existe, recibirás un mensaje con instrucciones.' })
-      }
+      if (!usuario) return response.ok({ message: 'Si el correo existe, recibirás un mensaje con instrucciones.' })
 
       const token = Math.floor(100000 + Math.random() * 900000).toString()
       const expiracion = new Date(Date.now() + 15 * 60 * 1000)
@@ -182,7 +153,7 @@ export default class AuthController {
               </div>
             `)
         })
-      } catch (mailError: any) {
+      } catch {
         if (env.get('NODE_ENV') === 'development') {
           return response.ok({ message: 'Correo no configurado. Token (solo desarrollo):', token })
         }
@@ -202,21 +173,16 @@ export default class AuthController {
     try {
       const data = await request.validateUsing(restablecerPasswordValidator)
 
-      const usuario = await Usuario.query()
-        .where('reset_token', data.token)
-        .first()
+      const usuario = await Usuario.query().where('reset_token', data.token).first()
 
-      if (!usuario) {
-        return response.badRequest({ message: 'Token inválido o ya fue usado' })
-      }
-
+      if (!usuario) return response.badRequest({ message: 'Token inválido o ya fue usado' })
       if (!usuario.resetTokenExpires || usuario.resetTokenExpires < new Date()) {
         return response.badRequest({ message: 'El token ha expirado. Solicita uno nuevo.' })
       }
 
-      usuario.passwordHash       = data.nuevaPassword
-      usuario.resetToken         = null
-      usuario.resetTokenExpires  = null
+      usuario.passwordHash      = data.nuevaPassword
+      usuario.resetToken        = null
+      usuario.resetTokenExpires = null
       await usuario.save()
 
       try {
