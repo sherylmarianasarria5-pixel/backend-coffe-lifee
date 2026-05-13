@@ -1,5 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import CatPrioridade from '#models/cat_prioridad'
+import CatPrioridad from '#models/cat_prioridad'
 import { catalogoStoreValidator, catalogoUpdateValidator } from '#validators/validators'
 
 export default class CatPrioridadesController {

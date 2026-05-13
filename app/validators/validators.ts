@@ -78,21 +78,17 @@ export const fincaUpdateValidator = vine.compile(
 export const cultivoStoreValidator = vine.compile(
   vine.object({
     id_finca: vine.number(),
+    nombre_cultivo: vine.string().trim().minLength(2).maxLength(255),
+    tipo_cultivo: vine.string().trim().minLength(2).maxLength(255),
     id_estado_cultivo: vine.number().optional(),
-    variedad: vine.string().trim().optional(),
-    fecha_siembra: vine.string().trim().optional(),
-    area_cultivada: vine.number().optional(),
-    observaciones: vine.string().trim().optional(),
   })
 )
 
 export const cultivoUpdateValidator = vine.compile(
   vine.object({
+    nombre_cultivo: vine.string().trim().minLength(2).optional(),
+    tipo_cultivo: vine.string().trim().optional(),
     id_estado_cultivo: vine.number().optional(),
-    variedad: vine.string().trim().optional(),
-    fecha_siembra: vine.string().trim().optional(),
-    area_cultivada: vine.number().optional(),
-    observaciones: vine.string().trim().optional(),
   })
 )
 
@@ -137,21 +133,21 @@ export const tratamientoUpdateValidator = vine.compile(
 // ── RECOMENDACIONES ───────────────────────────────────────
 export const recomendacionStoreValidator = vine.compile(
   vine.object({
-    id_analisis_ia: vine.number(),
-    id_tipo_recomendacion: vine.number().optional(),
+    id_monitoreo: vine.number(),
+    id_experto_emisor: vine.number().optional(),
+    id_tipo: vine.number().optional(),
     id_prioridad: vine.number().optional(),
     descripcion: vine.string().trim(),
-    acciones_sugeridas: vine.string().trim().optional(),
-    fecha_recomendacion: vine.string().trim().optional(),
+    fecha_limite: vine.string().trim().optional(),
   })
 )
 
 export const recomendacionUpdateValidator = vine.compile(
   vine.object({
-    id_tipo_recomendacion: vine.number().optional(),
+    id_tipo: vine.number().optional(),
     id_prioridad: vine.number().optional(),
     descripcion: vine.string().trim().optional(),
-    acciones_sugeridas: vine.string().trim().optional(),
+    fecha_limite: vine.string().trim().optional(),
   })
 )
 
@@ -179,17 +175,16 @@ export const analisisIaUpdateValidator = vine.compile(
 export const aplicacionStoreValidator = vine.compile(
   vine.object({
     id_tratamiento: vine.number(),
-    id_monitoreo: vine.number(),
-    fecha_aplicacion: vine.string().trim(),
-    responsable: vine.string().trim().optional(),
+    dosis: vine.string().trim(),
+    frecuencia: vine.string().trim().optional(),
     observaciones: vine.string().trim().optional(),
   })
 )
 
 export const aplicacionUpdateValidator = vine.compile(
   vine.object({
-    fecha_aplicacion: vine.string().trim().optional(),
-    responsable: vine.string().trim().optional(),
+    dosis: vine.string().trim().optional(),
+    frecuencia: vine.string().trim().optional(),
     observaciones: vine.string().trim().optional(),
   })
 )

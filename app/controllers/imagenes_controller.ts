@@ -4,10 +4,9 @@ import app from '@adonisjs/core/services/app'
 import { subirImagen } from '#services/cloudinary_service'
 
 export default class ImagenesController {
-
   async index({ request, response }: HttpContext) {
     try {
-      const page        = Number(request.input('page', 1))
+      const page = Number(request.input('page', 1))
       const limit       = Number(request.input('limit', 10))
       const idMonitoreo = request.input('id_monitoreo')
 

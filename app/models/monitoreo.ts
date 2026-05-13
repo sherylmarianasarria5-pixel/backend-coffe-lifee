@@ -5,6 +5,7 @@ import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import Cultivo from '#models/cultivo'
 import Usuario from '#models/usuario'
 import Imagene from '#models/imagene'
+import AnalisisIa from '#models/analisis_ia'
 
 export default class Monitoreo extends MonitoreoSchema {
   @belongsTo(() => Cultivo, {
@@ -21,4 +22,7 @@ export default class Monitoreo extends MonitoreoSchema {
     foreignKey: 'idMonitoreo',
   })
   declare imagenes: HasMany<typeof Imagene>
+
+  @hasMany(() => AnalisisIa, { foreignKey: 'idImagen' })
+  declare analisisIas: HasMany<typeof AnalisisIa>
 }
