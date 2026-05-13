@@ -1,3 +1,4 @@
+// app/models/tratamiento.ts
 import { DateTime } from 'luxon'
 import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
@@ -18,12 +19,6 @@ export default class Tratamiento extends BaseModel {
 
   @column()
   declare descripcion: string | null
-
-  @column()
-  declare dosis: string | null
-
-  @column()
-  declare frecuencia: string | null
 
   @column.dateTime({ autoCreate: true, columnName: 'fecha_registro' })
   declare fechaRegistro: DateTime
