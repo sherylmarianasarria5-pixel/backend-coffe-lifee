@@ -63,8 +63,8 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/mi_perfil_controller').default['show']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/mi_perfil_controller').default['show']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/mi-perfil_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/mi-perfil_controller').default['show']>>>
     }
   }
   'mi_perfil.update': {
@@ -75,8 +75,8 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/mi_perfil_controller').default['update']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/mi_perfil_controller').default['update']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/mi-perfil_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/mi-perfil_controller').default['update']>>>
     }
   }
   'mi_perfil.cambiar_password': {
@@ -87,8 +87,8 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/mi_perfil_controller').default['cambiarPassword']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/mi_perfil_controller').default['cambiarPassword']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/mi-perfil_controller').default['cambiarPassword']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/mi-perfil_controller').default['cambiarPassword']>>>
     }
   }
   'cat_roles.index': {
@@ -117,7 +117,7 @@ export interface Registry {
   }
   'cat_tipos_tratamientos.index': {
     methods: ["GET","HEAD"]
-    pattern: '/cat_tipos_tratamiento'
+    pattern: '/cat_tipos_tratamientos'
     types: {
       body: {}
       paramsTuple: []
@@ -129,7 +129,7 @@ export interface Registry {
   }
   'cat_tipos_tratamientos.show': {
     methods: ["GET","HEAD"]
-    pattern: '/cat_tipos_tratamiento/:id'
+    pattern: '/cat_tipos_tratamientos/:id'
     types: {
       body: {}
       paramsTuple: [ParamValue]
@@ -147,8 +147,8 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_niveles_royas_controller').default['index']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_niveles_royas_controller').default['index']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_niveles_roya_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_niveles_roya_controller').default['index']>>>
     }
   }
   'cat_niveles_royas.show': {
@@ -159,8 +159,8 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_niveles_royas_controller').default['show']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_niveles_royas_controller').default['show']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_niveles_roya_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_niveles_roya_controller').default['show']>>>
     }
   }
   'cat_prioridades.index': {
@@ -187,28 +187,28 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_prioridades_controller').default['show']>>>
     }
   }
-  'cat_tipos_recomendacions.index': {
+  'cat_tipos_recomendaciones.index': {
     methods: ["GET","HEAD"]
-    pattern: '/cat_tipos_recomendacion'
+    pattern: '/cat_tipos_recomendaciones'
     types: {
       body: {}
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendacions_controller').default['index']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendacions_controller').default['index']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendaciones_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendaciones_controller').default['index']>>>
     }
   }
-  'cat_tipos_recomendacions.show': {
+  'cat_tipos_recomendaciones.show': {
     methods: ["GET","HEAD"]
-    pattern: '/cat_tipos_recomendacion/:id'
+    pattern: '/cat_tipos_recomendaciones/:id'
     types: {
       body: {}
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendacions_controller').default['show']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendacions_controller').default['show']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendaciones_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendaciones_controller').default['show']>>>
     }
   }
   'cat_estados_analisis.index': {
@@ -243,8 +243,8 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivos_controller').default['index']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivos_controller').default['index']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivo_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivo_controller').default['index']>>>
     }
   }
   'cat_estados_cultivos.show': {
@@ -255,8 +255,8 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivos_controller').default['show']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivos_controller').default['show']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivo_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivo_controller').default['show']>>>
     }
   }
   'categorias.index': {
@@ -615,8 +615,8 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: ExtractQuery<InferInput<(typeof import('#validators/validators').catalogoStoreValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_niveles_royas_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_niveles_royas_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_niveles_roya_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_niveles_roya_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'cat_niveles_royas.update': {
@@ -627,8 +627,8 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: ExtractQuery<InferInput<(typeof import('#validators/validators').catalogoUpdateValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_niveles_royas_controller').default['update']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_niveles_royas_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_niveles_roya_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_niveles_roya_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'cat_niveles_royas.destroy': {
@@ -639,8 +639,8 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_niveles_royas_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_niveles_royas_controller').default['destroy']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_niveles_roya_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_niveles_roya_controller').default['destroy']>>>
     }
   }
   'cat_prioridades.store': {
@@ -679,31 +679,31 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_prioridades_controller').default['destroy']>>>
     }
   }
-  'cat_tipos_recomendacions.store': {
+  'cat_tipos_recomendaciones.store': {
     methods: ["POST"]
-    pattern: '/cat_tipos_recomendacion'
+    pattern: '/cat_tipo_recomendacion'
     types: {
       body: ExtractBody<InferInput<(typeof import('#validators/validators').catalogoStoreValidator)>>
       paramsTuple: []
       params: {}
       query: ExtractQuery<InferInput<(typeof import('#validators/validators').catalogoStoreValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendacions_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendacions_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendaciones_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendaciones_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'cat_tipos_recomendacions.update': {
+  'cat_tipos_recomendaciones.update': {
     methods: ["PUT"]
-    pattern: '/cat_tipos_recomendacion/:id'
+    pattern: '/cat_tipo_recomendacion/:id'
     types: {
       body: ExtractBody<InferInput<(typeof import('#validators/validators').catalogoUpdateValidator)>>
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: ExtractQuery<InferInput<(typeof import('#validators/validators').catalogoUpdateValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendacions_controller').default['update']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendacions_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendaciones_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendaciones_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'cat_tipos_recomendacions.destroy': {
+  'cat_tipos_recomendaciones.destroy': {
     methods: ["DELETE"]
     pattern: '/cat_tipos_recomendacion/:id'
     types: {
@@ -711,8 +711,8 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendacions_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendacions_controller').default['destroy']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendaciones_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_recomendaciones_controller').default['destroy']>>>
     }
   }
   'cat_estados_analisis.store': {
@@ -759,8 +759,8 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: ExtractQuery<InferInput<(typeof import('#validators/validators').catalogoStoreValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivos_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivos_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivo_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivo_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'cat_estados_cultivos.update': {
@@ -771,8 +771,8 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: ExtractQuery<InferInput<(typeof import('#validators/validators').catalogoUpdateValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivos_controller').default['update']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivos_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivo_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivo_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'cat_estados_cultivos.destroy': {
@@ -783,8 +783,8 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivos_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivos_controller').default['destroy']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivo_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_estados_cultivo_controller').default['destroy']>>>
     }
   }
   'categorias.store': {
@@ -1031,24 +1031,24 @@ export interface Registry {
     methods: ["POST"]
     pattern: '/recomendacion_tratamientos'
     types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/validators').recomendacionStoreValidator)>>
+      body: {}
       paramsTuple: []
       params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/validators').recomendacionStoreValidator)>>
+      query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['store']>>>
     }
   }
   'recomendacion_tratamientos.update': {
     methods: ["PUT"]
     pattern: '/recomendacion_tratamientos/:id'
     types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/validators').recomendacionUpdateValidator)>>
+      body: {}
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
-      query: ExtractQuery<InferInput<(typeof import('#validators/validators').recomendacionUpdateValidator)>>
+      query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['update']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['update']>>>
     }
   }
   'recomendacion_tratamientos.destroy': {

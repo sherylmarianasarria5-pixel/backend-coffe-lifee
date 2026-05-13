@@ -8,6 +8,11 @@ import Recomendacione from '#models/recomendacione'
 
 export default class DashboardController {
 
+  /**
+   * @index
+   * @summary Resumen general del sistema
+   * @responseBody 200 - {"resumen": {"totalUsuarios": 10, "usuariosActivos": 8, "totalFincas": 5, "totalCultivos": 12, "totalMonitoreos": 30, "totalAnalisis": 25, "totalRecomendaciones": 40}, "ultimosMonitoreos": []}
+   */
   async index({ response }: HttpContext) {
     try {
       const [totalUsuarios, usuariosActivos, totalFincas,

@@ -41,12 +41,12 @@ export interface ApiDefinition {
     update: typeof routes['cat_prioridades.update']
     destroy: typeof routes['cat_prioridades.destroy']
   }
-  catTiposRecomendacions: {
-    index: typeof routes['cat_tipos_recomendacions.index']
-    show: typeof routes['cat_tipos_recomendacions.show']
-    store: typeof routes['cat_tipos_recomendacions.store']
-    update: typeof routes['cat_tipos_recomendacions.update']
-    destroy: typeof routes['cat_tipos_recomendacions.destroy']
+  catTiposRecomendaciones: {
+    index: typeof routes['cat_tipos_recomendaciones.index']
+    show: typeof routes['cat_tipos_recomendaciones.show']
+    store: typeof routes['cat_tipos_recomendaciones.store']
+    update: typeof routes['cat_tipos_recomendaciones.update']
+    destroy: typeof routes['cat_tipos_recomendaciones.destroy']
   }
   catEstadosAnalisis: {
     index: typeof routes['cat_estados_analisis.index']

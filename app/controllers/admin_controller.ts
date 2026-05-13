@@ -1,8 +1,14 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Usuario from '#models/usuario'
 import CatRol from '#models/cat_rol'
+import hash from '@adonisjs/core/services/hash'
 
 export default class AdminController {
+  /**
+   * @index
+   * @summary Listar administradores
+   * @responseBody 200 - [{"idUsuario": 1, "nombre": "Juan", "correo": "admin@gmail.com", "rol": {"nombreRol": "admin"}}]
+   */
   async index({ response }: HttpContext) {
     try {
       const usuarios = await Usuario.query()
@@ -16,12 +22,19 @@ export default class AdminController {
     }
   }
 
+  /**
+   * @store
+   * @summary Crear administrador
+   * @requestBody {"nombre": "Juan", "apellido": "Pérez", "correo": "admin@gmail.com", "password": "123456", "telefono": "3001234567", "observaciones": "texto", "activo": true}
+   * @responseBody 201 - {"message": "Administrador creado correctamente", "data": {"idUsuario": 1}}
+   * @responseBody 400 - {"message": "El correo ya existe"}
+   */
   async store({ request, response }: HttpContext) {
     try {
       const data = request.only(['nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
 
-      if (!data.nombre) return response.badRequest({ message: 'El nombre es obligatorio' })
-      if (!data.correo) return response.badRequest({ message: 'El correo es obligatorio' })
+      if (!data.nombre)   return response.badRequest({ message: 'El nombre es obligatorio' })
+      if (!data.correo)   return response.badRequest({ message: 'El correo es obligatorio' })
       if (!data.password) return response.badRequest({ message: 'La contraseña es obligatoria' })
 
       const existe = await Usuario.findBy('correo', data.correo)
@@ -31,22 +44,31 @@ export default class AdminController {
         .whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['admin'])
         .firstOrFail()
 
+      const passwordHash = await hash.make(data.password)
+
       const usuario = await Usuario.create({
-        nombre: data.nombre,
-        apellido: data.apellido,
-        correo: data.correo,
-        telefono: data.telefono,
-        passwordHash: data.password,
+        nombre:        data.nombre,
+        apellido:      data.apellido,
+        correo:        data.correo,
+        telefono:      data.telefono,
+        passwordHash,
         observaciones: data.observaciones,
-        activo: data.activo ?? true,
-        idRol: rolAdmin.idRol,
+        activo:        data.activo ?? true,
+        idRol:         rolAdmin.idRol,
       })
+
       return response.created({ message: 'Administrador creado correctamente', data: usuario })
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al crear administrador', error: error.message })
     }
   }
 
+  /**
+   * @show
+   * @summary Ver administrador por ID
+   * @responseBody 200 - {"idUsuario": 1, "nombre": "Juan", "correo": "admin@gmail.com"}
+   * @responseBody 404 - {"message": "Administrador no encontrado"}
+   */
   async show({ params, response }: HttpContext) {
     try {
       const usuario = await Usuario.query()
@@ -62,6 +84,13 @@ export default class AdminController {
     }
   }
 
+  /**
+   * @update
+   * @summary Actualizar administrador
+   * @requestBody {"nombre": "Juan", "apellido": "Pérez", "correo": "admin@gmail.com", "telefono": "3001234567", "observaciones": "texto", "activo": true, "password": "nueva123"}
+   * @responseBody 200 - {"message": "Administrador actualizado correctamente"}
+   * @responseBody 400 - {"message": "El correo ya está en uso"}
+   */
   async update({ params, request, response }: HttpContext) {
     try {
       const usuario = await Usuario.query()
@@ -79,13 +108,13 @@ export default class AdminController {
       }
 
       const payload: Record<string, any> = {}
-      if (data.nombre !== undefined) payload.nombre = data.nombre
-      if (data.apellido !== undefined) payload.apellido = data.apellido
-      if (data.correo !== undefined) payload.correo = data.correo
-      if (data.telefono !== undefined) payload.telefono = data.telefono
+      if (data.nombre        !== undefined) payload.nombre        = data.nombre
+      if (data.apellido      !== undefined) payload.apellido      = data.apellido
+      if (data.correo        !== undefined) payload.correo        = data.correo
+      if (data.telefono      !== undefined) payload.telefono      = data.telefono
       if (data.observaciones !== undefined) payload.observaciones = data.observaciones
-      if (data.activo !== undefined) payload.activo = data.activo
-      if (data.password) payload.passwordHash = data.password
+      if (data.activo        !== undefined) payload.activo        = data.activo
+      if (data.password)                    payload.passwordHash  = await hash.make(data.password)
 
       usuario.merge(payload)
       await usuario.save()
@@ -95,6 +124,12 @@ export default class AdminController {
     }
   }
 
+  /**
+   * @destroy
+   * @summary Eliminar administrador
+   * @responseBody 200 - {"message": "Administrador eliminado correctamente"}
+   * @responseBody 404 - {"message": "Administrador no encontrado"}
+   */
   async destroy({ params, response }: HttpContext) {
     try {
       const usuario = await Usuario.query()

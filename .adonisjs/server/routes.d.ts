@@ -19,8 +19,8 @@ export type ScannedRoutes = {
     'cat_niveles_royas.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_prioridades.index': { paramsTuple?: []; params?: {} }
     'cat_prioridades.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'cat_tipos_recomendacions.index': { paramsTuple?: []; params?: {} }
-    'cat_tipos_recomendacions.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_recomendaciones.index': { paramsTuple?: []; params?: {} }
+    'cat_tipos_recomendaciones.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_estados_analisis.index': { paramsTuple?: []; params?: {} }
     'cat_estados_analisis.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_estados_cultivos.index': { paramsTuple?: []; params?: {} }
@@ -60,9 +60,9 @@ export type ScannedRoutes = {
     'cat_prioridades.store': { paramsTuple?: []; params?: {} }
     'cat_prioridades.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_prioridades.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'cat_tipos_recomendacions.store': { paramsTuple?: []; params?: {} }
-    'cat_tipos_recomendacions.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'cat_tipos_recomendacions.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_recomendaciones.store': { paramsTuple?: []; params?: {} }
+    'cat_tipos_recomendaciones.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_recomendaciones.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_estados_analisis.store': { paramsTuple?: []; params?: {} }
     'cat_estados_analisis.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_estados_analisis.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -133,8 +133,8 @@ export type ScannedRoutes = {
     'cat_niveles_royas.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_prioridades.index': { paramsTuple?: []; params?: {} }
     'cat_prioridades.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'cat_tipos_recomendacions.index': { paramsTuple?: []; params?: {} }
-    'cat_tipos_recomendacions.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_recomendaciones.index': { paramsTuple?: []; params?: {} }
+    'cat_tipos_recomendaciones.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_estados_analisis.index': { paramsTuple?: []; params?: {} }
     'cat_estados_analisis.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_estados_cultivos.index': { paramsTuple?: []; params?: {} }
@@ -181,8 +181,8 @@ export type ScannedRoutes = {
     'cat_niveles_royas.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_prioridades.index': { paramsTuple?: []; params?: {} }
     'cat_prioridades.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'cat_tipos_recomendacions.index': { paramsTuple?: []; params?: {} }
-    'cat_tipos_recomendacions.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_recomendaciones.index': { paramsTuple?: []; params?: {} }
+    'cat_tipos_recomendaciones.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_estados_analisis.index': { paramsTuple?: []; params?: {} }
     'cat_estados_analisis.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_estados_cultivos.index': { paramsTuple?: []; params?: {} }
@@ -233,7 +233,7 @@ export type ScannedRoutes = {
     'cat_tipos_tratamientos.store': { paramsTuple?: []; params?: {} }
     'cat_niveles_royas.store': { paramsTuple?: []; params?: {} }
     'cat_prioridades.store': { paramsTuple?: []; params?: {} }
-    'cat_tipos_recomendacions.store': { paramsTuple?: []; params?: {} }
+    'cat_tipos_recomendaciones.store': { paramsTuple?: []; params?: {} }
     'cat_estados_analisis.store': { paramsTuple?: []; params?: {} }
     'cat_estados_cultivos.store': { paramsTuple?: []; params?: {} }
     'categorias.store': { paramsTuple?: []; params?: {} }
@@ -258,7 +258,7 @@ export type ScannedRoutes = {
     'cat_tipos_tratamientos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_niveles_royas.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_prioridades.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'cat_tipos_recomendacions.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_recomendaciones.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_estados_analisis.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_estados_cultivos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'categorias.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -282,7 +282,7 @@ export type ScannedRoutes = {
     'cat_tipos_tratamientos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_niveles_royas.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_prioridades.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'cat_tipos_recomendacions.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_recomendaciones.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_estados_analisis.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_estados_cultivos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'categorias.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

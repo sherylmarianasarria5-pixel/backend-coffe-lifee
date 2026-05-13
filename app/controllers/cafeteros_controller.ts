@@ -4,6 +4,11 @@ import CatRol from '#models/cat_rol'
 
 export default class CafeterosController {
 
+  /**
+   * @index
+   * @summary Listar cafeteros
+   * @responseBody 200 - [{"idUsuario": 1, "nombre": "Juan", "correo": "juan@gmail.com", "rol": {"nombreRol": "cafetero"}}]
+   */
   async index({ response }: HttpContext) {
     try {
       const usuarios = await Usuario.query()
@@ -17,6 +22,13 @@ export default class CafeterosController {
     }
   }
 
+  /**
+   * @store
+   * @summary Crear cafetero
+   * @requestBody {"nombre": "Juan", "apellido": "Pérez", "correo": "juan@gmail.com", "password": "123456", "telefono": "3001234567", "observaciones": "texto", "activo": true}
+   * @responseBody 201 - {"message": "Cafetero creado correctamente", "data": {"idUsuario": 1}}
+   * @responseBody 400 - {"message": "El correo ya existe"}
+   */
   async store({ request, response }: HttpContext) {
     try {
       const data = request.only(['nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
@@ -48,6 +60,12 @@ export default class CafeterosController {
     }
   }
 
+  /**
+   * @show
+   * @summary Ver cafetero por ID
+   * @responseBody 200 - {"idUsuario": 1, "nombre": "Juan", "correo": "juan@gmail.com"}
+   * @responseBody 404 - {"message": "Cafetero no encontrado"}
+   */
   async show({ params, response }: HttpContext) {
     try {
       const usuario = await Usuario.query()
@@ -63,6 +81,13 @@ export default class CafeterosController {
     }
   }
 
+  /**
+   * @update
+   * @summary Actualizar cafetero
+   * @requestBody {"nombre": "Juan", "apellido": "Pérez", "correo": "juan@gmail.com", "telefono": "3001234567", "observaciones": "texto", "activo": true, "password": "nueva123"}
+   * @responseBody 200 - {"message": "Cafetero actualizado correctamente"}
+   * @responseBody 400 - {"message": "El correo ya está en uso"}
+   */
   async update({ params, request, response }: HttpContext) {
     try {
       const usuario = await Usuario.query()
@@ -96,6 +121,12 @@ export default class CafeterosController {
     }
   }
 
+  /**
+   * @destroy
+   * @summary Eliminar cafetero
+   * @responseBody 200 - {"message": "Cafetero eliminado correctamente"}
+   * @responseBody 404 - {"message": "Cafetero no encontrado"}
+   */
   async destroy({ params, response }: HttpContext) {
     try {
       const usuario = await Usuario.query()

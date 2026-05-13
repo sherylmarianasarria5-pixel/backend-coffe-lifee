@@ -4,6 +4,11 @@ import { monitoreoStoreValidator, monitoreoUpdateValidator } from '#validators/v
 
 export default class MonitoreosController {
 
+  /**
+   * @index
+   * @summary Listar monitoreos
+   * @responseBody 200 - {"data": [{"idMonitoreo": 1, "fechaMonitoreo": "2026-05-12", "observaciones": "Nivel alto de roya", "cultivo": {}, "experto": {}, "imagenes": []}]}
+   */
   async index({ request, response }: HttpContext) {
     try {
       const page      = Number(request.input('page', 1))
@@ -27,6 +32,13 @@ export default class MonitoreosController {
     }
   }
 
+  /**
+   * @store
+   * @summary Crear monitoreo
+   * @requestBody {"id_cultivo": 1, "id_experto": 3, "fecha_monitoreo": "2026-05-12", "observaciones": "Nivel alto de roya"}
+   * @responseBody 201 - {"message": "Monitoreo creado correctamente", "data": {"idMonitoreo": 1}}
+   * @responseBody 422 - {"message": "Error de validación"}
+   */
   async store({ request, response }: HttpContext) {
     try {
       const data = await request.validateUsing(monitoreoStoreValidator)
@@ -45,6 +57,12 @@ export default class MonitoreosController {
     }
   }
 
+  /**
+   * @show
+   * @summary Ver monitoreo por ID
+   * @responseBody 200 - {"idMonitoreo": 1, "fechaMonitoreo": "2026-05-12", "cultivo": {}, "experto": {}, "imagenes": [], "analisisIas": []}
+   * @responseBody 404 - {"message": "Monitoreo no encontrado"}
+   */
   async show({ params, response }: HttpContext) {
     try {
       const monitoreo = await Monitoreo.query()
@@ -60,6 +78,13 @@ export default class MonitoreosController {
     }
   }
 
+  /**
+   * @update
+   * @summary Actualizar monitoreo
+   * @requestBody {"observaciones": "Actualizado", "fecha_monitoreo": "2026-05-13"}
+   * @responseBody 200 - {"message": "Monitoreo actualizado correctamente"}
+   * @responseBody 422 - {"message": "Error de validación"}
+   */
   async update({ params, request, response }: HttpContext) {
     try {
       const monitoreo = await Monitoreo.findOrFail(params.id)
@@ -80,6 +105,12 @@ export default class MonitoreosController {
     }
   }
 
+  /**
+   * @destroy
+   * @summary Eliminar monitoreo
+   * @responseBody 200 - {"message": "Monitoreo eliminado correctamente"}
+   * @responseBody 404 - {"message": "Monitoreo no encontrado"}
+   */
   async destroy({ params, response }: HttpContext) {
     try {
       const monitoreo = await Monitoreo.findOrFail(params.id)

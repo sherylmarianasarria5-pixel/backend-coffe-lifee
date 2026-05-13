@@ -1,9 +1,14 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import CatTiposTratamiento from '#models/cat_tipos_tratamiento'
+import CatTiposTratamiento from '#models/cat_tipo_tratamiento'
 import { catalogoStoreValidator, catalogoUpdateValidator } from '#validators/validators'
 
 export default class CatTiposTratamientosController {
 
+  /**
+   * @index
+   * @summary Listar tipos de tratamiento
+   * @responseBody 200 - {"data": [{"idTipo": 1, "nombreTipo": "Fungicida", "descripcion": "Tratamiento contra hongos"}]}
+   */
   async index({ request, response }: HttpContext) {
     try {
       const page  = Number(request.input('page', 1))
@@ -15,6 +20,13 @@ export default class CatTiposTratamientosController {
     }
   }
 
+  /**
+   * @store
+   * @summary Crear tipo de tratamiento
+   * @requestBody {"nombre": "Fungicida", "descripcion": "Tratamiento contra hongos"}
+   * @responseBody 201 - {"message": "Tipo de tratamiento creado correctamente", "data": {"idTipo": 1}}
+   * @responseBody 422 - {"message": "Error de validación"}
+   */
   async store({ request, response }: HttpContext) {
     try {
       const data = await request.validateUsing(catalogoStoreValidator)
@@ -28,6 +40,12 @@ export default class CatTiposTratamientosController {
     }
   }
 
+  /**
+   * @show
+   * @summary Ver tipo de tratamiento por ID
+   * @responseBody 200 - {"idTipo": 1, "nombreTipo": "Fungicida"}
+   * @responseBody 404 - {"message": "Tipo de tratamiento no encontrado"}
+   */
   async show({ params, response }: HttpContext) {
     try {
       const tipo = await CatTiposTratamiento.findOrFail(params.id)
@@ -37,6 +55,13 @@ export default class CatTiposTratamientosController {
     }
   }
 
+  /**
+   * @update
+   * @summary Actualizar tipo de tratamiento
+   * @requestBody {"nombre": "Insecticida", "descripcion": "Tratamiento contra insectos"}
+   * @responseBody 200 - {"message": "Tipo de tratamiento actualizado correctamente"}
+   * @responseBody 422 - {"message": "Error de validación"}
+   */
   async update({ params, request, response }: HttpContext) {
     try {
       const tipo = await CatTiposTratamiento.findOrFail(params.id)
@@ -53,6 +78,12 @@ export default class CatTiposTratamientosController {
     }
   }
 
+  /**
+   * @destroy
+   * @summary Eliminar tipo de tratamiento
+   * @responseBody 200 - {"message": "Tipo de tratamiento eliminado correctamente"}
+   * @responseBody 404 - {"message": "Tipo de tratamiento no encontrado"}
+   */
   async destroy({ params, response }: HttpContext) {
     try {
       const tipo = await CatTiposTratamiento.findOrFail(params.id)

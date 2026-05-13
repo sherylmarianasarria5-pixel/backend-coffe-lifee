@@ -1,9 +1,14 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import CatEstadosAnalisi from '#models/cat_estados_analisi'
+import CatEstadosAnalisi from '#models/cat_estado_analisis'
 import { catalogoStoreValidator, catalogoUpdateValidator } from '#validators/validators'
 
 export default class CatEstadosAnalisisController {
 
+  /**
+   * @index
+   * @summary Listar estados de análisis
+   * @responseBody 200 - {"data": [{"idEstado": 1, "nombreEstado": "Pendiente", "descripcion": "En espera"}]}
+   */
   async index({ request, response }: HttpContext) {
     try {
       const page    = Number(request.input('page', 1))
@@ -15,6 +20,13 @@ export default class CatEstadosAnalisisController {
     }
   }
 
+  /**
+   * @store
+   * @summary Crear estado de análisis
+   * @requestBody {"nombre": "Pendiente", "descripcion": "En espera de revisión"}
+   * @responseBody 201 - {"message": "Estado de análisis creado correctamente", "data": {"idEstado": 1}}
+   * @responseBody 422 - {"message": "Error de validación"}
+   */
   async store({ request, response }: HttpContext) {
     try {
       const data   = await request.validateUsing(catalogoStoreValidator)
@@ -28,6 +40,12 @@ export default class CatEstadosAnalisisController {
     }
   }
 
+  /**
+   * @show
+   * @summary Ver estado de análisis por ID
+   * @responseBody 200 - {"idEstado": 1, "nombreEstado": "Pendiente"}
+   * @responseBody 404 - {"message": "Estado de análisis no encontrado"}
+   */
   async show({ params, response }: HttpContext) {
     try {
       const estado = await CatEstadosAnalisi.findOrFail(params.id)
@@ -37,6 +55,13 @@ export default class CatEstadosAnalisisController {
     }
   }
 
+  /**
+   * @update
+   * @summary Actualizar estado de análisis
+   * @requestBody {"nombre": "Completado", "descripcion": "Análisis finalizado"}
+   * @responseBody 200 - {"message": "Estado de análisis actualizado correctamente"}
+   * @responseBody 422 - {"message": "Error de validación"}
+   */
   async update({ params, request, response }: HttpContext) {
     try {
       const estado = await CatEstadosAnalisi.findOrFail(params.id)
@@ -53,6 +78,12 @@ export default class CatEstadosAnalisisController {
     }
   }
 
+  /**
+   * @destroy
+   * @summary Eliminar estado de análisis
+   * @responseBody 200 - {"message": "Estado de análisis eliminado correctamente"}
+   * @responseBody 404 - {"message": "Estado de análisis no encontrado"}
+   */
   async destroy({ params, response }: HttpContext) {
     try {
       const estado = await CatEstadosAnalisi.findOrFail(params.id)

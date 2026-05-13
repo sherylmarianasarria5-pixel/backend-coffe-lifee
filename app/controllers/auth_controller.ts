@@ -9,7 +9,13 @@ import { loginValidator, recuperarPasswordValidator, restablecerPasswordValidato
 
 export default class AuthController {
 
-  // POST /login
+  /**
+   * @login
+   * @summary Iniciar sesión
+   * @requestBody {"correo": "admin@gmail.com", "password": "123456"}
+   * @responseBody 200 - {"message": "Inicio de sesión exitoso", "token": "eyJ...", "usuario": {"id": 1, "nombre": "Juan", "rol": "admin"}}
+   * @responseBody 401 - {"message": "Correo o contraseña incorrectos"}
+   */
   async login({ request, response }: HttpContext) {
     try {
       const data = await request.validateUsing(loginValidator)
@@ -57,7 +63,14 @@ export default class AuthController {
     }
   }
 
-  // POST /register
+  /**
+   * @register
+   * @summary Registrar usuario
+   * @requestBody {"nombre": "Juan", "apellido": "Pérez", "correo": "juan@gmail.com", "password": "123456", "telefono": "3001234567", "idRol": 3}
+   * @responseBody 201 - {"message": "Usuario registrado correctamente", "data": {"id": 1, "nombre": "Juan", "correo": "juan@gmail.com"}}
+   * @responseBody 400 - {"message": "El nombre es obligatorio"}
+   * @responseBody 409 - {"message": "El correo ya está registrado"}
+   */
   async register({ request, response }: HttpContext) {
     try {
       const { nombre, apellido, correo, password, telefono, idRol } = request.only([
@@ -109,10 +122,10 @@ export default class AuthController {
       return response.created({
         message: 'Usuario registrado correctamente',
         data: {
-          id:      usuario.idUsuario,
-          nombre:  usuario.nombre,
-          correo:  usuario.correo,
-          rol:     usuario.rol.nombreRol,
+          id:     usuario.idUsuario,
+          nombre: usuario.nombre,
+          correo: usuario.correo,
+          rol:    usuario.rol.nombreRol,
         },
       })
     } catch (error: any) {
@@ -120,7 +133,13 @@ export default class AuthController {
     }
   }
 
-  // POST /recuperar-password
+  /**
+   * @recuperarPassword
+   * @summary Recuperar contraseña por correo
+   * @requestBody {"correo": "juan@gmail.com"}
+   * @responseBody 200 - {"message": "Si el correo existe, recibirás un mensaje con instrucciones."}
+   * @responseBody 422 - {"message": "Error de validación"}
+   */
   async recuperarPassword({ request, response }: HttpContext) {
     try {
       const data = await request.validateUsing(recuperarPasswordValidator)
@@ -168,7 +187,13 @@ export default class AuthController {
     }
   }
 
-  // POST /restablecer-password
+  /**
+   * @restablecerPassword
+   * @summary Restablecer contraseña con token
+   * @requestBody {"token": "123456", "nuevaPassword": "nuevaclave123"}
+   * @responseBody 200 - {"message": "Contraseña restablecida correctamente. Ya puedes iniciar sesión."}
+   * @responseBody 400 - {"message": "Token inválido o ya fue usado"}
+   */
   async restablecerPassword({ request, response }: HttpContext) {
     try {
       const data = await request.validateUsing(restablecerPasswordValidator)

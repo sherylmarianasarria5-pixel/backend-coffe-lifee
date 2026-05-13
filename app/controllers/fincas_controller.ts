@@ -3,11 +3,17 @@ import Finca from '#models/finca'
 import { fincaStoreValidator, fincaUpdateValidator } from '#validators/validators'
 
 export default class FincasController {
+
+  /**
+   * @index
+   * @summary Listar fincas
+   * @responseBody 200 - {"data": [{"idFinca": 1, "nombreFinca": "Finca El Paraíso", "municipio": "Pitalito", "departamento": "Huila"}]}
+   */
   async index({ request, response }: HttpContext) {
     try {
-      const page = Number(request.input('page', 1))
-      const limit = Number(request.input('limit', 10))
-      const search = request.input('search', '')
+      const page      = Number(request.input('page', 1))
+      const limit     = Number(request.input('limit', 10))
+      const search    = request.input('search', '')
       const idUsuario = request.input('id_usuario')
 
       const query = Finca.query().preload('usuario')
@@ -28,17 +34,24 @@ export default class FincasController {
     }
   }
 
+  /**
+   * @store
+   * @summary Crear finca
+   * @requestBody {"id_usuario": 1, "nombre_finca": "Finca El Paraíso", "municipio": "Pitalito", "departamento": "Huila", "latitud": 1.85, "longitud": -76.05, "altitud_msnm": 1800, "area_hectareas": 10}
+   * @responseBody 201 - {"message": "Finca creada correctamente", "data": {"idFinca": 1}}
+   * @responseBody 422 - {"message": "Error de validación"}
+   */
   async store({ request, response }: HttpContext) {
     try {
       const data = await request.validateUsing(fincaStoreValidator)
       const finca = await Finca.create({
         idUsuario:     data.id_usuario,
         nombreFinca:   data.nombre_finca,
-        municipio:     data.municipio ?? null,
-        departamento:  data.departamento ?? null,
-        latitud:       data.latitud ?? null,
-        longitud:      data.longitud ?? null,
-        altitudMsnm:   data.altitud_msnm ?? null,
+        municipio:     data.municipio     ?? null,
+        departamento:  data.departamento  ?? null,
+        latitud:       data.latitud       ?? null,
+        longitud:      data.longitud      ?? null,
+        altitudMsnm:   data.altitud_msnm  ?? null,
         areaHectareas: data.area_hectareas ?? null,
       })
       await finca.load('usuario')
@@ -51,6 +64,12 @@ export default class FincasController {
     }
   }
 
+  /**
+   * @show
+   * @summary Ver finca por ID
+   * @responseBody 200 - {"idFinca": 1, "nombreFinca": "Finca El Paraíso", "cultivos": []}
+   * @responseBody 404 - {"message": "Finca no encontrada"}
+   */
   async show({ params, response }: HttpContext) {
     try {
       const finca = await Finca.query()
@@ -64,6 +83,13 @@ export default class FincasController {
     }
   }
 
+  /**
+   * @update
+   * @summary Actualizar finca
+   * @requestBody {"nombre_finca": "Nueva Finca", "municipio": "San Agustín", "departamento": "Huila", "latitud": 1.90, "longitud": -76.10, "altitud_msnm": 2000, "area_hectareas": 15}
+   * @responseBody 200 - {"message": "Finca actualizada correctamente"}
+   * @responseBody 422 - {"message": "Error de validación"}
+   */
   async update({ params, request, response }: HttpContext) {
     try {
       const finca = await Finca.findOrFail(params.id)
@@ -89,6 +115,12 @@ export default class FincasController {
     }
   }
 
+  /**
+   * @destroy
+   * @summary Eliminar finca
+   * @responseBody 200 - {"message": "Finca eliminada correctamente"}
+   * @responseBody 404 - {"message": "Finca no encontrada"}
+   */
   async destroy({ params, response }: HttpContext) {
     try {
       const finca = await Finca.findOrFail(params.id)

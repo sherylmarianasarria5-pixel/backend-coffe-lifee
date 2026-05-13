@@ -3,11 +3,15 @@ import Tratamiento from '#models/tratamiento'
 
 export default class TratamientosController {
 
-  // GET /tratamientos
+  /**
+   * @index
+   * @summary Listar tratamientos
+   * @responseBody 200 - {"data": [{"idTratamiento": 1, "nombre": "Fungicida cobre", "dosis": "500ml", "frecuencia": "Cada 15 días", "tipoTratamiento": {}}]}
+   */
   async index({ request, response }: HttpContext) {
     try {
-      const page  = Number(request.input('page', 1))
-      const limit = Number(request.input('limit', 10))
+      const page   = Number(request.input('page', 1))
+      const limit  = Number(request.input('limit', 10))
       const search = request.input('search', '')
       const idTipo = request.input('id_tipo')
 
@@ -30,7 +34,12 @@ export default class TratamientosController {
     }
   }
 
-  // GET /tratamientos/:id
+  /**
+   * @show
+   * @summary Ver tratamiento por ID
+   * @responseBody 200 - {"idTratamiento": 1, "nombre": "Fungicida cobre", "dosis": "500ml"}
+   * @responseBody 404 - {"message": "Tratamiento no encontrado"}
+   */
   async show({ params, response }: HttpContext) {
     try {
       const tratamiento = await Tratamiento.query()
@@ -43,7 +52,13 @@ export default class TratamientosController {
     }
   }
 
-  // POST /tratamientos
+  /**
+   * @store
+   * @summary Crear tratamiento
+   * @requestBody {"id_tipo_tratamiento": 1, "nombre": "Fungicida cobre", "descripcion": "Aplicación preventiva", "dosis": "500ml", "frecuencia": "Cada 15 días"}
+   * @responseBody 201 - {"message": "Tratamiento creado correctamente", "data": {"idTratamiento": 1}}
+   * @responseBody 400 - {"message": "El nombre es obligatorio"}
+   */
   async store({ request, response }: HttpContext) {
     try {
       const data = request.only([
@@ -54,16 +69,14 @@ export default class TratamientosController {
         'frecuencia',
       ])
 
-      if (!data.nombre) {
-        return response.badRequest({ message: 'El nombre es obligatorio' })
-      }
+      if (!data.nombre) return response.badRequest({ message: 'El nombre es obligatorio' })
 
       const tratamiento = await Tratamiento.create({
         idTipoTratamiento: data.id_tipo_tratamiento ?? null,
         nombre:            data.nombre,
-        descripcion:       data.descripcion  ?? null,
-        dosis:             data.dosis        ?? null,
-        frecuencia:        data.frecuencia   ?? null,
+        descripcion:       data.descripcion         ?? null,
+        dosis:             data.dosis               ?? null,
+        frecuencia:        data.frecuencia          ?? null,
       })
 
       await tratamiento.load('tipoTratamiento')
@@ -80,7 +93,13 @@ export default class TratamientosController {
     }
   }
 
-  // PUT /tratamientos/:id
+  /**
+   * @update
+   * @summary Actualizar tratamiento
+   * @requestBody {"id_tipo_tratamiento": 2, "nombre": "Fungicida actualizado", "descripcion": "Nueva descripción", "dosis": "600ml", "frecuencia": "Cada 20 días"}
+   * @responseBody 200 - {"message": "Tratamiento actualizado correctamente"}
+   * @responseBody 404 - {"message": "Tratamiento no encontrado"}
+   */
   async update({ params, request, response }: HttpContext) {
     try {
       const tratamiento = await Tratamiento.findOrFail(params.id)
@@ -115,7 +134,12 @@ export default class TratamientosController {
     }
   }
 
-  // DELETE /tratamientos/:id
+  /**
+   * @destroy
+   * @summary Eliminar tratamiento
+   * @responseBody 200 - {"message": "Tratamiento eliminado correctamente"}
+   * @responseBody 404 - {"message": "Tratamiento no encontrado"}
+   */
   async destroy({ params, response }: HttpContext) {
     try {
       const tratamiento = await Tratamiento.findOrFail(params.id)

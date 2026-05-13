@@ -1,152 +1,93 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import Categoria from '#models/categoria'
+import CatEstadoCultivo     from '#models/cat_estado_cultivo'
+import CatEstadoAnalisis    from '#models/cat_estado_analisis'
+import CatNivelRoya         from '#models/cat_nivel_roya'
+import CatRol               from '#models/cat_rol'
+import CatTipoTratamiento   from '#models/cat_tipo_tratamiento'
+import CatTipoRecomendacion from '#models/cat_tipo_recomendacion'
+import CatPrioridad         from '#models/cat_prioridad'
 
 export default class CategoriasController {
 
-  // =========================================
-  // GET /categorias
-  // =========================================
+  /**
+   * @index
+   * @summary Listar todas las categorías (catálogos del sistema)
+   * @responseBody 200 - {"estados_cultivo": [], "estados_analisis": [], "niveles_roya": [], "roles": [], "tipos_tratamiento": [], "tipos_recomendacion": [], "prioridades": []}
+   */
   async index({ response }: HttpContext) {
     try {
-
-      const categorias = await Categoria.all()
-
-      return response.ok(categorias)
-
-    } catch (error: any) {
-
-      return response.internalServerError({
-        message: 'Error al obtener categorias',
-        error: error.message,
+      const [estadosCultivo, estadosAnalisis, nivelesRoya, roles, tiposTratamiento, tiposRecomendacion, prioridades] =
+        await Promise.all([
+          CatEstadoCultivo.all(),
+          CatEstadoAnalisis.all(),
+          CatNivelRoya.all(),
+          CatRol.all(),
+          CatTipoTratamiento.all(),
+          CatTipoRecomendacion.all(),
+          CatPrioridad.all(),
+        ])
+      return response.ok({
+        estados_cultivo:     estadosCultivo,
+        estados_analisis:    estadosAnalisis,
+        niveles_roya:        nivelesRoya,
+        roles:               roles,
+        tipos_tratamiento:   tiposTratamiento,
+        tipos_recomendacion: tiposRecomendacion,
+        prioridades:         prioridades,
       })
+    } catch (error: any) {
+      return response.internalServerError({ message: 'Error al obtener categorias', error: error.message })
     }
   }
 
-  // =========================================
-  // POST /categorias
-  // =========================================
-  async store({ request, response }: HttpContext) {
-    try {
-
-      const data = request.only([
-        'nombre_categoria',
-        'descripcion',
-      ])
-
-      if (!data.nombre_categoria) {
-        return response.badRequest({
-          message: 'El nombre_categoria es obligatorio',
-        })
-      }
-
-      const existe = await Categoria.findBy('nombre_categoria', data.nombre_categoria)
-
-      if (existe) {
-        return response.badRequest({
-          message: 'La categoria ya existe',
-        })
-      }
-
-      const categoria = await Categoria.create({
-        nombreCategoria: data.nombre_categoria,
-        descripcion: data.descripcion,
-      })
-
-      return response.created({
-        message: 'Categoria creada correctamente',
-        data: categoria,
-      })
-
-    } catch (error: any) {
-
-      return response.internalServerError({
-        message: 'Error al crear categoria',
-        error: error.message,
-      })
-    }
-  }
-
-  // =========================================
-  // GET /categorias/:id
-  // =========================================
+  /**
+   * @show
+   * @summary Ver un catálogo por nombre (ej: estados_cultivo, niveles_roya, roles...)
+   * @responseBody 200 - [{"id": 1, "nombre": "Activo"}]
+   * @responseBody 404 - {"message": "Categoria 'xxx' no encontrada"}
+   */
   async show({ params, response }: HttpContext) {
     try {
-
-      const categoria = await Categoria.findOrFail(params.id)
-
-      return response.ok(categoria)
-
-    } catch (error: any) {
-
-      return response.notFound({
-        message: 'Categoria no encontrada',
-      })
-    }
-  }
-
-  // =========================================
-  // PUT /categorias/:id
-  // =========================================
-  async update({ params, request, response }: HttpContext) {
-    try {
-
-      const categoria = await Categoria.findOrFail(params.id)
-
-      const data = request.only([
-        'nombre_categoria',
-        'descripcion',
-      ])
-
-      if (data.nombre_categoria && data.nombre_categoria !== categoria.nombreCategoria) {
-        const existe = await Categoria.findBy('nombre_categoria', data.nombre_categoria)
-        if (existe) {
-          return response.badRequest({
-            message: 'Ya existe una categoria con ese nombre',
-          })
-        }
+      const map: Record<string, any[]> = {
+        estados_cultivo:     await CatEstadoCultivo.all(),
+        estados_analisis:    await CatEstadoAnalisis.all(),
+        niveles_roya:        await CatNivelRoya.all(),
+        roles:               await CatRol.all(),
+        tipos_tratamiento:   await CatTipoTratamiento.all(),
+        tipos_recomendacion: await CatTipoRecomendacion.all(),
+        prioridades:         await CatPrioridad.all(),
       }
-
-      const payload: Record<string, any> = {}
-      if (data.nombre_categoria !== undefined) payload.nombreCategoria = data.nombre_categoria
-      if (data.descripcion !== undefined)      payload.descripcion = data.descripcion
-
-      categoria.merge(payload)
-      await categoria.save()
-
-      return response.ok({
-        message: 'Categoria actualizada correctamente',
-        data: categoria,
-      })
-
+      if (!map[params.id]) return response.notFound({ message: `Categoria '${params.id}' no encontrada` })
+      return response.ok(map[params.id])
     } catch (error: any) {
-
-      return response.internalServerError({
-        message: 'Error al actualizar categoria',
-        error: error.message,
-      })
+      return response.internalServerError({ message: 'Error al obtener categoria', error: error.message })
     }
   }
 
-  // =========================================
-  // DELETE /categorias/:id
-  // =========================================
-  async destroy({ params, response }: HttpContext) {
-    try {
+  /**
+   * @store
+   * @summary No disponible — usar endpoints específicos de cada catálogo
+   * @responseBody 400 - {"message": "Usa los endpoints específicos para crear catálogos"}
+   */
+  async store({ response }: HttpContext) {
+    return response.badRequest({ message: 'Usa los endpoints específicos para crear catálogos' })
+  }
 
-      const categoria = await Categoria.findOrFail(params.id)
+  /**
+   * @update
+   * @summary No disponible — usar endpoints específicos de cada catálogo
+   * @responseBody 400 - {"message": "Usa los endpoints específicos para actualizar catálogos"}
+   */
+  async update({ response }: HttpContext) {
+    return response.badRequest({ message: 'Usa los endpoints específicos para actualizar catálogos' })
+  }
 
-      await categoria.delete()
-
-      return response.ok({
-        message: 'Categoria eliminada correctamente',
-      })
-
-    } catch (error: any) {
-
-      return response.internalServerError({
-        message: 'Error al eliminar categoria',
-        error: error.message,
-      })
-    }
+  /**
+   * @destroy
+   * @summary No disponible — usar endpoints específicos de cada catálogo
+   * @responseBody 400 - {"message": "Usa los endpoints específicos para eliminar catálogos"}
+   */
+  async destroy({ response }: HttpContext) {
+    return response.badRequest({ message: 'Usa los endpoints específicos para eliminar catálogos' })
   }
 }

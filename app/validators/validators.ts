@@ -158,10 +158,10 @@ export const recomendacionUpdateValidator = vine.compile(
 // ── ANALISIS IA ───────────────────────────────────────────
 export const analisisIaStoreValidator = vine.compile(
   vine.object({
-    id_monitoreo: vine.number(),
+    id_imagen: vine.number(),
     id_estado_analisis: vine.number().optional(),
     resultado: vine.string().trim().optional(),
-    confianza: vine.number().optional(),
+    confianza: vine.string().trim().optional(),
     observaciones: vine.string().trim().optional(),
   })
 )
@@ -170,7 +170,7 @@ export const analisisIaUpdateValidator = vine.compile(
   vine.object({
     id_estado_analisis: vine.number().optional(),
     resultado: vine.string().trim().optional(),
-    confianza: vine.number().optional(),
+    confianza: vine.string().trim().optional(),
     observaciones: vine.string().trim().optional(),
   })
 )

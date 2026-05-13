@@ -7,6 +7,9 @@ import AnalisisIa from '#models/analisis_ia'
 export default class Imagene extends BaseModel {
   public static table = 'imagenes'
 
+  static readonly createdAtColumn = 'fechaRegistro'
+  static readonly updatedAtColumn = 'fechaActualizacion'
+
   @column({ isPrimary: true, columnName: 'idImagen' })
   declare idImagen: number
 

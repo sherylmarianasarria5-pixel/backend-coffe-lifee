@@ -1,9 +1,14 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import CatEstadosCultivo from '#models/cat_estados_cultivo'
+import CatEstadosCultivo from '#models/cat_estado_cultivo'
 import { catalogoStoreValidator, catalogoUpdateValidator } from '#validators/validators'
 
 export default class CatEstadosCultivosController {
 
+  /**
+   * @index
+   * @summary Listar estados de cultivo
+   * @responseBody 200 - {"data": [{"idEstado": 1, "nombreEstado": "Activo", "descripcion": "Cultivo en producción"}]}
+   */
   async index({ request, response }: HttpContext) {
     try {
       const page    = Number(request.input('page', 1))
@@ -15,6 +20,13 @@ export default class CatEstadosCultivosController {
     }
   }
 
+  /**
+   * @store
+   * @summary Crear estado de cultivo
+   * @requestBody {"nombre": "Activo", "descripcion": "Cultivo en producción"}
+   * @responseBody 201 - {"message": "Estado de cultivo creado correctamente", "data": {"idEstado": 1}}
+   * @responseBody 422 - {"message": "Error de validación"}
+   */
   async store({ request, response }: HttpContext) {
     try {
       const data   = await request.validateUsing(catalogoStoreValidator)
@@ -28,6 +40,12 @@ export default class CatEstadosCultivosController {
     }
   }
 
+  /**
+   * @show
+   * @summary Ver estado de cultivo por ID
+   * @responseBody 200 - {"idEstado": 1, "nombreEstado": "Activo"}
+   * @responseBody 404 - {"message": "Estado de cultivo no encontrado"}
+   */
   async show({ params, response }: HttpContext) {
     try {
       const estado = await CatEstadosCultivo.findOrFail(params.id)
@@ -37,6 +55,13 @@ export default class CatEstadosCultivosController {
     }
   }
 
+  /**
+   * @update
+   * @summary Actualizar estado de cultivo
+   * @requestBody {"nombre": "Inactivo", "descripcion": "Cultivo sin producción"}
+   * @responseBody 200 - {"message": "Estado de cultivo actualizado correctamente"}
+   * @responseBody 422 - {"message": "Error de validación"}
+   */
   async update({ params, request, response }: HttpContext) {
     try {
       const estado = await CatEstadosCultivo.findOrFail(params.id)
@@ -53,6 +78,12 @@ export default class CatEstadosCultivosController {
     }
   }
 
+  /**
+   * @destroy
+   * @summary Eliminar estado de cultivo
+   * @responseBody 200 - {"message": "Estado de cultivo eliminado correctamente"}
+   * @responseBody 404 - {"message": "Estado de cultivo no encontrado"}
+   */
   async destroy({ params, response }: HttpContext) {
     try {
       const estado = await CatEstadosCultivo.findOrFail(params.id)

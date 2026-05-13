@@ -1,135 +1,115 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import Recomendacione from '#models/recomendacione'
-import { recomendacionStoreValidator, recomendacionUpdateValidator } from '#validators/validators'
+import RecomendacionTratamiento from '#models/recomendacion_tratamiento'
 
-export default class RecomendacionesController {
-  // GET /recomendaciones?page=1&limit=10&id_analisis_ia=5&id_prioridad=1
-  async index({ request, response }: HttpContext) {
+export default class RecomendacionTratamientosController {
+
+  /**
+   * @index
+   * @summary Listar recomendación tratamientos
+   * @responseBody 200 - [{"idRecTratamiento": 1, "idRecomendacion": 1, "idAplicacion": 2, "dosisAjustada": "500ml", "notas": "Aplicar en la mañana"}]
+   */
+  async index({ response }: HttpContext) {
     try {
-      const page = Number(request.input('page', 1))
-      const limit = Number(request.input('limit', 10))
-      const idAnalisisIa = request.input('id_analisis_ia')
-      const idPrioridad = request.input('id_prioridad')
-      const search = request.input('search', '')
-
-      const query = Recomendacione.query()
-        .preload('tipoRecomendacion')
-        .preload('prioridad')
-        .orderBy('fecha_recomendacion', 'desc')
-
-      if (idAnalisisIa) query.where('id_analisis_ia', idAnalisisIa)
-      if (idPrioridad) query.where('id_prioridad', idPrioridad)
-      if (search) {
-        query.whereILike('descripcion', `%${search}%`)
-      }
-
-      const recomendaciones = await query.paginate(page, limit)
-      return response.ok(recomendaciones)
+      const items = await RecomendacionTratamiento.query()
+        .preload('recomendacion')
+        .preload('aplicacion')
+      return response.ok(items)
     } catch (error: any) {
-      return response.internalServerError({
-        message: 'Error al obtener recomendaciones',
-        error: error.message,
-      })
+      return response.internalServerError({ message: 'Error al obtener recomendación tratamientos', error: error.message })
     }
   }
 
-  // POST /recomendaciones
+  /**
+   * @store
+   * @summary Crear recomendación tratamiento
+   * @requestBody {"id_recomendacion": 1, "id_aplicacion": 2, "dosis_ajustada": "500ml", "notas": "Aplicar en la mañana"}
+   * @responseBody 201 - {"message": "Recomendación tratamiento creado correctamente", "data": {"idRecTratamiento": 1}}
+   * @responseBody 400 - {"message": "El id_recomendacion es obligatorio"}
+   */
   async store({ request, response }: HttpContext) {
     try {
-      const data = await request.validateUsing(recomendacionStoreValidator)
+      const data = request.only(['id_recomendacion', 'id_aplicacion', 'dosis_ajustada', 'notas'])
 
-      const recomendacion = await Recomendacione.create({
-        idAnalisisIa: data.id_analisis_ia,
-        idTipoRecomendacion: data.id_tipo_recomendacion ?? null,
-        idPrioridad: data.id_prioridad ?? null,
-        descripcion: data.descripcion,
-        accionesSugeridas: data.acciones_sugeridas ?? null,
-        fechaRecomendacion: data.fecha_recomendacion ?? null,
+      if (!data.id_recomendacion) return response.badRequest({ message: 'El id_recomendacion es obligatorio' })
+      if (!data.id_aplicacion)    return response.badRequest({ message: 'El id_aplicacion es obligatorio' })
+
+      const item = await RecomendacionTratamiento.create({
+        idRecomendacion: data.id_recomendacion,
+        idAplicacion:    data.id_aplicacion,
+        dosisAjustada:   data.dosis_ajustada ?? null,
+        notas:           data.notas          ?? null,
       })
 
-      await recomendacion.load('tipoRecomendacion')
-      await recomendacion.load('prioridad')
+      await item.load('recomendacion')
+      await item.load('aplicacion')
 
-      return response.created({
-        message: 'Recomendación creada correctamente',
-        data: recomendacion,
-      })
+      return response.created({ message: 'Recomendación tratamiento creado correctamente', data: item })
     } catch (error: any) {
-      if (error.code === 'E_VALIDATION_ERROR') {
-        return response.unprocessableEntity({
-          message: 'Error de validación',
-          errors: error.messages,
-        })
-      }
-      return response.internalServerError({
-        message: 'Error al crear recomendación',
-        error: error.message,
-      })
+      return response.internalServerError({ message: 'Error al crear recomendación tratamiento', error: error.message })
     }
   }
 
-  // GET /recomendaciones/:id
+  /**
+   * @show
+   * @summary Ver recomendación tratamiento por ID
+   * @responseBody 200 - {"idRecTratamiento": 1, "dosisAjustada": "500ml", "notas": "texto"}
+   * @responseBody 404 - {"message": "Recomendación tratamiento no encontrado"}
+   */
   async show({ params, response }: HttpContext) {
     try {
-      const recomendacion = await Recomendacione.query()
-        .where('id_recomendacion', params.id)
-        .preload('tipoRecomendacion')
-        .preload('prioridad')
-        .preload('tratamientos')
+      const item = await RecomendacionTratamiento.query()
+        .where('id_rec_tratamiento', params.id)
+        .preload('recomendacion')
+        .preload('aplicacion')
         .firstOrFail()
-
-      return response.ok(recomendacion)
+      return response.ok(item)
     } catch {
-      return response.notFound({ message: 'Recomendación no encontrada' })
+      return response.notFound({ message: 'Recomendación tratamiento no encontrado' })
     }
   }
 
-  // PUT /recomendaciones/:id
+  /**
+   * @update
+   * @summary Actualizar recomendación tratamiento
+   * @requestBody {"id_recomendacion": 1, "id_aplicacion": 2, "dosis_ajustada": "600ml", "notas": "Actualizado"}
+   * @responseBody 200 - {"message": "Recomendación tratamiento actualizado correctamente"}
+   * @responseBody 404 - {"message": "Recomendación tratamiento no encontrado"}
+   */
   async update({ params, request, response }: HttpContext) {
     try {
-      const recomendacion = await Recomendacione.findOrFail(params.id)
-      const data = await request.validateUsing(recomendacionUpdateValidator)
+      const item = await RecomendacionTratamiento.findOrFail(params.id)
+      const data = request.only(['id_recomendacion', 'id_aplicacion', 'dosis_ajustada', 'notas'])
 
       const payload: Record<string, any> = {}
-      if (data.id_tipo_recomendacion !== undefined) payload.idTipoRecomendacion = data.id_tipo_recomendacion
-      if (data.id_prioridad !== undefined) payload.idPrioridad = data.id_prioridad
-      if (data.descripcion !== undefined) payload.descripcion = data.descripcion
-      if (data.acciones_sugeridas !== undefined) payload.accionesSugeridas = data.acciones_sugeridas
+      if (data.id_recomendacion !== undefined) payload.idRecomendacion = data.id_recomendacion
+      if (data.id_aplicacion    !== undefined) payload.idAplicacion    = data.id_aplicacion
+      if (data.dosis_ajustada   !== undefined) payload.dosisAjustada   = data.dosis_ajustada
+      if (data.notas            !== undefined) payload.notas           = data.notas
 
-      recomendacion.merge(payload)
-      await recomendacion.save()
-      await recomendacion.load('tipoRecomendacion')
-      await recomendacion.load('prioridad')
+      item.merge(payload)
+      await item.save()
+      await item.load('recomendacion')
+      await item.load('aplicacion')
 
-      return response.ok({
-        message: 'Recomendación actualizada correctamente',
-        data: recomendacion,
-      })
+      return response.ok({ message: 'Recomendación tratamiento actualizado correctamente', data: item })
     } catch (error: any) {
-      if (error.code === 'E_VALIDATION_ERROR') {
-        return response.unprocessableEntity({
-          message: 'Error de validación',
-          errors: error.messages,
-        })
-      }
-      return response.internalServerError({
-        message: 'Error al actualizar recomendación',
-        error: error.message,
-      })
+      return response.internalServerError({ message: 'Error al actualizar recomendación tratamiento', error: error.message })
     }
   }
 
-  // DELETE /recomendaciones/:id
+  /**
+   * @destroy
+   * @summary Eliminar recomendación tratamiento
+   * @responseBody 200 - {"message": "Recomendación tratamiento eliminado correctamente"}
+   * @responseBody 404 - {"message": "Recomendación tratamiento no encontrado"}
+   */
   async destroy({ params, response }: HttpContext) {
     try {
-      const recomendacion = await Recomendacione.findOrFail(params.id)
-      await recomendacion.delete()
-      return response.ok({ message: 'Recomendación eliminada correctamente' })
+      const item = await RecomendacionTratamiento.findOrFail(params.id)
+      await item.delete()
+      return response.ok({ message: 'Recomendación tratamiento eliminado correctamente' })
     } catch (error: any) {
-      return response.internalServerError({
-        message: 'Error al eliminar recomendación',
-        error: error.message,
-      })
+      return response.internalServerError({ message: 'Error al eliminar recomendación tratamiento', error: error.message })
     }
   }
 }

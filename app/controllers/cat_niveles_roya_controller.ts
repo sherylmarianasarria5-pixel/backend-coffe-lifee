@@ -1,13 +1,18 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import CatNivelesRoya from '#models/cat_niveles_roya'
+import CatNivelesRoya from '#models/cat_nivel_roya'
 import { catalogoStoreValidator, catalogoUpdateValidator } from '#validators/validators'
 
 export default class CatNivelesRoyasController {
 
+  /**
+   * @index
+   * @summary Listar niveles de roya
+   * @responseBody 200 - {"data": [{"idNivel": 1, "nombreNivel": "Alto", "descripcion": "Nivel crítico"}]}
+   */
   async index({ request, response }: HttpContext) {
     try {
-      const page   = Number(request.input('page', 1))
-      const limit  = Number(request.input('limit', 20))
+      const page    = Number(request.input('page', 1))
+      const limit   = Number(request.input('limit', 20))
       const niveles = await CatNivelesRoya.query().paginate(page, limit)
       return response.ok(niveles)
     } catch (error: any) {
@@ -15,10 +20,17 @@ export default class CatNivelesRoyasController {
     }
   }
 
+  /**
+   * @store
+   * @summary Crear nivel de roya
+   * @requestBody {"nombre": "Alto", "descripcion": "Nivel crítico de roya"}
+   * @responseBody 201 - {"message": "Nivel de roya creado correctamente", "data": {"idNivel": 1}}
+   * @responseBody 422 - {"message": "Error de validación"}
+   */
   async store({ request, response }: HttpContext) {
     try {
-      const data   = await request.validateUsing(catalogoStoreValidator)
-      const nivel  = await CatNivelesRoya.create({ nombreNivel: data.nombre, descripcion: data.descripcion ?? null })
+      const data  = await request.validateUsing(catalogoStoreValidator)
+      const nivel = await CatNivelesRoya.create({ nombreNivel: data.nombre, descripcion: data.descripcion ?? null })
       return response.created({ message: 'Nivel de roya creado correctamente', data: nivel })
     } catch (error: any) {
       if (error.code === 'E_VALIDATION_ERROR') {
@@ -28,6 +40,12 @@ export default class CatNivelesRoyasController {
     }
   }
 
+  /**
+   * @show
+   * @summary Ver nivel de roya por ID
+   * @responseBody 200 - {"idNivel": 1, "nombreNivel": "Alto"}
+   * @responseBody 404 - {"message": "Nivel de roya no encontrado"}
+   */
   async show({ params, response }: HttpContext) {
     try {
       const nivel = await CatNivelesRoya.findOrFail(params.id)
@@ -37,6 +55,13 @@ export default class CatNivelesRoyasController {
     }
   }
 
+  /**
+   * @update
+   * @summary Actualizar nivel de roya
+   * @requestBody {"nombre": "Medio", "descripcion": "Nivel moderado"}
+   * @responseBody 200 - {"message": "Nivel de roya actualizado correctamente"}
+   * @responseBody 422 - {"message": "Error de validación"}
+   */
   async update({ params, request, response }: HttpContext) {
     try {
       const nivel = await CatNivelesRoya.findOrFail(params.id)
@@ -53,6 +78,12 @@ export default class CatNivelesRoyasController {
     }
   }
 
+  /**
+   * @destroy
+   * @summary Eliminar nivel de roya
+   * @responseBody 200 - {"message": "Nivel de roya eliminado correctamente"}
+   * @responseBody 404 - {"message": "Nivel de roya no encontrado"}
+   */
   async destroy({ params, response }: HttpContext) {
     try {
       const nivel = await CatNivelesRoya.findOrFail(params.id)

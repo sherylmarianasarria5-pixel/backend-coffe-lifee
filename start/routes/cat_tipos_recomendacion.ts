@@ -1,6 +1,6 @@
 import router from '@adonisjs/core/services/router'
 
-const CatTiposRecomendacionController = () => import('#controllers/cat_tipos_recomendacions_controller')
+const CatTiposRecomendacionController = () => import('#controllers/cat_tipos_recomendaciones_controller')
 
 router.group(() => {
   router.get('/', [CatTiposRecomendacionController, 'index'])

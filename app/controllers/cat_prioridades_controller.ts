@@ -1,13 +1,18 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import CatPrioridade from '#models/cat_prioridade'
+import CatPrioridade from '#models/cat_prioridad'
 import { catalogoStoreValidator, catalogoUpdateValidator } from '#validators/validators'
 
 export default class CatPrioridadesController {
 
+  /**
+   * @index
+   * @summary Listar prioridades
+   * @responseBody 200 - {"data": [{"idPrioridad": 1, "nombrePrioridad": "Alta", "descripcion": "Atención inmediata"}]}
+   */
   async index({ request, response }: HttpContext) {
     try {
-      const page       = Number(request.input('page', 1))
-      const limit      = Number(request.input('limit', 20))
+      const page        = Number(request.input('page', 1))
+      const limit       = Number(request.input('limit', 20))
       const prioridades = await CatPrioridade.query().paginate(page, limit)
       return response.ok(prioridades)
     } catch (error: any) {
@@ -15,10 +20,17 @@ export default class CatPrioridadesController {
     }
   }
 
+  /**
+   * @store
+   * @summary Crear prioridad
+   * @requestBody {"nombre": "Alta", "descripcion": "Atención inmediata"}
+   * @responseBody 201 - {"message": "Prioridad creada correctamente", "data": {"idPrioridad": 1}}
+   * @responseBody 422 - {"message": "Error de validación"}
+   */
   async store({ request, response }: HttpContext) {
     try {
-      const data       = await request.validateUsing(catalogoStoreValidator)
-      const prioridad  = await CatPrioridade.create({ nombrePrioridad: data.nombre, descripcion: data.descripcion ?? null })
+      const data      = await request.validateUsing(catalogoStoreValidator)
+      const prioridad = await CatPrioridade.create({ nombrePrioridad: data.nombre, descripcion: data.descripcion ?? null })
       return response.created({ message: 'Prioridad creada correctamente', data: prioridad })
     } catch (error: any) {
       if (error.code === 'E_VALIDATION_ERROR') {
@@ -28,6 +40,12 @@ export default class CatPrioridadesController {
     }
   }
 
+  /**
+   * @show
+   * @summary Ver prioridad por ID
+   * @responseBody 200 - {"idPrioridad": 1, "nombrePrioridad": "Alta"}
+   * @responseBody 404 - {"message": "Prioridad no encontrada"}
+   */
   async show({ params, response }: HttpContext) {
     try {
       const prioridad = await CatPrioridade.findOrFail(params.id)
@@ -37,6 +55,13 @@ export default class CatPrioridadesController {
     }
   }
 
+  /**
+   * @update
+   * @summary Actualizar prioridad
+   * @requestBody {"nombre": "Media", "descripcion": "Atención moderada"}
+   * @responseBody 200 - {"message": "Prioridad actualizada correctamente"}
+   * @responseBody 422 - {"message": "Error de validación"}
+   */
   async update({ params, request, response }: HttpContext) {
     try {
       const prioridad = await CatPrioridade.findOrFail(params.id)
@@ -53,6 +78,12 @@ export default class CatPrioridadesController {
     }
   }
 
+  /**
+   * @destroy
+   * @summary Eliminar prioridad
+   * @responseBody 200 - {"message": "Prioridad eliminada correctamente"}
+   * @responseBody 404 - {"message": "Prioridad no encontrada"}
+   */
   async destroy({ params, response }: HttpContext) {
     try {
       const prioridad = await CatPrioridade.findOrFail(params.id)

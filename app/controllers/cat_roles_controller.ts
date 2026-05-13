@@ -4,6 +4,11 @@ import { catalogoStoreValidator, catalogoUpdateValidator } from '#validators/val
 
 export default class CatRolesController {
 
+  /**
+   * @index
+   * @summary Listar roles
+   * @responseBody 200 - {"data": [{"idRol": 1, "nombreRol": "admin", "descripcion": "Administrador del sistema"}]}
+   */
   async index({ request, response }: HttpContext) {
     try {
       const page  = Number(request.input('page', 1))
@@ -15,6 +20,13 @@ export default class CatRolesController {
     }
   }
 
+  /**
+   * @store
+   * @summary Crear rol
+   * @requestBody {"nombre": "admin", "descripcion": "Administrador del sistema"}
+   * @responseBody 201 - {"message": "Rol creado correctamente", "data": {"idRol": 1}}
+   * @responseBody 422 - {"message": "Error de validación"}
+   */
   async store({ request, response }: HttpContext) {
     try {
       const data = await request.validateUsing(catalogoStoreValidator)
@@ -28,6 +40,12 @@ export default class CatRolesController {
     }
   }
 
+  /**
+   * @show
+   * @summary Ver rol por ID
+   * @responseBody 200 - {"idRol": 1, "nombreRol": "admin"}
+   * @responseBody 404 - {"message": "Rol no encontrado"}
+   */
   async show({ params, response }: HttpContext) {
     try {
       const rol = await CatRol.findOrFail(params.id)
@@ -37,6 +55,13 @@ export default class CatRolesController {
     }
   }
 
+  /**
+   * @update
+   * @summary Actualizar rol
+   * @requestBody {"nombre": "experto", "descripcion": "Experto en cultivos"}
+   * @responseBody 200 - {"message": "Rol actualizado correctamente"}
+   * @responseBody 422 - {"message": "Error de validación"}
+   */
   async update({ params, request, response }: HttpContext) {
     try {
       const rol  = await CatRol.findOrFail(params.id)
@@ -53,6 +78,12 @@ export default class CatRolesController {
     }
   }
 
+  /**
+   * @destroy
+   * @summary Eliminar rol
+   * @responseBody 200 - {"message": "Rol eliminado correctamente"}
+   * @responseBody 404 - {"message": "Rol no encontrado"}
+   */
   async destroy({ params, response }: HttpContext) {
     try {
       const rol = await CatRol.findOrFail(params.id)

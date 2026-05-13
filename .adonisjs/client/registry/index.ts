@@ -62,14 +62,14 @@ const routes = {
   },
   'cat_tipos_tratamientos.index': {
     methods: ["GET","HEAD"],
-    pattern: '/cat_tipos_tratamiento',
-    tokens: [{"old":"/cat_tipos_tratamiento","type":0,"val":"cat_tipos_tratamiento","end":""}],
+    pattern: '/cat_tipos_tratamientos',
+    tokens: [{"old":"/cat_tipos_tratamientos","type":0,"val":"cat_tipos_tratamientos","end":""}],
     types: placeholder as Registry['cat_tipos_tratamientos.index']['types'],
   },
   'cat_tipos_tratamientos.show': {
     methods: ["GET","HEAD"],
-    pattern: '/cat_tipos_tratamiento/:id',
-    tokens: [{"old":"/cat_tipos_tratamiento/:id","type":0,"val":"cat_tipos_tratamiento","end":""},{"old":"/cat_tipos_tratamiento/:id","type":1,"val":"id","end":""}],
+    pattern: '/cat_tipos_tratamientos/:id',
+    tokens: [{"old":"/cat_tipos_tratamientos/:id","type":0,"val":"cat_tipos_tratamientos","end":""},{"old":"/cat_tipos_tratamientos/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['cat_tipos_tratamientos.show']['types'],
   },
   'cat_niveles_royas.index': {
@@ -96,17 +96,17 @@ const routes = {
     tokens: [{"old":"/cat_prioridades/:id","type":0,"val":"cat_prioridades","end":""},{"old":"/cat_prioridades/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['cat_prioridades.show']['types'],
   },
-  'cat_tipos_recomendacions.index': {
+  'cat_tipos_recomendaciones.index': {
     methods: ["GET","HEAD"],
-    pattern: '/cat_tipos_recomendacion',
-    tokens: [{"old":"/cat_tipos_recomendacion","type":0,"val":"cat_tipos_recomendacion","end":""}],
-    types: placeholder as Registry['cat_tipos_recomendacions.index']['types'],
+    pattern: '/cat_tipos_recomendaciones',
+    tokens: [{"old":"/cat_tipos_recomendaciones","type":0,"val":"cat_tipos_recomendaciones","end":""}],
+    types: placeholder as Registry['cat_tipos_recomendaciones.index']['types'],
   },
-  'cat_tipos_recomendacions.show': {
+  'cat_tipos_recomendaciones.show': {
     methods: ["GET","HEAD"],
-    pattern: '/cat_tipos_recomendacion/:id',
-    tokens: [{"old":"/cat_tipos_recomendacion/:id","type":0,"val":"cat_tipos_recomendacion","end":""},{"old":"/cat_tipos_recomendacion/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['cat_tipos_recomendacions.show']['types'],
+    pattern: '/cat_tipos_recomendaciones/:id',
+    tokens: [{"old":"/cat_tipos_recomendaciones/:id","type":0,"val":"cat_tipos_recomendaciones","end":""},{"old":"/cat_tipos_recomendaciones/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['cat_tipos_recomendaciones.show']['types'],
   },
   'cat_estados_analisis.index': {
     methods: ["GET","HEAD"],
@@ -342,23 +342,23 @@ const routes = {
     tokens: [{"old":"/cat_prioridades/:id","type":0,"val":"cat_prioridades","end":""},{"old":"/cat_prioridades/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['cat_prioridades.destroy']['types'],
   },
-  'cat_tipos_recomendacions.store': {
+  'cat_tipos_recomendaciones.store': {
     methods: ["POST"],
-    pattern: '/cat_tipos_recomendacion',
-    tokens: [{"old":"/cat_tipos_recomendacion","type":0,"val":"cat_tipos_recomendacion","end":""}],
-    types: placeholder as Registry['cat_tipos_recomendacions.store']['types'],
+    pattern: '/cat_tipo_recomendacion',
+    tokens: [{"old":"/cat_tipo_recomendacion","type":0,"val":"cat_tipo_recomendacion","end":""}],
+    types: placeholder as Registry['cat_tipos_recomendaciones.store']['types'],
   },
-  'cat_tipos_recomendacions.update': {
+  'cat_tipos_recomendaciones.update': {
     methods: ["PUT"],
-    pattern: '/cat_tipos_recomendacion/:id',
-    tokens: [{"old":"/cat_tipos_recomendacion/:id","type":0,"val":"cat_tipos_recomendacion","end":""},{"old":"/cat_tipos_recomendacion/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['cat_tipos_recomendacions.update']['types'],
+    pattern: '/cat_tipo_recomendacion/:id',
+    tokens: [{"old":"/cat_tipo_recomendacion/:id","type":0,"val":"cat_tipo_recomendacion","end":""},{"old":"/cat_tipo_recomendacion/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['cat_tipos_recomendaciones.update']['types'],
   },
-  'cat_tipos_recomendacions.destroy': {
+  'cat_tipos_recomendaciones.destroy': {
     methods: ["DELETE"],
     pattern: '/cat_tipos_recomendacion/:id',
     tokens: [{"old":"/cat_tipos_recomendacion/:id","type":0,"val":"cat_tipos_recomendacion","end":""},{"old":"/cat_tipos_recomendacion/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['cat_tipos_recomendacions.destroy']['types'],
+    types: placeholder as Registry['cat_tipos_recomendaciones.destroy']['types'],
   },
   'cat_estados_analisis.store': {
     methods: ["POST"],

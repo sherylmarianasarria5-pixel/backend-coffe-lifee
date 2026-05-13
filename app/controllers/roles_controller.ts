@@ -3,188 +3,147 @@ import Usuario from '#models/usuario'
 import CatRol from '#models/cat_rol'
 import hash from '@adonisjs/core/services/hash'
 
-export default class CafeterosController {
-  // =========================================
-  // GET /cafeteros
-  // =========================================
+export default class ExpertosController {
+
+  /**
+   * @index
+   * @summary Listar expertos
+   * @responseBody 200 - [{"idUsuario": 1, "nombre": "Juan", "correo": "experto@gmail.com", "rol": {"nombreRol": "experto"}}]
+   */
   async index({ response }: HttpContext) {
     try {
       const usuarios = await Usuario.query()
         .whereHas('rol', (query: any) => {
-          query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero'])
+          query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['experto'])
         })
         .preload('rol')
-
       return response.ok(usuarios)
     } catch (error: any) {
-      return response.internalServerError({
-        message: 'Error al obtener cafeteros',
-        error: error.message,
-      })
+      return response.internalServerError({ message: 'Error al obtener expertos', error: error.message })
     }
   }
 
-  // =========================================
-  // POST /cafeteros
-  // =========================================
+  /**
+   * @store
+   * @summary Crear experto
+   * @requestBody {"nombre": "Juan", "apellido": "Pérez", "correo": "experto@gmail.com", "password": "123456", "telefono": "3001234567", "observaciones": "texto", "activo": true}
+   * @responseBody 201 - {"message": "Experto creado correctamente", "data": {"idUsuario": 1}}
+   * @responseBody 400 - {"message": "El correo ya existe"}
+   */
   async store({ request, response }: HttpContext) {
     try {
-      const data = request.only([
-        'nombre',
-        'apellido',
-        'correo',
-        'telefono',
-        'password',
-        'observaciones',
-        'activo',
-      ])
+      const data = request.only(['nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
 
-      if (!data.nombre) {
-        return response.badRequest({ message: 'El nombre es obligatorio' })
-      }
-
-      if (!data.correo) {
-        return response.badRequest({ message: 'El correo es obligatorio' })
-      }
-
-      if (!data.password) {
-        return response.badRequest({ message: 'La contraseña es obligatoria' })
-      }
+      if (!data.nombre)   return response.badRequest({ message: 'El nombre es obligatorio' })
+      if (!data.correo)   return response.badRequest({ message: 'El correo es obligatorio' })
+      if (!data.password) return response.badRequest({ message: 'La contraseña es obligatoria' })
 
       const existe = await Usuario.findBy('correo', data.correo)
+      if (existe) return response.badRequest({ message: 'El correo ya existe' })
 
-      if (existe) {
-        return response.badRequest({ message: 'El correo ya existe' })
-      }
-
-      const rolCafetero = await CatRol.query()
-        .whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero'])
+      const rolExperto = await CatRol.query()
+        .whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['experto'])
         .firstOrFail()
 
       const passwordHash = await hash.make(data.password)
 
       const usuario = await Usuario.create({
-        nombre: data.nombre,
-        apellido: data.apellido,
-        correo: data.correo,
-        telefono: data.telefono,
+        nombre:        data.nombre,
+        apellido:      data.apellido,
+        correo:        data.correo,
+        telefono:      data.telefono,
         passwordHash,
         observaciones: data.observaciones,
-        activo: data.activo ?? true,
-        idRol: rolCafetero.idRol,
+        activo:        data.activo ?? true,
+        idRol:         rolExperto.idRol,
       })
 
-      return response.created({
-        message: 'Cafetero creado correctamente',
-        data: usuario,
-      })
+      return response.created({ message: 'Experto creado correctamente', data: usuario })
     } catch (error: any) {
-      return response.internalServerError({
-        message: 'Error al crear cafetero',
-        error: error.message,
-      })
+      return response.internalServerError({ message: 'Error al crear experto', error: error.message })
     }
   }
 
-  // =========================================
-  // GET /cafeteros/:id
-  // =========================================
+  /**
+   * @show
+   * @summary Ver experto por ID
+   * @responseBody 200 - {"idUsuario": 1, "nombre": "Juan", "correo": "experto@gmail.com"}
+   * @responseBody 404 - {"message": "Experto no encontrado"}
+   */
   async show({ params, response }: HttpContext) {
     try {
       const usuario = await Usuario.query()
         .where('id_usuario', params.id)
         .whereHas('rol', (query: any) => {
-          query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero'])
+          query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['experto'])
         })
         .preload('rol')
         .firstOrFail()
-
       return response.ok(usuario)
-    } catch (error: any) {
-      return response.notFound({
-        message: 'Cafetero no encontrado',
-      })
+    } catch {
+      return response.notFound({ message: 'Experto no encontrado' })
     }
   }
 
-  // =========================================
-  // PUT /cafeteros/:id
-  // =========================================
+  /**
+   * @update
+   * @summary Actualizar experto
+   * @requestBody {"nombre": "Juan", "apellido": "Pérez", "correo": "experto@gmail.com", "telefono": "3001234567", "observaciones": "texto", "activo": true, "password": "nueva123"}
+   * @responseBody 200 - {"message": "Experto actualizado correctamente"}
+   * @responseBody 400 - {"message": "El correo ya está en uso"}
+   */
   async update({ params, request, response }: HttpContext) {
     try {
       const usuario = await Usuario.query()
         .where('id_usuario', params.id)
         .whereHas('rol', (query: any) => {
-          query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero'])
+          query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['experto'])
         })
         .firstOrFail()
 
-      const data = request.only([
-        'nombre',
-        'apellido',
-        'correo',
-        'telefono',
-        'password',
-        'observaciones',
-        'activo',
-      ])
+      const data = request.only(['nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
 
       if (data.correo && data.correo !== usuario.correo) {
         const existe = await Usuario.findBy('correo', data.correo)
-        if (existe) {
-          return response.badRequest({ message: 'El correo ya está en uso' })
-        }
+        if (existe) return response.badRequest({ message: 'El correo ya está en uso' })
       }
 
       const payload: Record<string, any> = {}
-      if (data.nombre !== undefined) payload.nombre = data.nombre
-      if (data.apellido !== undefined) payload.apellido = data.apellido
-      if (data.correo !== undefined) payload.correo = data.correo
-      if (data.telefono !== undefined) payload.telefono = data.telefono
+      if (data.nombre        !== undefined) payload.nombre        = data.nombre
+      if (data.apellido      !== undefined) payload.apellido      = data.apellido
+      if (data.correo        !== undefined) payload.correo        = data.correo
+      if (data.telefono      !== undefined) payload.telefono      = data.telefono
       if (data.observaciones !== undefined) payload.observaciones = data.observaciones
-      if (data.activo !== undefined) payload.activo = data.activo
-
-      if (data.password) {
-        payload.passwordHash = await hash.make(data.password)
-      }
+      if (data.activo        !== undefined) payload.activo        = data.activo
+      if (data.password)                    payload.passwordHash  = await hash.make(data.password)
 
       usuario.merge(payload)
       await usuario.save()
 
-      return response.ok({
-        message: 'Cafetero actualizado correctamente',
-        data: usuario,
-      })
+      return response.ok({ message: 'Experto actualizado correctamente', data: usuario })
     } catch (error: any) {
-      return response.internalServerError({
-        message: 'Error al actualizar cafetero',
-        error: error.message,
-      })
+      return response.internalServerError({ message: 'Error al actualizar experto', error: error.message })
     }
   }
 
-  // =========================================
-  // DELETE /cafeteros/:id
-  // =========================================
+  /**
+   * @destroy
+   * @summary Eliminar experto
+   * @responseBody 200 - {"message": "Experto eliminado correctamente"}
+   * @responseBody 404 - {"message": "Experto no encontrado"}
+   */
   async destroy({ params, response }: HttpContext) {
     try {
       const usuario = await Usuario.query()
         .where('id_usuario', params.id)
         .whereHas('rol', (query: any) => {
-          query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero'])
+          query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['experto'])
         })
         .firstOrFail()
-
       await usuario.delete()
-
-      return response.ok({
-        message: 'Cafetero eliminado correctamente',
-      })
+      return response.ok({ message: 'Experto eliminado correctamente' })
     } catch (error: any) {
-      return response.internalServerError({
-        message: 'Error al eliminar cafetero',
-        error: error.message,
-      })
+      return response.internalServerError({ message: 'Error al eliminar experto', error: error.message })
     }
   }
 }
