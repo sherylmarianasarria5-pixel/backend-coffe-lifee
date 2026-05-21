@@ -6,6 +6,7 @@ export interface ApiDefinition {
     login: typeof routes['auth.login']
     register: typeof routes['auth.register']
     recuperarPassword: typeof routes['auth.recuperar_password']
+    verificarToken: typeof routes['auth.verificar_token']
     restablecerPassword: typeof routes['auth.restablecer_password']
   }
   miPerfil: {
@@ -69,6 +70,13 @@ export interface ApiDefinition {
     update: typeof routes['categorias.update']
     destroy: typeof routes['categorias.destroy']
   }
+  asignacionesExpertos: {
+    index: typeof routes['asignaciones_expertos.index']
+    show: typeof routes['asignaciones_expertos.show']
+    store: typeof routes['asignaciones_expertos.store']
+    update: typeof routes['asignaciones_expertos.update']
+    destroy: typeof routes['asignaciones_expertos.destroy']
+  }
   dashboard: {
     index: typeof routes['dashboard.index']
   }
@@ -92,13 +100,6 @@ export interface ApiDefinition {
     show: typeof routes['expertos.show']
     update: typeof routes['expertos.update']
     destroy: typeof routes['expertos.destroy']
-  }
-  asignacionesExpertos: {
-    index: typeof routes['asignaciones_expertos.index']
-    store: typeof routes['asignaciones_expertos.store']
-    show: typeof routes['asignaciones_expertos.show']
-    update: typeof routes['asignaciones_expertos.update']
-    destroy: typeof routes['asignaciones_expertos.destroy']
   }
   cafeteros: {
     index: typeof routes['cafeteros.index']

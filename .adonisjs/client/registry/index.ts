@@ -24,6 +24,12 @@ const routes = {
     tokens: [{"old":"/recuperar-password","type":0,"val":"recuperar-password","end":""}],
     types: placeholder as Registry['auth.recuperar_password']['types'],
   },
+  'auth.verificar_token': {
+    methods: ["POST"],
+    pattern: '/verificar-token',
+    tokens: [{"old":"/verificar-token","type":0,"val":"verificar-token","end":""}],
+    types: placeholder as Registry['auth.verificar_token']['types'],
+  },
   'auth.restablecer_password': {
     methods: ["POST"],
     pattern: '/restablecer-password',
@@ -144,6 +150,18 @@ const routes = {
     tokens: [{"old":"/categorias/:id","type":0,"val":"categorias","end":""},{"old":"/categorias/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['categorias.show']['types'],
   },
+  'asignaciones_expertos.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/asignaciones_expertos',
+    tokens: [{"old":"/asignaciones_expertos","type":0,"val":"asignaciones_expertos","end":""}],
+    types: placeholder as Registry['asignaciones_expertos.index']['types'],
+  },
+  'asignaciones_expertos.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/asignaciones_expertos/:id',
+    tokens: [{"old":"/asignaciones_expertos/:id","type":0,"val":"asignaciones_expertos","end":""},{"old":"/asignaciones_expertos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['asignaciones_expertos.show']['types'],
+  },
   'dashboard.index': {
     methods: ["GET","HEAD"],
     pattern: '/dashboard',
@@ -240,23 +258,11 @@ const routes = {
     tokens: [{"old":"/expertos/:id","type":0,"val":"expertos","end":""},{"old":"/expertos/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['expertos.destroy']['types'],
   },
-  'asignaciones_expertos.index': {
-    methods: ["GET","HEAD"],
-    pattern: '/asignaciones_expertos',
-    tokens: [{"old":"/asignaciones_expertos","type":0,"val":"asignaciones_expertos","end":""}],
-    types: placeholder as Registry['asignaciones_expertos.index']['types'],
-  },
   'asignaciones_expertos.store': {
     methods: ["POST"],
     pattern: '/asignaciones_expertos',
     tokens: [{"old":"/asignaciones_expertos","type":0,"val":"asignaciones_expertos","end":""}],
     types: placeholder as Registry['asignaciones_expertos.store']['types'],
-  },
-  'asignaciones_expertos.show': {
-    methods: ["GET","HEAD"],
-    pattern: '/asignaciones_expertos/:id',
-    tokens: [{"old":"/asignaciones_expertos/:id","type":0,"val":"asignaciones_expertos","end":""},{"old":"/asignaciones_expertos/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['asignaciones_expertos.show']['types'],
   },
   'asignaciones_expertos.update': {
     methods: ["PUT"],
