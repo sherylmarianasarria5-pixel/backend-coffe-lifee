@@ -43,6 +43,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['recuperarPassword']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'auth.verificar_token': {
+    methods: ["POST"]
+    pattern: '/verificar-token'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['verificarToken']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['verificarToken']>>>
+    }
+  }
   'auth.restablecer_password': {
     methods: ["POST"]
     pattern: '/restablecer-password'
@@ -283,6 +295,30 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/categorias_controller').default['show']>>>
     }
   }
+  'asignaciones_expertos.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/asignaciones_expertos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['index']>>>
+    }
+  }
+  'asignaciones_expertos.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/asignaciones_expertos/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['show']>>>
+    }
+  }
   'dashboard.index': {
     methods: ["GET","HEAD"]
     pattern: '/dashboard'
@@ -475,18 +511,6 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/expertos_controller').default['destroy']>>>
     }
   }
-  'asignaciones_expertos.index': {
-    methods: ["GET","HEAD"]
-    pattern: '/asignaciones_expertos'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['index']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['index']>>>
-    }
-  }
   'asignaciones_expertos.store': {
     methods: ["POST"]
     pattern: '/asignaciones_expertos'
@@ -497,18 +521,6 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['store']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['store']>>>
-    }
-  }
-  'asignaciones_expertos.show': {
-    methods: ["GET","HEAD"]
-    pattern: '/asignaciones_expertos/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['show']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['show']>>>
     }
   }
   'asignaciones_expertos.update': {
@@ -647,24 +659,24 @@ export interface Registry {
     methods: ["POST"]
     pattern: '/cat_prioridades'
     types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/validators').catalogoStoreValidator)>>
+      body: {}
       paramsTuple: []
       params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/validators').catalogoStoreValidator)>>
+      query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_prioridades_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_prioridades_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_prioridades_controller').default['store']>>>
     }
   }
   'cat_prioridades.update': {
     methods: ["PUT"]
     pattern: '/cat_prioridades/:id'
     types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/validators').catalogoUpdateValidator)>>
+      body: {}
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
-      query: ExtractQuery<InferInput<(typeof import('#validators/validators').catalogoUpdateValidator)>>
+      query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_prioridades_controller').default['update']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_prioridades_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_prioridades_controller').default['update']>>>
     }
   }
   'cat_prioridades.destroy': {

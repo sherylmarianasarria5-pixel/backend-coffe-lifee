@@ -3,8 +3,7 @@ import Usuario from '#models/usuario'
 import jwt from 'jsonwebtoken'
 import env from '#start/env'
 import hash from '@adonisjs/core/services/hash'
-import app from '@adonisjs/core/services/app'
-import { subirImagen } from '#services/cloudinary_service'
+import { DateTime } from 'luxon'
 import { loginValidator, recuperarPasswordValidator, restablecerPasswordValidator } from '#validators/validators'
 
 export default class AuthController {
@@ -148,7 +147,7 @@ export default class AuthController {
       if (!usuario) return response.ok({ message: 'Si el correo existe, recibirás un mensaje con instrucciones.' })
 
       const token = Math.floor(100000 + Math.random() * 900000).toString()
-      const expiracion = new Date(Date.now() + 15 * 60 * 1000)
+      const expiracion = DateTime.now().plus({ minutes: 15 })
 
       usuario.resetToken        = token
       usuario.resetTokenExpires = expiracion
@@ -172,7 +171,8 @@ export default class AuthController {
               </div>
             `)
         })
-      } catch {
+      } catch (e) {
+        console.error('ERROR MAIL:', e)
         if (env.get('NODE_ENV') === 'development') {
           return response.ok({ message: 'Correo no configurado. Token (solo desarrollo):', token })
         }
@@ -180,10 +180,37 @@ export default class AuthController {
 
       return response.ok({ message: 'Si el correo existe, recibirás un mensaje con instrucciones.' })
     } catch (error: any) {
+      console.error('ERROR RECUPERAR:', error.message, error.stack)
       if (error.code === 'E_VALIDATION_ERROR') {
         return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
       }
       return response.internalServerError({ message: 'Error al procesar solicitud', error: error.message })
+    }
+  }
+
+  /**
+   * @verificarToken
+   * @summary Verificar si un token de recuperación es válido
+   * @requestBody {"token": "123456"}
+   * @responseBody 200 - {"message": "Token válido"}
+   * @responseBody 400 - {"message": "Código inválido"}
+   */
+  async verificarToken({ request, response }: HttpContext) {
+    try {
+      const { token } = request.only(['token'])
+
+      if (!token) return response.badRequest({ message: 'Token requerido' })
+
+      const usuario = await Usuario.query().where('reset_token', token).first()
+
+      if (!usuario) return response.badRequest({ message: 'Código inválido' })
+      if (!usuario.resetTokenExpires || usuario.resetTokenExpires < DateTime.now()) {
+        return response.badRequest({ message: 'El código ha expirado. Solicita uno nuevo.' })
+      }
+
+      return response.ok({ message: 'Token válido' })
+    } catch (error: any) {
+      return response.internalServerError({ message: 'Error al verificar token', error: error.message })
     }
   }
 
@@ -201,7 +228,7 @@ export default class AuthController {
       const usuario = await Usuario.query().where('reset_token', data.token).first()
 
       if (!usuario) return response.badRequest({ message: 'Token inválido o ya fue usado' })
-      if (!usuario.resetTokenExpires || usuario.resetTokenExpires < new Date()) {
+      if (!usuario.resetTokenExpires || usuario.resetTokenExpires < DateTime.now()) {
         return response.badRequest({ message: 'El token ha expirado. Solicita uno nuevo.' })
       }
 
@@ -236,4 +263,5 @@ export default class AuthController {
       return response.internalServerError({ message: 'Error al restablecer contraseña', error: error.message })
     }
   }
+
 }

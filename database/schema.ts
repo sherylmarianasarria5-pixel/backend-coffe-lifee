@@ -353,7 +353,7 @@ export class UserSchema extends BaseModel {
 }
 
 export class UsuarioSchema extends BaseModel {
-  static $columns = ['activo', 'apellido', 'correo', 'fechaActualizacion', 'fechaRegistro', 'idRol', 'idUsuario', 'nombre', 'observaciones', 'passwordHash', 'telefono'] as const
+  static $columns = ['activo', 'apellido', 'correo', 'fechaActualizacion', 'fechaRegistro', 'idRol', 'idUsuario', 'nombre', 'observaciones', 'passwordHash', 'resetToken', 'resetTokenExpires', 'telefono'] as const
   $columns = UsuarioSchema.$columns
   @column()
   declare activo: boolean | null
@@ -375,6 +375,10 @@ export class UsuarioSchema extends BaseModel {
   declare observaciones: string | null
   @column()
   declare passwordHash: string
+  @column()
+  declare resetToken: string | null
+  @column.dateTime()
+  declare resetTokenExpires: DateTime | null
   @column()
   declare telefono: string | null
 }
