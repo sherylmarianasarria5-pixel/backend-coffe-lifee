@@ -15,4 +15,5 @@ export default {
   defaultSecurityScheme: 'BearerAuth',
   persistAuthorization: true,
   showFullPath: false,
+  snakeCase: true,
 }

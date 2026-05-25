@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Monitoreo from '#models/monitoreo'
 import { monitoreoStoreValidator, monitoreoUpdateValidator } from '#validators/validators'
+import { DateTime } from 'luxon'
 
 export default class MonitoreosController {
 
@@ -45,8 +46,9 @@ export default class MonitoreosController {
       const monitoreo = await Monitoreo.create({
         idCultivo:      data.id_cultivo,
         idExperto:      data.id_experto ?? null,
-        fechaMonitoreo: data.fecha_monitoreo,
+        fechaMonitoreo: DateTime.fromISO(data.fecha_monitoreo),
         observaciones:  data.observaciones ?? null,
+       
       })
       return response.created({ message: 'Monitoreo creado correctamente', data: monitoreo })
     } catch (error: any) {
@@ -92,7 +94,7 @@ export default class MonitoreosController {
 
       const payload: Record<string, any> = {}
       if (data.observaciones   !== undefined) payload.observaciones  = data.observaciones
-      if (data.fecha_monitoreo !== undefined) payload.fechaMonitoreo = data.fecha_monitoreo
+      if (data.fecha_monitoreo !== undefined) payload.fechaMonitoreo = DateTime.fromISO(data.fecha_monitoreo)
 
       monitoreo.merge(payload)
       await monitoreo.save()
