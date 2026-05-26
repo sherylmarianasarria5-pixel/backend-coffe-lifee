@@ -3,6 +3,9 @@ import Finca from '#models/finca'
 import { fincaStoreValidator, fincaUpdateValidator } from '#validators/validators'
 
 export default class FincasController {
+  private toDecimalString(value: number | undefined) {
+    return value === undefined ? null : String(value)
+  }
 
   /**
    * @index
@@ -18,7 +21,7 @@ export default class FincasController {
 
       const query = Finca.query().preload('usuario')
 
-      if (search) {
+      if (search) { 
         query.where((q) => {
           q.whereILike('nombre_finca',  `%${search}%`)
            .orWhereILike('municipio',    `%${search}%`)
@@ -47,12 +50,12 @@ export default class FincasController {
       const finca = await Finca.create({
         idUsuario:     data.id_usuario,
         nombreFinca:   data.nombre_finca,
-        municipio:     data.municipio     ?? null,
-        departamento:  data.departamento  ?? null,
-        latitud:       data.latitud       ?? null,
-        longitud:      data.longitud      ?? null,
-        altitudMsnm:   data.altitud_msnm  ?? null,
-        areaHectareas: data.area_hectareas ?? null,
+        municipio:     data.municipio     ?? '',
+        departamento:  data.departamento  ?? '',
+        latitud:       this.toDecimalString(data.latitud),
+        longitud:      this.toDecimalString(data.longitud),
+        altitudMsnm:   this.toDecimalString(data.altitud_msnm),
+        areaHectareas: this.toDecimalString(data.area_hectareas),
       })
       await finca.load('usuario')
       return response.created({ message: 'Finca creada correctamente', data: finca })
@@ -99,10 +102,10 @@ export default class FincasController {
       if (data.nombre_finca   !== undefined) payload.nombreFinca   = data.nombre_finca
       if (data.municipio      !== undefined) payload.municipio     = data.municipio
       if (data.departamento   !== undefined) payload.departamento  = data.departamento
-      if (data.latitud        !== undefined) payload.latitud       = data.latitud
-      if (data.longitud       !== undefined) payload.longitud      = data.longitud
-      if (data.altitud_msnm   !== undefined) payload.altitudMsnm   = data.altitud_msnm
-      if (data.area_hectareas !== undefined) payload.areaHectareas = data.area_hectareas
+      if (data.latitud        !== undefined) payload.latitud       = String(data.latitud)
+      if (data.longitud       !== undefined) payload.longitud      = String(data.longitud)
+      if (data.altitud_msnm   !== undefined) payload.altitudMsnm   = String(data.altitud_msnm)
+      if (data.area_hectareas !== undefined) payload.areaHectareas = String(data.area_hectareas)
 
       finca.merge(payload)
       await finca.save()

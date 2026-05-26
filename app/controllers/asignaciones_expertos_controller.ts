@@ -7,6 +7,7 @@ export default class AsignacionesExpertosController {
    * @summary Listar asignaciones de expertos
    * @responseBody 200 - {"data": [{"idAsignacion": 1, "fechaAsignada": "2026-05-11", "experto": {"nombre": "Juan"}, "finca": {"nombreFinca": "Finca El Paraíso"}}]}
    */
+
   async index({ response }: HttpContext) {
     try {
       const asignaciones = await AsignacionExperto.query()
@@ -19,12 +20,6 @@ export default class AsignacionesExpertosController {
     }
   }
 
-  /**
-   * @show
-   * @summary Ver asignación por ID
-   * @responseBody 200 - {"data": {"idAsignacion": 1, "fechaAsignada": "2026-05-11"}}
-   * @responseBody 404 - {"message": "Asignación no encontrada"}
-   */
   async show({ params, response }: HttpContext) {
     try {
       const asignacion = await AsignacionExperto.query()
@@ -39,11 +34,8 @@ export default class AsignacionesExpertosController {
   }
 
   /**
-   * @store
-   * @summary Crear asignación de experto
-   * @requestBody {"idExperto": 3, "idFinca": 1, "fechaAsignada": "2026-05-11"}
-   * @responseBody 201 - {"message": "Asignación creada correctamente", "data": {"idAsignacion": 1}}
-   * @responseBody 400 - {"message": "El campo idExperto es obligatorio"}
+   * UPSERT: si ya existe asignación para esa finca, la actualiza.
+   * Si no existe, la crea. Así el botón siempre muestra el experto correcto.
    */
   async store({ request, response }: HttpContext) {
     try {
@@ -53,23 +45,28 @@ export default class AsignacionesExpertosController {
       if (!idFinca) return response.badRequest({ message: 'El campo idFinca es obligatorio' })
       if (!fechaAsignada)  return response.badRequest({ message: 'El campo fechaAsignada es obligatorio' })
 
-      const asignacion = await AsignacionExperto.create({ idExperto, idFinca, fechaAsignada })
+      // Buscar si ya existe una asignación para esta finca
+      let asignacion = await AsignacionExperto.query().where('id_finca', idFinca).first()
+
+      if (asignacion) {
+        // Ya existe → actualizar el experto
+        asignacion.idExperto     = idExperto
+        asignacion.fechaAsignada = fechaAsignada
+        await asignacion.save()
+      } else {
+        // No existe → crear nueva
+        asignacion = await AsignacionExperto.create({ idExperto, idFinca, fechaAsignada })
+      }
+
       await asignacion.load('experto')
       await asignacion.load('finca')
 
-      return response.created({ message: 'Asignación creada correctamente', data: asignacion })
+      return response.created({ message: 'Asignación guardada correctamente', data: asignacion })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al crear asignación', error: error.message })
+      return response.internalServerError({ message: 'Error al guardar asignación', error: error.message })
     }
   }
 
-  /**
-   * @update
-   * @summary Actualizar asignación de experto
-   * @requestBody {"idExperto": 3, "idFinca": 2, "fechaAsignada": "2026-06-01"}
-   * @responseBody 200 - {"message": "Asignación actualizada"}
-   * @responseBody 404 - {"message": "Asignación no encontrada"}
-   */
   async update({ params, request, response }: HttpContext) {
     try {
       const asignacion = await AsignacionExperto.findOrFail(params.id)
@@ -85,12 +82,14 @@ export default class AsignacionesExpertosController {
       return response.internalServerError({ message: 'Error al actualizar asignación', error: error.message })
     }
   }
+
   /**
    * @destroy
    * @summary Eliminar asignación de experto
    * @responseBody 200 - {"message": "Asignación eliminada correctamente"}
    * @responseBody 404 - {"message": "Asignación no encontrada"}
    */
+
   async destroy({ params, response }: HttpContext) {
     try {
       const asignacion = await AsignacionExperto.findOrFail(params.id)
