@@ -3,7 +3,6 @@ import Usuario from '#models/usuario'
 import CatRol from '#models/cat_rol'
 
 export default class CafeterosController {
-
   /**
    * @index
    * @summary Listar cafeteros
@@ -18,7 +17,7 @@ export default class CafeterosController {
         .preload('rol')
       return response.ok(usuarios)
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener cafeteros', error: error.message })
+      return response.internalServerError({ message:'Error al obtener cafeteros', error: error.message })
     }
   }
 

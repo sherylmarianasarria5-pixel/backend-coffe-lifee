@@ -2,7 +2,6 @@ import type { HttpContext } from '@adonisjs/core/http'
 import AsignacionExperto from '#models/asignacion_experto'
 
 export default class AsignacionesExpertosController {
-
   /**
    * @index
    * @summary Listar asignaciones de expertos
@@ -50,9 +49,9 @@ export default class AsignacionesExpertosController {
     try {
       const { idExperto, idFinca, fechaAsignada } = request.only(['idExperto', 'idFinca', 'fechaAsignada'])
 
-      if (!idExperto)     return response.badRequest({ message: 'El campo idExperto es obligatorio' })
-      if (!idFinca)       return response.badRequest({ message: 'El campo idFinca es obligatorio' })
-      if (!fechaAsignada) return response.badRequest({ message: 'El campo fechaAsignada es obligatorio' })
+      if (!idExperto) return response.badRequest({ message: 'El campo idExperto es obligatorio' })
+      if (!idFinca) return response.badRequest({ message: 'El campo idFinca es obligatorio' })
+      if (!fechaAsignada)  return response.badRequest({ message: 'El campo fechaAsignada es obligatorio' })
 
       const asignacion = await AsignacionExperto.create({ idExperto, idFinca, fechaAsignada })
       await asignacion.load('experto')
@@ -86,7 +85,6 @@ export default class AsignacionesExpertosController {
       return response.internalServerError({ message: 'Error al actualizar asignación', error: error.message })
     }
   }
-
   /**
    * @destroy
    * @summary Eliminar asignación de experto
