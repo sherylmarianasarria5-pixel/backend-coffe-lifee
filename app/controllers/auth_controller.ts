@@ -86,16 +86,14 @@ export default class AuthController {
       const existe = await Usuario.findBy('correo', correo)
       if (existe) return response.conflict({ message: 'El correo ya está registrado' })
 
-      // ✅ Hasheando la contraseña correctamente
-      const passwordHasheada = await hash.make(password)
-
+      // ✅ Se pasa la contraseña en texto plano — el hook @beforeSave del modelo la hashea automáticamente
       const usuario = await Usuario.create({
         idRol:        idRol ?? 3,
         nombre,
         apellido,
         correo,
         telefono:     telefono ?? null,
-        passwordHash: passwordHasheada,
+        passwordHash: password,
         activo:       true,
       })
 
@@ -237,8 +235,8 @@ export default class AuthController {
         return response.badRequest({ message: 'El token ha expirado. Solicita uno nuevo.' })
       }
 
-      // ✅ Hasheando la nueva contraseña correctamente
-      usuario.passwordHash      = await hash.make(data.nuevaPassword)
+      // ✅ Se pasa en texto plano — el hook @beforeSave del modelo hashea automáticamente
+      usuario.passwordHash      = data.nuevaPassword
       usuario.resetToken        = null
       usuario.resetTokenExpires = null
       await usuario.save()
