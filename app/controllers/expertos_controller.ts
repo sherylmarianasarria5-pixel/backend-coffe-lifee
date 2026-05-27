@@ -6,8 +6,10 @@ export default class ExpertosController {
 
   /**
    * @index
-   * @summary Listar expertos
-   * @responseBody 200 - [{"idUsuario": 1, "nombre": "Juan", "correo": "experto@gmail.com", "rol": {"nombreRol": "experto"}}]
+   * @summary Listar todos los expertos
+   * @description Retorna todos los usuarios con rol de experto
+   * @responseBody 200 - {"data": [{"idUsuario": 5, "nombre": "Juan", "apellido": "Pérez", "correo": "juan@gmail.com", "telefono": "3001234567", "rol": {"nombreRol": "experto"}}]}
+   * @responseBody 500 - {"message": "Error al obtener expertos", "error": "string"}
    */
   async index({ response }: HttpContext) {
     try {
@@ -16,7 +18,7 @@ export default class ExpertosController {
           query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['experto'])
         })
         .preload('rol')
-      return response.ok(usuarios)
+      return response.ok({ data: usuarios })
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener expertos', error: error.message })
     }
@@ -24,16 +26,19 @@ export default class ExpertosController {
 
   /**
    * @store
-   * @summary Crear experto
-   * @requestBody {"nombre": "Juan", "apellido": "Pérez", "correo": "experto@gmail.com", "password": "123456", "telefono": "3001234567", "observaciones": "texto", "activo": true}
-   * @responseBody 201 - {"message": "Experto creado correctamente", "data": {"idUsuario": 1}}
+   * @summary Crear un nuevo experto
+   * @description Crea un usuario con rol de experto automáticamente. Solo el admin puede hacer esto.
+   * @requestBody {"nombre": "Juan", "apellido": "Pérez", "correo": "juan@gmail.com", "telefono": "3001234567", "password": "123456", "observaciones": "Experto en café arábica"}
+   * @responseBody 201 - {"message": "Experto creado correctamente", "data": {"idUsuario": 5, "nombre": "Juan", "rol": "experto"}}
    * @responseBody 400 - {"message": "El correo ya existe"}
+   * @responseBody 500 - {"message": "Error al crear experto", "error": "string"}
    */
   async store({ request, response }: HttpContext) {
     try {
       const data = request.only(['nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
 
       if (!data.nombre)   return response.badRequest({ message: 'El nombre es obligatorio' })
+      if (!data.apellido) return response.badRequest({ message: 'El apellido es obligatorio' })
       if (!data.correo)   return response.badRequest({ message: 'El correo es obligatorio' })
       if (!data.password) return response.badRequest({ message: 'La contraseña es obligatoria' })
 
@@ -48,13 +53,26 @@ export default class ExpertosController {
         nombre:        data.nombre,
         apellido:      data.apellido,
         correo:        data.correo,
-        telefono:      data.telefono,
+        telefono:      data.telefono      ?? null,
         passwordHash:  data.password,
-        observaciones: data.observaciones,
-        activo:        data.activo ?? true,
+        observaciones: data.observaciones ?? null,
+        activo:        data.activo        ?? true,
         idRol:         rolExperto.idRol,
       })
-      return response.created({ message: 'Experto creado correctamente', data: usuario })
+
+      await usuario.load('rol')
+
+      return response.created({
+        message: 'Experto creado correctamente',
+        data: {
+          idUsuario: usuario.idUsuario,
+          nombre:    usuario.nombre,
+          apellido:  usuario.apellido,
+          correo:    usuario.correo,
+          telefono:  usuario.telefono,
+          rol:       usuario.rol.nombreRol,
+        },
+      })
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al crear experto', error: error.message })
     }
@@ -62,8 +80,9 @@ export default class ExpertosController {
 
   /**
    * @show
-   * @summary Ver experto por ID
-   * @responseBody 200 - {"idUsuario": 1, "nombre": "Juan", "correo": "experto@gmail.com"}
+   * @summary Obtener un experto por ID
+   * @paramPath id - ID del experto - @type(number) @required
+   * @responseBody 200 - {"data": {"idUsuario": 5, "nombre": "Juan", "rol": {"nombreRol": "experto"}}}
    * @responseBody 404 - {"message": "Experto no encontrado"}
    */
   async show({ params, response }: HttpContext) {
@@ -75,7 +94,7 @@ export default class ExpertosController {
         })
         .preload('rol')
         .firstOrFail()
-      return response.ok(usuario)
+      return response.ok({ data: usuario })
     } catch {
       return response.notFound({ message: 'Experto no encontrado' })
     }
@@ -83,10 +102,12 @@ export default class ExpertosController {
 
   /**
    * @update
-   * @summary Actualizar experto
-   * @requestBody {"nombre": "Juan", "apellido": "Pérez", "correo": "experto@gmail.com", "telefono": "3001234567", "observaciones": "texto", "activo": true, "password": "nueva123"}
-   * @responseBody 200 - {"message": "Experto actualizado correctamente"}
+   * @summary Actualizar un experto
+   * @paramPath id - ID del experto - @type(number) @required
+   * @requestBody {"nombre": "Juan", "apellido": "Pérez", "correo": "juan@gmail.com", "telefono": "3001234567", "password": "nuevaPassword123", "activo": true}
+   * @responseBody 200 - {"message": "Experto actualizado correctamente", "data": {"idUsuario": 5, "rol": "experto"}}
    * @responseBody 400 - {"message": "El correo ya está en uso"}
+   * @responseBody 404 - {"message": "Experto no encontrado"}
    */
   async update({ params, request, response }: HttpContext) {
     try {
@@ -115,7 +136,19 @@ export default class ExpertosController {
 
       usuario.merge(payload)
       await usuario.save()
-      return response.ok({ message: 'Experto actualizado correctamente', data: usuario })
+      await usuario.load('rol')
+
+      return response.ok({
+        message: 'Experto actualizado correctamente',
+        data: {
+          idUsuario: usuario.idUsuario,
+          nombre:    usuario.nombre,
+          apellido:  usuario.apellido,
+          correo:    usuario.correo,
+          telefono:  usuario.telefono,
+          rol:       usuario.rol.nombreRol,
+        }
+      })
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al actualizar experto', error: error.message })
     }
@@ -123,7 +156,8 @@ export default class ExpertosController {
 
   /**
    * @destroy
-   * @summary Eliminar experto
+   * @summary Eliminar un experto
+   * @paramPath id - ID del experto - @type(number) @required
    * @responseBody 200 - {"message": "Experto eliminado correctamente"}
    * @responseBody 404 - {"message": "Experto no encontrado"}
    */

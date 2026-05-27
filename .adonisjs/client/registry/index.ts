@@ -150,18 +150,6 @@ const routes = {
     tokens: [{"old":"/categorias/:id","type":0,"val":"categorias","end":""},{"old":"/categorias/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['categorias.show']['types'],
   },
-  'asignaciones_expertos.index': {
-    methods: ["GET","HEAD"],
-    pattern: '/asignaciones_expertos',
-    tokens: [{"old":"/asignaciones_expertos","type":0,"val":"asignaciones_expertos","end":""}],
-    types: placeholder as Registry['asignaciones_expertos.index']['types'],
-  },
-  'asignaciones_expertos.show': {
-    methods: ["GET","HEAD"],
-    pattern: '/asignaciones_expertos/:id',
-    tokens: [{"old":"/asignaciones_expertos/:id","type":0,"val":"asignaciones_expertos","end":""},{"old":"/asignaciones_expertos/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['asignaciones_expertos.show']['types'],
-  },
   'dashboard.index': {
     methods: ["GET","HEAD"],
     pattern: '/dashboard',
@@ -419,6 +407,18 @@ const routes = {
     pattern: '/categorias/:id',
     tokens: [{"old":"/categorias/:id","type":0,"val":"categorias","end":""},{"old":"/categorias/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['categorias.destroy']['types'],
+  },
+  'asignaciones_expertos.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/asignaciones_expertos',
+    tokens: [{"old":"/asignaciones_expertos","type":0,"val":"asignaciones_expertos","end":""}],
+    types: placeholder as Registry['asignaciones_expertos.index']['types'],
+  },
+  'asignaciones_expertos.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/asignaciones_expertos/:id',
+    tokens: [{"old":"/asignaciones_expertos/:id","type":0,"val":"asignaciones_expertos","end":""},{"old":"/asignaciones_expertos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['asignaciones_expertos.show']['types'],
   },
   'cafeteros.index': {
     methods: ["GET","HEAD"],

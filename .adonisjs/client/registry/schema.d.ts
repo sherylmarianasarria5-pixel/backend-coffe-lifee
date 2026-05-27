@@ -295,30 +295,6 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/categorias_controller').default['show']>>>
     }
   }
-  'asignaciones_expertos.index': {
-    methods: ["GET","HEAD"]
-    pattern: '/asignaciones_expertos'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['index']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['index']>>>
-    }
-  }
-  'asignaciones_expertos.show': {
-    methods: ["GET","HEAD"]
-    pattern: '/asignaciones_expertos/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['show']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['show']>>>
-    }
-  }
   'dashboard.index': {
     methods: ["GET","HEAD"]
     pattern: '/dashboard'
@@ -833,6 +809,30 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/categorias_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/categorias_controller').default['destroy']>>>
+    }
+  }
+  'asignaciones_expertos.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/asignaciones_expertos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['index']>>>
+    }
+  }
+  'asignaciones_expertos.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/asignaciones_expertos/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['show']>>>
     }
   }
   'cafeteros.index': {

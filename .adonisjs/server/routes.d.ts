@@ -28,8 +28,6 @@ export type ScannedRoutes = {
     'cat_estados_cultivos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'categorias.index': { paramsTuple?: []; params?: {} }
     'categorias.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'asignaciones_expertos.index': { paramsTuple?: []; params?: {} }
-    'asignaciones_expertos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'dashboard.index': { paramsTuple?: []; params?: {} }
     'usuarios.index': { paramsTuple?: []; params?: {} }
     'usuarios.store': { paramsTuple?: []; params?: {} }
@@ -73,6 +71,8 @@ export type ScannedRoutes = {
     'categorias.store': { paramsTuple?: []; params?: {} }
     'categorias.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'categorias.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'asignaciones_expertos.index': { paramsTuple?: []; params?: {} }
+    'asignaciones_expertos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cafeteros.index': { paramsTuple?: []; params?: {} }
     'cafeteros.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'monitoreos.store': { paramsTuple?: []; params?: {} }
@@ -142,8 +142,6 @@ export type ScannedRoutes = {
     'cat_estados_cultivos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'categorias.index': { paramsTuple?: []; params?: {} }
     'categorias.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'asignaciones_expertos.index': { paramsTuple?: []; params?: {} }
-    'asignaciones_expertos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'dashboard.index': { paramsTuple?: []; params?: {} }
     'usuarios.index': { paramsTuple?: []; params?: {} }
     'usuarios.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -151,6 +149,8 @@ export type ScannedRoutes = {
     'admin.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'expertos.index': { paramsTuple?: []; params?: {} }
     'expertos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'asignaciones_expertos.index': { paramsTuple?: []; params?: {} }
+    'asignaciones_expertos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cafeteros.index': { paramsTuple?: []; params?: {} }
     'cafeteros.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'fincas.index': { paramsTuple?: []; params?: {} }
@@ -190,8 +190,6 @@ export type ScannedRoutes = {
     'cat_estados_cultivos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'categorias.index': { paramsTuple?: []; params?: {} }
     'categorias.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'asignaciones_expertos.index': { paramsTuple?: []; params?: {} }
-    'asignaciones_expertos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'dashboard.index': { paramsTuple?: []; params?: {} }
     'usuarios.index': { paramsTuple?: []; params?: {} }
     'usuarios.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -199,6 +197,8 @@ export type ScannedRoutes = {
     'admin.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'expertos.index': { paramsTuple?: []; params?: {} }
     'expertos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'asignaciones_expertos.index': { paramsTuple?: []; params?: {} }
+    'asignaciones_expertos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cafeteros.index': { paramsTuple?: []; params?: {} }
     'cafeteros.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'fincas.index': { paramsTuple?: []; params?: {} }

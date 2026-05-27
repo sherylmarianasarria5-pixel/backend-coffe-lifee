@@ -1,9 +1,9 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Usuario from '#models/usuario'
 import CatRol from '#models/cat_rol'
-import hash from '@adonisjs/core/services/hash'
 
 export default class AdminController {
+
   /**
    * @index
    * @summary Listar administradores
@@ -25,7 +25,7 @@ export default class AdminController {
   /**
    * @store
    * @summary Crear administrador
-   * @requestBody {"nombre": "Juan", "apellido": "Pérez", "correo": "admin@gmail.com", "password": "123456", "telefono": "3001234567", "observaciones": "texto", "activo": true}
+   * @requestBody {"nombre": "Juan", "apellido": "Pérez", "correo": "admin@gmail.com", "password": "123456", "telefono": "3001234567"}
    * @responseBody 201 - {"message": "Administrador creado correctamente", "data": {"idUsuario": 1}}
    * @responseBody 400 - {"message": "El correo ya existe"}
    */
@@ -44,14 +44,12 @@ export default class AdminController {
         .whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['admin'])
         .firstOrFail()
 
-      const passwordHash = await hash.make(data.password)
-
       const usuario = await Usuario.create({
         nombre:        data.nombre,
         apellido:      data.apellido,
         correo:        data.correo,
         telefono:      data.telefono,
-        passwordHash,
+        passwordHash:  data.password,
         observaciones: data.observaciones,
         activo:        data.activo ?? true,
         idRol:         rolAdmin.idRol,
@@ -66,6 +64,7 @@ export default class AdminController {
   /**
    * @show
    * @summary Ver administrador por ID
+   * @paramPath id - ID del admin - @type(number) @required
    * @responseBody 200 - {"idUsuario": 1, "nombre": "Juan", "correo": "admin@gmail.com"}
    * @responseBody 404 - {"message": "Administrador no encontrado"}
    */
@@ -87,7 +86,8 @@ export default class AdminController {
   /**
    * @update
    * @summary Actualizar administrador
-   * @requestBody {"nombre": "Juan", "apellido": "Pérez", "correo": "admin@gmail.com", "telefono": "3001234567", "observaciones": "texto", "activo": true, "password": "nueva123"}
+   * @paramPath id - ID del admin - @type(number) @required
+   * @requestBody {"nombre": "Juan", "correo": "admin@gmail.com", "password": "nueva123"}
    * @responseBody 200 - {"message": "Administrador actualizado correctamente"}
    * @responseBody 400 - {"message": "El correo ya está en uso"}
    */
@@ -114,7 +114,7 @@ export default class AdminController {
       if (data.telefono      !== undefined) payload.telefono      = data.telefono
       if (data.observaciones !== undefined) payload.observaciones = data.observaciones
       if (data.activo        !== undefined) payload.activo        = data.activo
-      if (data.password)                    payload.passwordHash  = await hash.make(data.password)
+      if (data.password)                    payload.passwordHash  = data.password
 
       usuario.merge(payload)
       await usuario.save()
@@ -127,6 +127,7 @@ export default class AdminController {
   /**
    * @destroy
    * @summary Eliminar administrador
+   * @paramPath id - ID del admin - @type(number) @required
    * @responseBody 200 - {"message": "Administrador eliminado correctamente"}
    * @responseBody 404 - {"message": "Administrador no encontrado"}
    */

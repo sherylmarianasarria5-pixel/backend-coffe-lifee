@@ -1,7 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Usuario from '#models/usuario'
 import CatRol from '#models/cat_rol'
-import hash from '@adonisjs/core/services/hash'
 
 export default class ExpertosController {
 
@@ -26,7 +25,7 @@ export default class ExpertosController {
   /**
    * @store
    * @summary Crear experto
-   * @requestBody {"nombre": "Juan", "apellido": "Pérez", "correo": "experto@gmail.com", "password": "123456", "telefono": "3001234567", "observaciones": "texto", "activo": true}
+   * @requestBody {"nombre": "Juan", "apellido": "Pérez", "correo": "experto@gmail.com", "password": "123456", "telefono": "3001234567"}
    * @responseBody 201 - {"message": "Experto creado correctamente", "data": {"idUsuario": 1}}
    * @responseBody 400 - {"message": "El correo ya existe"}
    */
@@ -45,14 +44,12 @@ export default class ExpertosController {
         .whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['experto'])
         .firstOrFail()
 
-      const passwordHash = await hash.make(data.password)
-
       const usuario = await Usuario.create({
         nombre:        data.nombre,
         apellido:      data.apellido,
         correo:        data.correo,
         telefono:      data.telefono,
-        passwordHash,
+        passwordHash:  data.password,
         observaciones: data.observaciones,
         activo:        data.activo ?? true,
         idRol:         rolExperto.idRol,
@@ -67,6 +64,7 @@ export default class ExpertosController {
   /**
    * @show
    * @summary Ver experto por ID
+   * @paramPath id - ID del experto - @type(number) @required
    * @responseBody 200 - {"idUsuario": 1, "nombre": "Juan", "correo": "experto@gmail.com"}
    * @responseBody 404 - {"message": "Experto no encontrado"}
    */
@@ -88,7 +86,8 @@ export default class ExpertosController {
   /**
    * @update
    * @summary Actualizar experto
-   * @requestBody {"nombre": "Juan", "apellido": "Pérez", "correo": "experto@gmail.com", "telefono": "3001234567", "observaciones": "texto", "activo": true, "password": "nueva123"}
+   * @paramPath id - ID del experto - @type(number) @required
+   * @requestBody {"nombre": "Juan", "correo": "experto@gmail.com", "password": "nueva123"}
    * @responseBody 200 - {"message": "Experto actualizado correctamente"}
    * @responseBody 400 - {"message": "El correo ya está en uso"}
    */
@@ -115,11 +114,10 @@ export default class ExpertosController {
       if (data.telefono      !== undefined) payload.telefono      = data.telefono
       if (data.observaciones !== undefined) payload.observaciones = data.observaciones
       if (data.activo        !== undefined) payload.activo        = data.activo
-      if (data.password)                    payload.passwordHash  = await hash.make(data.password)
+      if (data.password)                    payload.passwordHash  = data.password
 
       usuario.merge(payload)
       await usuario.save()
-
       return response.ok({ message: 'Experto actualizado correctamente', data: usuario })
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al actualizar experto', error: error.message })
@@ -129,6 +127,7 @@ export default class ExpertosController {
   /**
    * @destroy
    * @summary Eliminar experto
+   * @paramPath id - ID del experto - @type(number) @required
    * @responseBody 200 - {"message": "Experto eliminado correctamente"}
    * @responseBody 404 - {"message": "Experto no encontrado"}
    */

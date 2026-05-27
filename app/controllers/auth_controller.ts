@@ -7,7 +7,6 @@ import { DateTime } from 'luxon'
 import { loginValidator, recuperarPasswordValidator, restablecerPasswordValidator } from '#validators/validators'
 
 export default class AuthController {
-
   /**
    * @login
    * @summary Iniciar sesión
@@ -19,7 +18,10 @@ export default class AuthController {
     try {
       const data = await request.validateUsing(loginValidator)
 
-      const usuario = await Usuario.query().where('correo', data.correo).preload('rol').first()
+      const usuario = await Usuario.query()
+        .where('correo', data.correo)
+        .preload('rol')
+        .first()
 
       if (!usuario) return response.unauthorized({ message: 'Correo o contraseña incorrectos' })
       if (!usuario.activo) return response.unauthorized({ message: 'Tu cuenta está desactivada. Contacta al administrador.' })
@@ -84,13 +86,16 @@ export default class AuthController {
       const existe = await Usuario.findBy('correo', correo)
       if (existe) return response.conflict({ message: 'El correo ya está registrado' })
 
+      // ✅ Hasheando la contraseña correctamente
+      const passwordHasheada = await hash.make(password)
+
       const usuario = await Usuario.create({
         idRol:        idRol ?? 3,
         nombre,
         apellido,
         correo,
         telefono:     telefono ?? null,
-        passwordHash: password,
+        passwordHash: passwordHasheada,
         activo:       true,
       })
 
@@ -232,7 +237,8 @@ export default class AuthController {
         return response.badRequest({ message: 'El token ha expirado. Solicita uno nuevo.' })
       }
 
-      usuario.passwordHash      = data.nuevaPassword
+      // ✅ Hasheando la nueva contraseña correctamente
+      usuario.passwordHash      = await hash.make(data.nuevaPassword)
       usuario.resetToken        = null
       usuario.resetTokenExpires = null
       await usuario.save()
@@ -263,5 +269,4 @@ export default class AuthController {
       return response.internalServerError({ message: 'Error al restablecer contraseña', error: error.message })
     }
   }
-
 }

@@ -70,13 +70,6 @@ export interface ApiDefinition {
     update: typeof routes['categorias.update']
     destroy: typeof routes['categorias.destroy']
   }
-  asignacionesExpertos: {
-    index: typeof routes['asignaciones_expertos.index']
-    show: typeof routes['asignaciones_expertos.show']
-    store: typeof routes['asignaciones_expertos.store']
-    update: typeof routes['asignaciones_expertos.update']
-    destroy: typeof routes['asignaciones_expertos.destroy']
-  }
   dashboard: {
     index: typeof routes['dashboard.index']
   }
@@ -100,6 +93,13 @@ export interface ApiDefinition {
     show: typeof routes['expertos.show']
     update: typeof routes['expertos.update']
     destroy: typeof routes['expertos.destroy']
+  }
+  asignacionesExpertos: {
+    store: typeof routes['asignaciones_expertos.store']
+    update: typeof routes['asignaciones_expertos.update']
+    destroy: typeof routes['asignaciones_expertos.destroy']
+    index: typeof routes['asignaciones_expertos.index']
+    show: typeof routes['asignaciones_expertos.show']
   }
   cafeteros: {
     index: typeof routes['cafeteros.index']

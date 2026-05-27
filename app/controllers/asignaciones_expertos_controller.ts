@@ -1,95 +1,264 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import AsignacionExperto from '#models/asignacion_experto'
+import Usuario from '#models/usuario'
+
+function serializar(a: AsignacionExperto) {
+  const exp = a.experto
+  return {
+    idAsignacion:  a.idAsignacion,
+    idFinca:       a.idFinca,
+    fechaAsignada: a.fechaAsignada,
+    fechaRegistro: a.fechaRegistro,
+    experto: exp ? {
+      idUsuario: exp.idUsuario,
+      nombre:    exp.nombre,
+      apellido:  exp.apellido,
+      correo:    exp.correo,
+      telefono:  exp.telefono,
+    } : null,
+    finca: a.$preloaded.finca ? a.finca : undefined,
+  }
+}
+
+async function validarExperto(idExperto: number, response: any) {
+  const usuario = await Usuario.query()
+    .where('id_usuario', idExperto)
+    .whereHas('rol', (q: any) =>
+      q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['experto'])
+    )
+    .first()
+
+  if (!usuario) {
+    response.badRequest({ 
+      message: 'El usuario no existe o no tiene rol de experto' 
+    })
+    return null
+  }
+  return usuario
+}
 
 export default class AsignacionesExpertosController {
+
   /**
    * @index
-   * @summary Listar asignaciones de expertos
-   * @responseBody 200 - {"data": [{"idAsignacion": 1, "fechaAsignada": "2026-05-11", "experto": {"nombre": "Juan"}, "finca": {"nombreFinca": "Finca El Paraíso"}}]}
+   * @summary Listar todas las asignaciones de expertos
+   * @description Retorna todas las asignaciones con los datos completos del experto y la finca
+   * @responseBody 200 - {
+   *   "data": [{
+   *     "idAsignacion": 1,
+   *     "idFinca": 2,
+   *     "fechaAsignada": "2026-05-11",
+   *     "fechaRegistro": "2026-05-11T00:00:00.000Z",
+   *     "experto": {
+   *       "idUsuario": 5,
+   *       "nombre": "Juan",
+   *       "apellido": "Pérez",
+   *       "correo": "juan@gmail.com",
+   *       "telefono": "3001234567"
+   *     },
+   *     "finca": {
+   *       "idFinca": 2,
+   *       "nombreFinca": "Finca El Paraíso"
+   *     }
+   *   }]
+   * }
+   * @responseBody 500 - {"message": "Error al obtener asignaciones", "error": "string"}
    */
-
   async index({ response }: HttpContext) {
     try {
       const asignaciones = await AsignacionExperto.query()
-        .preload('experto', (q) => q.preload('rol'))
+        .preload('experto')
         .preload('finca')
         .orderBy('fecha_asignada', 'desc')
-      return response.ok({ data: asignaciones })
+
+      return response.ok({ data: asignaciones.map(serializar) })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener asignaciones', error: error.message })
+      return response.internalServerError({ 
+        message: 'Error al obtener asignaciones', 
+        error: error.message 
+      })
     }
   }
 
+  /**
+   * @show
+   * @summary Obtener una asignación por ID
+   * @description Retorna los datos completos de una asignación incluyendo experto y finca
+   * @paramPath id - ID de la asignación - @type(number) @required
+   * @responseBody 200 - {
+   *   "data": {
+   *     "idAsignacion": 1,
+   *     "idFinca": 2,
+   *     "fechaAsignada": "2026-05-11",
+   *     "experto": {
+   *       "idUsuario": 5,
+   *       "nombre": "Juan",
+   *       "apellido": "Pérez",
+   *       "correo": "juan@gmail.com",
+   *       "telefono": "3001234567"
+   *     },
+   *     "finca": {
+   *       "idFinca": 2,
+   *       "nombreFinca": "Finca El Paraíso"
+   *     }
+   *   }
+   * }
+   * @responseBody 404 - {"message": "Asignación no encontrada"}
+   * @responseBody 500 - {"message": "Error al obtener asignación", "error": "string"}
+   */
   async show({ params, response }: HttpContext) {
     try {
-      const asignacion = await AsignacionExperto.query()
+      const a = await AsignacionExperto.query()
         .where('id_asignacion', params.id)
-        .preload('experto', (q) => q.preload('rol'))
+        .preload('experto')
         .preload('finca')
         .firstOrFail()
-      return response.ok({ data: asignacion })
+
+      return response.ok({ data: serializar(a) })
     } catch {
       return response.notFound({ message: 'Asignación no encontrada' })
     }
   }
 
   /**
-   * UPSERT: si ya existe asignación para esa finca, la actualiza.
-   * Si no existe, la crea. Así el botón siempre muestra el experto correcto.
+   * @store
+   * @summary Crear o actualizar asignación de experto a finca
+   * @description Si ya existe una asignación para esa finca la actualiza, si no la crea. Valida que el usuario sea experto.
+   * @requestBody {
+   *   "idExperto": 5,
+   *   "idFinca": 2,
+   *   "fechaAsignada": "2026-05-11"
+   * }
+   * @responseBody 201 - {
+   *   "message": "Asignación guardada correctamente",
+   *   "data": {
+   *     "idAsignacion": 1,
+   *     "idFinca": 2,
+   *     "fechaAsignada": "2026-05-11",
+   *     "experto": {
+   *       "idUsuario": 5,
+   *       "nombre": "Juan",
+   *       "apellido": "Pérez",
+   *       "correo": "juan@gmail.com",
+   *       "telefono": "3001234567"
+   *     }
+   *   }
+   * }
+   * @responseBody 400 - {"message": "El campo idExperto es obligatorio"}
+   * @responseBody 400 - {"message": "El usuario no existe o no tiene rol de experto"}
+   * @responseBody 500 - {"message": "Error al guardar asignación", "error": "string"}
    */
   async store({ request, response }: HttpContext) {
     try {
-      const { idExperto, idFinca, fechaAsignada } = request.only(['idExperto', 'idFinca', 'fechaAsignada'])
+      const { idExperto, idFinca, fechaAsignada } = request.only([
+        'idExperto', 
+        'idFinca', 
+        'fechaAsignada'
+      ])
 
-      if (!idExperto) return response.badRequest({ message: 'El campo idExperto es obligatorio' })
-      if (!idFinca) return response.badRequest({ message: 'El campo idFinca es obligatorio' })
-      if (!fechaAsignada)  return response.badRequest({ message: 'El campo fechaAsignada es obligatorio' })
+      if (!idExperto)     return response.badRequest({ message: 'El campo idExperto es obligatorio' })
+      if (!idFinca)       return response.badRequest({ message: 'El campo idFinca es obligatorio' })
+      if (!fechaAsignada) return response.badRequest({ message: 'El campo fechaAsignada es obligatorio' })
 
-      // Buscar si ya existe una asignación para esta finca
-      let asignacion = await AsignacionExperto.query().where('id_finca', idFinca).first()
+      const experto = await validarExperto(idExperto, response)
+      if (!experto) return
+
+      let asignacion = await AsignacionExperto.query()
+        .where('id_finca', idFinca)
+        .first()
 
       if (asignacion) {
-        // Ya existe → actualizar el experto
         asignacion.idExperto     = idExperto
         asignacion.fechaAsignada = fechaAsignada
         await asignacion.save()
       } else {
-        // No existe → crear nueva
-        asignacion = await AsignacionExperto.create({ idExperto, idFinca, fechaAsignada })
+        asignacion = await AsignacionExperto.create({ 
+          idExperto, 
+          idFinca, 
+          fechaAsignada 
+        })
       }
 
       await asignacion.load('experto')
       await asignacion.load('finca')
 
-      return response.created({ message: 'Asignación guardada correctamente', data: asignacion })
+      return response.created({
+        message: 'Asignación guardada correctamente',
+        data: serializar(asignacion),
+      })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al guardar asignación', error: error.message })
+      return response.internalServerError({ 
+        message: 'Error al guardar asignación', 
+        error: error.message 
+      })
     }
   }
 
+  /**
+   * @update
+   * @summary Actualizar una asignación existente
+   * @description Actualiza los datos de una asignación. Si se cambia el experto, valida que el nuevo usuario tenga rol de experto.
+   * @paramPath id - ID de la asignación - @type(number) @required
+   * @requestBody {
+   *   "idExperto": 6,
+   *   "idFinca": 2,
+   *   "fechaAsignada": "2026-05-15"
+   * }
+   * @responseBody 200 - {
+   *   "message": "Asignación actualizada",
+   *   "data": {
+   *     "idAsignacion": 1,
+   *     "idFinca": 2,
+   *     "fechaAsignada": "2026-05-15",
+   *     "experto": {
+   *       "idUsuario": 6,
+   *       "nombre": "Carlos",
+   *       "apellido": "López",
+   *       "correo": "carlos@gmail.com",
+   *       "telefono": "3009876543"
+   *     }
+   *   }
+   * }
+   * @responseBody 400 - {"message": "El usuario no existe o no tiene rol de experto"}
+   * @responseBody 404 - {"message": "Asignación no encontrada"}
+   * @responseBody 500 - {"message": "Error al actualizar asignación", "error": "string"}
+   */
   async update({ params, request, response }: HttpContext) {
     try {
       const asignacion = await AsignacionExperto.findOrFail(params.id)
       const data = request.only(['idExperto', 'idFinca', 'fechaAsignada'])
+
+      if (data.idExperto) {
+        const experto = await validarExperto(data.idExperto, response)
+        if (!experto) return
+      }
 
       asignacion.merge(data)
       await asignacion.save()
       await asignacion.load('experto')
       await asignacion.load('finca')
 
-      return response.ok({ message: 'Asignación actualizada', data: asignacion })
+      return response.ok({ 
+        message: 'Asignación actualizada', 
+        data: serializar(asignacion) 
+      })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al actualizar asignación', error: error.message })
+      return response.internalServerError({ 
+        message: 'Error al actualizar asignación', 
+        error: error.message 
+      })
     }
   }
 
   /**
    * @destroy
-   * @summary Eliminar asignación de experto
+   * @summary Eliminar una asignación de experto
+   * @description Elimina permanentemente la asignación de un experto a una finca
+   * @paramPath id - ID de la asignación - @type(number) @required
    * @responseBody 200 - {"message": "Asignación eliminada correctamente"}
    * @responseBody 404 - {"message": "Asignación no encontrada"}
+   * @responseBody 500 - {"message": "Error al eliminar asignación", "error": "string"}
    */
-
   async destroy({ params, response }: HttpContext) {
     try {
       const asignacion = await AsignacionExperto.findOrFail(params.id)
