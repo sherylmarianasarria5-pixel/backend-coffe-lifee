@@ -81,6 +81,7 @@ export type ScannedRoutes = {
     'analisis_ia.store': { paramsTuple?: []; params?: {} }
     'analisis_ia.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'analisis_ia.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'analisis_ia.predict': { paramsTuple?: []; params?: {} }
     'recomendaciones.store': { paramsTuple?: []; params?: {} }
     'recomendaciones.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recomendaciones.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -290,6 +291,7 @@ export type ScannedRoutes = {
     'categorias.store': { paramsTuple?: []; params?: {} }
     'monitoreos.store': { paramsTuple?: []; params?: {} }
     'analisis_ia.store': { paramsTuple?: []; params?: {} }
+    'analisis_ia.predict': { paramsTuple?: []; params?: {} }
     'recomendaciones.store': { paramsTuple?: []; params?: {} }
     'tratamientos.store': { paramsTuple?: []; params?: {} }
     'aplicaciones_tratamientos.store': { paramsTuple?: []; params?: {} }

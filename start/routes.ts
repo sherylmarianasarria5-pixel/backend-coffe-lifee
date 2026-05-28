@@ -3,8 +3,8 @@ import { middleware } from '#start/kernel'
 import AutoSwagger from 'adonis-autoswagger'
 import swagger from '#config/swagger'
 
-const AuthController = () => import('#controllers/auth_controller')
-const MiPerfilController = () => import('#controllers/mi-perfil_controller')
+const AuthController                      = () => import('#controllers/auth_controller')
+const MiPerfilController                  = () => import('#controllers/mi-perfil_controller')
 const DashboardController                 = () => import('#controllers/dashboard_controller')
 const UsuariosController                  = () => import('#controllers/usuarios_controller')
 const AdminController                     = () => import('#controllers/admin_controller')
@@ -31,7 +31,7 @@ const AnalisisIaController                = () => import('#controllers/analisis_
 const RecomendacionesController           = () => import('#controllers/recomendaciones_controller')
 const AsignacionesExpertosController      = () => import('#controllers/asignaciones_expertos_controller')
 
-// ─── Público ─────────────────────────────────────────────────────────────────
+// ─── Público ──────────────────────────────────────────────────────────────────
 router.get('/', async () => ({
   mensaje: 'API Coffee Life funcionando',
   version: '2.0',
@@ -145,10 +145,11 @@ router.group(() => {
   router.put('/monitoreos/:id',    [MonitoreosController, 'update'])
   router.delete('/monitoreos/:id', [MonitoreosController, 'destroy'])
 
-  // Análisis IA — escritura
-  router.post('/analisis_ia',       [AnalisisIaController, 'store'])
-  router.put('/analisis_ia/:id',    [AnalisisIaController, 'update'])
-  router.delete('/analisis_ia/:id', [AnalisisIaController, 'destroy'])
+  // Análisis IA — escritura + predicción
+  router.post('/analisis_ia',          [AnalisisIaController, 'store'])
+  router.put('/analisis_ia/:id',       [AnalisisIaController, 'update'])
+  router.delete('/analisis_ia/:id',    [AnalisisIaController, 'destroy'])
+  router.post('/analisis_ia/predict',  [AnalisisIaController, 'predict'])  // ← IA YOLO
 
   // Recomendaciones — escritura
   router.post('/recomendaciones',       [RecomendacionesController, 'store'])
@@ -251,6 +252,6 @@ router.group(() => {
   router.get('/monitoreos',         [CaficultorController, 'monitoreos'])
   router.get('/recomendaciones',    [CaficultorController, 'recomendaciones'])
   router.get('/analisis_ia',        [CaficultorController, 'analisis_ia'])
- router.get('/expertos_asignados', [CaficultorController, 'expertos_asignados'])
-router.post('/analizar-imagen',   [CaficultorController, 'analizarImagen'])  // ← NUEVA
+  router.get('/expertos_asignados', [CaficultorController, 'expertos_asignados'])
+  router.post('/analizar-imagen',   [CaficultorController, 'analizarImagen'])
 }).prefix('/caficultor').use(middleware.role(['cafetero']))

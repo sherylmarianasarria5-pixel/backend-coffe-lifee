@@ -1,14 +1,11 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import AnalisisIa from '#models/analisis_ia'
 import { analisisIaStoreValidator, analisisIaUpdateValidator } from '#validators/validators'
+import axios from 'axios'
+import FormData from 'form-data'
+import * as fs from 'node:fs'
 
 export default class AnalisisIaController {
-
-  /**
-   * @index
-   * @summary Listar análisis IA
-   * @responseBody 200 - [{"idAnalisis": 1, "resultado": "Roya detectada", "porcentajeConfianza": "0.95"}]
-   */
   async index({ request, response }: HttpContext) {
     try {
       const page     = Number(request.input('page', 1))
@@ -32,13 +29,6 @@ export default class AnalisisIaController {
     }
   }
 
-  /**
-   * @store
-   * @summary Crear análisis IA
-   * @requestBody {"id_imagen": 1, "id_estado_analisis": 1, "resultado": "Roya detectada", "confianza": "0.95"}
-   * @responseBody 201 - {"message": "Análisis IA creado correctamente"}
-   * @responseBody 422 - {"message": "Error de validación"}
-   */
   async store({ request, response }: HttpContext) {
     try {
       const data = await request.validateUsing(analisisIaStoreValidator)
@@ -63,12 +53,6 @@ export default class AnalisisIaController {
     }
   }
 
-  /**
-   * @show
-   * @summary Ver análisis IA por ID
-   * @responseBody 200 - {"idAnalisis": 1, "resultado": "Roya detectada"}
-   * @responseBody 404 - {"message": "Análisis IA no encontrado"}
-   */
   async show({ params, response }: HttpContext) {
     try {
       const analisis = await AnalisisIa.query()
@@ -83,13 +67,6 @@ export default class AnalisisIaController {
     }
   }
 
-  /**
-   * @update
-   * @summary Actualizar análisis IA
-   * @requestBody {"id_estado_analisis": 2, "resultado": "Sin roya", "confianza": "0.99"}
-   * @responseBody 200 - {"message": "Análisis IA actualizado correctamente"}
-   * @responseBody 422 - {"message": "Error de validación"}
-   */
   async update({ params, request, response }: HttpContext) {
     try {
       const analisis = await AnalisisIa.findOrFail(params.id)
@@ -114,12 +91,6 @@ export default class AnalisisIaController {
     }
   }
 
-  /**
-   * @destroy
-   * @summary Eliminar análisis IA
-   * @responseBody 200 - {"message": "Análisis IA eliminado correctamente"}
-   * @responseBody 404 - {"message": "Análisis IA no encontrado"}
-   */
   async destroy({ params, response }: HttpContext) {
     try {
       const analisis = await AnalisisIa.findOrFail(params.id)
@@ -127,6 +98,81 @@ export default class AnalisisIaController {
       return response.ok({ message: 'Análisis IA eliminado correctamente' })
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al eliminar análisis IA', error: error.message })
+    }
+  }
+
+  // =========================================
+  // PREDICCIÓN IA (YOLO)
+  // =========================================
+  async predict({ request, response }: HttpContext) {
+    try {
+      const image    = request.file('file')
+      const idImagen = request.input('idImagen')
+      const idEstado = request.input('idEstado')
+
+      if (!image) {
+        return response.badRequest({ success: false, message: 'Debes subir una imagen' })
+      }
+      if (!idImagen) {
+        return response.badRequest({ success: false, message: 'idImagen es obligatorio' })
+      }
+      if (!idEstado) {
+        return response.badRequest({ success: false, message: 'idEstado es obligatorio' })
+      }
+      if (!image.tmpPath) {
+        return response.badRequest({ success: false, message: 'No se pudo procesar la imagen' })
+      }
+
+      const form = new FormData()
+      form.append('file', fs.createReadStream(image.tmpPath), image.clientName)
+
+      const iaResponse = await axios.post(
+        'http://127.0.0.1:8000/predict',
+        form,
+        { headers: form.getHeaders() }
+      )
+
+      const detections = iaResponse.data.detections || []
+
+      if (detections.length === 0) {
+        return response.ok({
+          success:    true,
+          message:    iaResponse.data.message || 'No se detectaron objetos',
+          detections: []
+        })
+      }
+
+      const firstDetection = detections[0]
+
+      const nivelRoyaMap: Record<string, number> = {
+        'Enfermedad_ROYA': 1,
+        'Hoja_Sana':       2,
+        'arbol_cafe':      3,
+      }
+      const idNivelRoya = nivelRoyaMap[firstDetection.class] ?? null
+
+      const nuevoAnalisis = await AnalisisIa.create({
+        idImagen:            Number(idImagen),
+        idEstado:            Number(idEstado),
+        resultado:           firstDetection.class,
+        porcentajeConfianza: Number((firstDetection.confidence * 100).toFixed(2)),
+        idNivelRoya,
+      })
+
+      return response.ok({
+        success:   true,
+        message:   'Análisis realizado correctamente',
+        detections,
+        analisis:  nuevoAnalisis,
+      })
+
+    } catch (error: any) {
+      console.error(error)
+      return response.internalServerError({
+        success: false,
+        message: 'Error analizando imagen',
+        error: error.message,
+      })
     }
   }
 }

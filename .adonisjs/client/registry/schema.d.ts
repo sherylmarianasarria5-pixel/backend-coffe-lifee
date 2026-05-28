@@ -931,6 +931,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['destroy']>>>
     }
   }
+  'analisis_ia.predict': {
+    methods: ["POST"]
+    pattern: '/analisis_ia/predict'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['predict']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['predict']>>>
+    }
+  }
   'recomendaciones.store': {
     methods: ["POST"]
     pattern: '/recomendaciones'

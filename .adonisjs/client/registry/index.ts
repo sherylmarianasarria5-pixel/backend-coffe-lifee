@@ -468,6 +468,12 @@ const routes = {
     tokens: [{"old":"/analisis_ia/:id","type":0,"val":"analisis_ia","end":""},{"old":"/analisis_ia/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['analisis_ia.destroy']['types'],
   },
+  'analisis_ia.predict': {
+    methods: ["POST"],
+    pattern: '/analisis_ia/predict',
+    tokens: [{"old":"/analisis_ia/predict","type":0,"val":"analisis_ia","end":""},{"old":"/analisis_ia/predict","type":0,"val":"predict","end":""}],
+    types: placeholder as Registry['analisis_ia.predict']['types'],
+  },
   'recomendaciones.store': {
     methods: ["POST"],
     pattern: '/recomendaciones',

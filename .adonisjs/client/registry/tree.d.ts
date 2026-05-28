@@ -119,6 +119,7 @@ export interface ApiDefinition {
     store: typeof routes['analisis_ia.store']
     update: typeof routes['analisis_ia.update']
     destroy: typeof routes['analisis_ia.destroy']
+    predict: typeof routes['analisis_ia.predict']
     index: typeof routes['analisis_ia.index']
     show: typeof routes['analisis_ia.show']
   }
