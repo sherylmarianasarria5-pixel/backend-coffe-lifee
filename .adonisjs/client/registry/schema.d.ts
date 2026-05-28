@@ -1435,4 +1435,256 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/imagenes_controller').default['store']>>>
     }
   }
+  'experto.dashboard': {
+    methods: ["GET","HEAD"]
+    pattern: '/experto/dashboard'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['dashboard']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['dashboard']>>>
+    }
+  }
+  'experto.fincas': {
+    methods: ["GET","HEAD"]
+    pattern: '/experto/fincas'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['fincas']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['fincas']>>>
+    }
+  }
+  'experto.cultivos': {
+    methods: ["GET","HEAD"]
+    pattern: '/experto/cultivos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['cultivos']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['cultivos']>>>
+    }
+  }
+  'experto.monitoreos': {
+    methods: ["GET","HEAD"]
+    pattern: '/experto/monitoreos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['monitoreos']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['monitoreos']>>>
+    }
+  }
+  'experto.crear_monitoreo': {
+    methods: ["POST"]
+    pattern: '/experto/monitoreos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['crearMonitoreo']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['crearMonitoreo']>>>
+    }
+  }
+  'experto.actualizar_monitoreo': {
+    methods: ["PUT"]
+    pattern: '/experto/monitoreos/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['actualizarMonitoreo']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['actualizarMonitoreo']>>>
+    }
+  }
+  'experto.recomendaciones': {
+    methods: ["GET","HEAD"]
+    pattern: '/experto/recomendaciones'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['recomendaciones']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['recomendaciones']>>>
+    }
+  }
+  'experto.crear_recomendacion': {
+    methods: ["POST"]
+    pattern: '/experto/recomendaciones'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['crearRecomendacion']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['crearRecomendacion']>>>
+    }
+  }
+  'experto.actualizar_recomendacion': {
+    methods: ["PUT"]
+    pattern: '/experto/recomendaciones/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['actualizarRecomendacion']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['actualizarRecomendacion']>>>
+    }
+  }
+  'experto.tratamientos': {
+    methods: ["GET","HEAD"]
+    pattern: '/experto/tratamientos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['tratamientos']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['tratamientos']>>>
+    }
+  }
+  'experto.aplicaciones_tratamiento': {
+    methods: ["GET","HEAD"]
+    pattern: '/experto/aplicaciones_tratamiento'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['aplicaciones_tratamiento']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['aplicaciones_tratamiento']>>>
+    }
+  }
+  'experto.crear_aplicacion_tratamiento': {
+    methods: ["POST"]
+    pattern: '/experto/aplicaciones_tratamiento'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['crearAplicacionTratamiento']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['crearAplicacionTratamiento']>>>
+    }
+  }
+  'experto.crear_recomendacion_tratamiento': {
+    methods: ["POST"]
+    pattern: '/experto/recomendacion_tratamientos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['crearRecomendacionTratamiento']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['crearRecomendacionTratamiento']>>>
+    }
+  }
+  'caficultor.dashboard': {
+    methods: ["GET","HEAD"]
+    pattern: '/caficultor/dashboard'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/caficultor_controller').default['dashboard']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/caficultor_controller').default['dashboard']>>>
+    }
+  }
+  'caficultor.fincas': {
+    methods: ["GET","HEAD"]
+    pattern: '/caficultor/fincas'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/caficultor_controller').default['fincas']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/caficultor_controller').default['fincas']>>>
+    }
+  }
+  'caficultor.cultivos': {
+    methods: ["GET","HEAD"]
+    pattern: '/caficultor/cultivos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/caficultor_controller').default['cultivos']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/caficultor_controller').default['cultivos']>>>
+    }
+  }
+  'caficultor.monitoreos': {
+    methods: ["GET","HEAD"]
+    pattern: '/caficultor/monitoreos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/caficultor_controller').default['monitoreos']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/caficultor_controller').default['monitoreos']>>>
+    }
+  }
+  'caficultor.recomendaciones': {
+    methods: ["GET","HEAD"]
+    pattern: '/caficultor/recomendaciones'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/caficultor_controller').default['recomendaciones']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/caficultor_controller').default['recomendaciones']>>>
+    }
+  }
+  'caficultor.analisis_ia': {
+    methods: ["GET","HEAD"]
+    pattern: '/caficultor/analisis_ia'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/caficultor_controller').default['analisis_ia']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/caficultor_controller').default['analisis_ia']>>>
+    }
+  }
+  'caficultor.expertos_asignados': {
+    methods: ["GET","HEAD"]
+    pattern: '/caficultor/expertos_asignados'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/caficultor_controller').default['expertos_asignados']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/caficultor_controller').default['expertos_asignados']>>>
+    }
+  }
+  'caficultor.analizar_imagen': {
+    methods: ["POST"]
+    pattern: '/caficultor/analizar-imagen'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/caficultor_controller').default['analizarImagen']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/caficultor_controller').default['analizarImagen']>>>
+    }
+  }
 }

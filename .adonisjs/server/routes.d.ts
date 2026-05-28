@@ -123,6 +123,27 @@ export type ScannedRoutes = {
     'imagenes.index': { paramsTuple?: []; params?: {} }
     'imagenes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.store': { paramsTuple?: []; params?: {} }
+    'experto.dashboard': { paramsTuple?: []; params?: {} }
+    'experto.fincas': { paramsTuple?: []; params?: {} }
+    'experto.cultivos': { paramsTuple?: []; params?: {} }
+    'experto.monitoreos': { paramsTuple?: []; params?: {} }
+    'experto.crear_monitoreo': { paramsTuple?: []; params?: {} }
+    'experto.actualizar_monitoreo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'experto.recomendaciones': { paramsTuple?: []; params?: {} }
+    'experto.crear_recomendacion': { paramsTuple?: []; params?: {} }
+    'experto.actualizar_recomendacion': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'experto.tratamientos': { paramsTuple?: []; params?: {} }
+    'experto.aplicaciones_tratamiento': { paramsTuple?: []; params?: {} }
+    'experto.crear_aplicacion_tratamiento': { paramsTuple?: []; params?: {} }
+    'experto.crear_recomendacion_tratamiento': { paramsTuple?: []; params?: {} }
+    'caficultor.dashboard': { paramsTuple?: []; params?: {} }
+    'caficultor.fincas': { paramsTuple?: []; params?: {} }
+    'caficultor.cultivos': { paramsTuple?: []; params?: {} }
+    'caficultor.monitoreos': { paramsTuple?: []; params?: {} }
+    'caficultor.recomendaciones': { paramsTuple?: []; params?: {} }
+    'caficultor.analisis_ia': { paramsTuple?: []; params?: {} }
+    'caficultor.expertos_asignados': { paramsTuple?: []; params?: {} }
+    'caficultor.analizar_imagen': { paramsTuple?: []; params?: {} }
   }
   GET: {
     'mi_perfil.show': { paramsTuple?: []; params?: {} }
@@ -171,6 +192,20 @@ export type ScannedRoutes = {
     'recomendacion_tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.index': { paramsTuple?: []; params?: {} }
     'imagenes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'experto.dashboard': { paramsTuple?: []; params?: {} }
+    'experto.fincas': { paramsTuple?: []; params?: {} }
+    'experto.cultivos': { paramsTuple?: []; params?: {} }
+    'experto.monitoreos': { paramsTuple?: []; params?: {} }
+    'experto.recomendaciones': { paramsTuple?: []; params?: {} }
+    'experto.tratamientos': { paramsTuple?: []; params?: {} }
+    'experto.aplicaciones_tratamiento': { paramsTuple?: []; params?: {} }
+    'caficultor.dashboard': { paramsTuple?: []; params?: {} }
+    'caficultor.fincas': { paramsTuple?: []; params?: {} }
+    'caficultor.cultivos': { paramsTuple?: []; params?: {} }
+    'caficultor.monitoreos': { paramsTuple?: []; params?: {} }
+    'caficultor.recomendaciones': { paramsTuple?: []; params?: {} }
+    'caficultor.analisis_ia': { paramsTuple?: []; params?: {} }
+    'caficultor.expertos_asignados': { paramsTuple?: []; params?: {} }
   }
   HEAD: {
     'mi_perfil.show': { paramsTuple?: []; params?: {} }
@@ -219,6 +254,20 @@ export type ScannedRoutes = {
     'recomendacion_tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.index': { paramsTuple?: []; params?: {} }
     'imagenes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'experto.dashboard': { paramsTuple?: []; params?: {} }
+    'experto.fincas': { paramsTuple?: []; params?: {} }
+    'experto.cultivos': { paramsTuple?: []; params?: {} }
+    'experto.monitoreos': { paramsTuple?: []; params?: {} }
+    'experto.recomendaciones': { paramsTuple?: []; params?: {} }
+    'experto.tratamientos': { paramsTuple?: []; params?: {} }
+    'experto.aplicaciones_tratamiento': { paramsTuple?: []; params?: {} }
+    'caficultor.dashboard': { paramsTuple?: []; params?: {} }
+    'caficultor.fincas': { paramsTuple?: []; params?: {} }
+    'caficultor.cultivos': { paramsTuple?: []; params?: {} }
+    'caficultor.monitoreos': { paramsTuple?: []; params?: {} }
+    'caficultor.recomendaciones': { paramsTuple?: []; params?: {} }
+    'caficultor.analisis_ia': { paramsTuple?: []; params?: {} }
+    'caficultor.expertos_asignados': { paramsTuple?: []; params?: {} }
   }
   POST: {
     'auth.login': { paramsTuple?: []; params?: {} }
@@ -249,6 +298,11 @@ export type ScannedRoutes = {
     'fincas.store': { paramsTuple?: []; params?: {} }
     'cultivos.store': { paramsTuple?: []; params?: {} }
     'imagenes.store': { paramsTuple?: []; params?: {} }
+    'experto.crear_monitoreo': { paramsTuple?: []; params?: {} }
+    'experto.crear_recomendacion': { paramsTuple?: []; params?: {} }
+    'experto.crear_aplicacion_tratamiento': { paramsTuple?: []; params?: {} }
+    'experto.crear_recomendacion_tratamiento': { paramsTuple?: []; params?: {} }
+    'caficultor.analizar_imagen': { paramsTuple?: []; params?: {} }
   }
   PUT: {
     'mi_perfil.update': { paramsTuple?: []; params?: {} }
@@ -274,6 +328,8 @@ export type ScannedRoutes = {
     'cafeteros.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'fincas.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cultivos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'experto.actualizar_monitoreo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'experto.actualizar_recomendacion': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   DELETE: {
     'usuarios.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

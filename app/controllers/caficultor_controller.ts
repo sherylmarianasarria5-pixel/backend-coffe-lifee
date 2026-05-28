@@ -6,20 +6,21 @@ import Recomendacione from '#models/recomendacione'
 import AnalisisIa from '#models/analisis_ia'
 import AsignacionExperto from '#models/asignacion_experto'
 import Imagene from '#models/imagene'
+import app from '@adonisjs/core/services/app'
+import { subirImagen } from '#services/cloudinary_service'
+import axios from 'axios'
+import FormData from 'form-data'
+import * as fs from 'node:fs'
 
 export default class CaficultorController {
-  // ─── Obtiene el id del usuario desde el JWT ───────────────────────────────
+
   private getIdUsuario(request: HttpContext['request']): number {
     return (request as any).usuarioJwt?.id
   }
 
-  /**
-   * @dashboard
-   * @summary Dashboard del caficultor autenticado
-   * @description Resumen de fincas, cultivos, monitoreos y recomendaciones propias
-   * @responseBody 200 - { "resumen": { "total_fincas": 2, "total_cultivos": 5, "total_monitoreos": 12, "total_recomendaciones": 4 } }
-   * @responseBody 401 - { "message": "Token no proporcionado" }
-   */
+  // =========================================
+  // DASHBOARD
+  // =========================================
   async dashboard({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
 
@@ -40,42 +41,31 @@ export default class CaficultorController {
 
     return response.ok({
       resumen: {
-        total_fincas: fincas.length,
-        total_cultivos: cultivos.length,
-        total_monitoreos: monitoreos.length,
+        total_fincas:          fincas.length,
+        total_cultivos:        cultivos.length,
+        total_monitoreos:      monitoreos.length,
         total_recomendaciones: recomendaciones.length,
       },
     })
   }
 
-  /**
-   * @fincas
-   * @summary Listar mis fincas
-   * @description Retorna solo las fincas que pertenecen al caficultor autenticado
-   * @responseBody 200 - [{ "idFinca": 1, "nombreFinca": "La Esperanza", "municipio": "Chinchiná" }]
-   * @responseBody 401 - { "message": "Token no proporcionado" }
-   */
+  // =========================================
+  // MIS FINCAS
+  // =========================================
   async fincas({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
-
     const fincas = await Finca.query().where('id_usuario', idUsuario)
-
     return response.ok(fincas)
   }
 
-  /**
-   * @cultivos
-   * @summary Listar cultivos de mis fincas
-   * @description Retorna los cultivos de todas las fincas del caficultor autenticado
-   * @responseBody 200 - [{ "idCultivo": 1, "nombreCultivo": "Lote Norte", "idFinca": 1 }]
-   * @responseBody 401 - { "message": "Token no proporcionado" }
-   */
+  // =========================================
+  // MIS CULTIVOS
+  // =========================================
   async cultivos({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
 
     const fincas = await Finca.query().where('id_usuario', idUsuario).select('id_finca')
     const idFincas = fincas.map((f) => f.idFinca)
-
     if (!idFincas.length) return response.ok([])
 
     const cultivos = await Cultivo.query()
@@ -86,13 +76,9 @@ export default class CaficultorController {
     return response.ok(cultivos)
   }
 
-  /**
-   * @monitoreos
-   * @summary Listar monitoreos de mis cultivos
-   * @description Retorna los monitoreos realizados en los cultivos del caficultor autenticado
-   * @responseBody 200 - [{ "idMonitoreo": 1, "fechaMonitoreo": "2024-01-01", "observaciones": "..." }]
-   * @responseBody 401 - { "message": "Token no proporcionado" }
-   */
+  // =========================================
+  // MIS MONITOREOS
+  // =========================================
   async monitoreos({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
 
@@ -112,13 +98,9 @@ export default class CaficultorController {
     return response.ok(monitoreos)
   }
 
-  /**
-   * @recomendaciones
-   * @summary Listar recomendaciones de mis cultivos
-   * @description Retorna las recomendaciones emitidas para los cultivos del caficultor autenticado
-   * @responseBody 200 - [{ "idRecomendacion": 1, "descripcion": "Aplicar fungicida" }]
-   * @responseBody 401 - { "message": "Token no proporcionado" }
-   */
+  // =========================================
+  // MIS RECOMENDACIONES
+  // =========================================
   async recomendaciones({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
 
@@ -146,13 +128,9 @@ export default class CaficultorController {
     return response.ok(recomendaciones)
   }
 
-  /**
-   * @analisis_ia
-   * @summary Listar análisis IA de mis monitoreos
-   * @description Retorna los análisis de inteligencia artificial generados en los monitoreos del caficultor
-   * @responseBody 200 - [{ "idAnalisis": 1, "resultado": "Roya detectada", "porcentajeConfianza": "87.5" }]
-   * @responseBody 401 - { "message": "Token no proporcionado" }
-   */
+  // =========================================
+  // MIS ANÁLISIS IA
+  // =========================================
   async analisis_ia({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
 
@@ -184,13 +162,9 @@ export default class CaficultorController {
     return response.ok(analisis)
   }
 
-  /**
-   * @expertos_asignados
-   * @summary Ver expertos asignados a mis fincas
-   * @description Retorna los expertos que el administrador asignó a las fincas del caficultor
-   * @responseBody 200 - [{ "idAsignacion": 1, "idFinca": 2, "experto": { "nombre": "Carlos" } }]
-   * @responseBody 401 - { "message": "Token no proporcionado" }
-   */
+  // =========================================
+  // EXPERTOS ASIGNADOS A MIS FINCAS
+  // =========================================
   async expertos_asignados({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
 
@@ -204,5 +178,156 @@ export default class CaficultorController {
       .preload('finca')
 
     return response.ok(asignaciones)
+  }
+
+  // =========================================
+  // ANALIZAR IMAGEN (FOTO → CLOUDINARY → IA)
+  // =========================================
+  async analizarImagen({ request, response }: HttpContext) {
+    const idUsuario = this.getIdUsuario(request)
+
+    // ── 1. Validar archivo ───────────────────────────────────────────────────
+    const archivo = request.file('imagen', {
+      size: '10mb',
+      extnames: ['jpg', 'jpeg', 'png', 'webp'],
+    })
+
+    if (!archivo) {
+      return response.badRequest({
+        success: false,
+        message: 'Debes enviar una imagen con el campo "imagen"',
+      })
+    }
+
+    if (!archivo.isValid) {
+      return response.badRequest({
+        success: false,
+        message: 'Archivo inválido',
+        errors: archivo.errors,
+      })
+    }
+
+    const idMonitoreo = request.input('id_monitoreo')
+    const idEstado    = request.input('id_estado') ?? 1
+
+    if (!idMonitoreo) {
+      return response.badRequest({
+        success: false,
+        message: 'id_monitoreo es obligatorio',
+      })
+    }
+
+    // ── 2. Verificar que el monitoreo pertenece al caficultor ────────────────
+    const fincas = await Finca.query()
+      .where('id_usuario', idUsuario)
+      .select('id_finca')
+    const idFincas = fincas.map((f) => f.idFinca)
+
+    if (!idFincas.length) {
+      return response.forbidden({
+        success: false,
+        message: 'No tienes fincas registradas',
+      })
+    }
+
+    const cultivos = await Cultivo.query()
+      .whereIn('id_finca', idFincas)
+      .select('id_cultivo')
+    const idCultivos = cultivos.map((c) => c.idCultivo)
+
+    const monitoreo = await Monitoreo.query()
+      .where('id_monitoreo', idMonitoreo)
+      .whereIn('id_cultivo', idCultivos)
+      .first()
+
+    if (!monitoreo) {
+      return response.forbidden({
+        success: false,
+        message: 'No tienes acceso a ese monitoreo',
+      })
+    }
+
+    // ── 3. Subir imagen a Cloudinary ─────────────────────────────────────────
+    await archivo.move(app.tmpPath('uploads'))
+    const urlImagen = await subirImagen(archivo.filePath!)
+
+    const imagen = await Imagene.create({
+      idMonitoreo: Number(idMonitoreo),
+      rutaImagen:  urlImagen,
+    })
+
+    // ── 4. Enviar a FastAPI YOLO ─────────────────────────────────────────────
+    try {
+      const form = new FormData()
+      form.append(
+        'file',
+        fs.createReadStream(archivo.filePath!),
+        archivo.clientName
+      )
+
+      const iaResponse = await axios.post(
+        'http://127.0.0.1:8000/predict',
+        form,
+        { headers: form.getHeaders() }
+      )
+
+      const detections = iaResponse.data.detections || []
+
+      // ── 5. Sin detecciones válidas ────────────────────────────────────────
+      if (detections.length === 0) {
+        return response.ok({
+          success: true,
+          message:  iaResponse.data.message ?? 'Imagen no válida para análisis',
+          imagen:   imagen,
+          analisis: null,
+          detections: [],
+        })
+      }
+
+      // ── 6. Procesar primer resultado ──────────────────────────────────────
+      const firstDetection = detections[0]
+
+      let idNivelRoya: number | null = null
+      if (firstDetection.class === 'Enfermedad_ROYA') idNivelRoya = 1
+      if (firstDetection.class === 'Hoja_Sana')       idNivelRoya = 2
+      if (firstDetection.class === 'arbol_cafe')       idNivelRoya = 3
+
+      // ── 7. Guardar análisis en BD ─────────────────────────────────────────
+      const analisis = await AnalisisIa.create({
+        idImagen:            imagen.idImagen,
+        idEstado:            Number(idEstado),
+        resultado:           firstDetection.class,
+        porcentajeConfianza: Number((firstDetection.confidence * 100).toFixed(2)),
+        idNivelRoya,
+      })
+
+      await analisis.load('nivelRoya')
+      await analisis.load('estadoAnalisis')
+
+      // ── 8. Respuesta final ────────────────────────────────────────────────
+      return response.ok({
+        success:    true,
+        message:    'Análisis realizado correctamente',
+        imagen:     imagen,
+        detections: detections,
+        analisis: {
+          id:                  analisis.idAnalisis,
+          resultado:           analisis.resultado,
+          porcentajeConfianza: analisis.porcentajeConfianza,
+          nivelRoya:           analisis.nivelRoya,
+          estadoAnalisis:      analisis.estadoAnalisis,
+        },
+      })
+
+    } catch (iaError: any) {
+      // Imagen guardada pero IA falló
+      return response.ok({
+        success:  false,
+        message:  'Imagen guardada pero el análisis IA falló. Intenta de nuevo.',
+        imagen:   imagen,
+        analisis: null,
+        error:    iaError.message,
+      })
+    }
   }
 }

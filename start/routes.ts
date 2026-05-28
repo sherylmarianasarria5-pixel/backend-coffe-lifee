@@ -3,13 +3,15 @@ import { middleware } from '#start/kernel'
 import AutoSwagger from 'adonis-autoswagger'
 import swagger from '#config/swagger'
 
-const AuthController                      = () => import('#controllers/auth_controller')
-const MiPerfilController                  = () => import('#controllers/mi-perfil_controller')
+const AuthController = () => import('#controllers/auth_controller')
+const MiPerfilController = () => import('#controllers/mi-perfil_controller')
 const DashboardController                 = () => import('#controllers/dashboard_controller')
 const UsuariosController                  = () => import('#controllers/usuarios_controller')
 const AdminController                     = () => import('#controllers/admin_controller')
 const CafeterosController                 = () => import('#controllers/cafeteros_controller')
 const ExpertosController                  = () => import('#controllers/expertos_controller')
+const ExpertoController                   = () => import('#controllers/experto_controller')
+const CaficultorController                = () => import('#controllers/caficultor_controller')
 const MonitoreosController                = () => import('#controllers/monitoreos_controller')
 const CatRolesController                  = () => import('#controllers/cat_roles_controller')
 const CultivosController                  = () => import('#controllers/cultivos_controller')
@@ -29,7 +31,7 @@ const AnalisisIaController                = () => import('#controllers/analisis_
 const RecomendacionesController           = () => import('#controllers/recomendaciones_controller')
 const AsignacionesExpertosController      = () => import('#controllers/asignaciones_expertos_controller')
 
-// ─── Público ────────────────────────────────────────────────────────────────
+// ─── Público ─────────────────────────────────────────────────────────────────
 router.get('/', async () => ({
   mensaje: 'API Coffee Life funcionando',
   version: '2.0',
@@ -38,63 +40,63 @@ router.get('/', async () => ({
 router.get('/swagger', async () => AutoSwagger.default.docs(router.toJSON(), swagger))
 router.get('/docs',    async () => AutoSwagger.default.ui('/swagger', swagger))
 
-router.post('/login',               [AuthController, 'login'])
-router.post('/register',            [AuthController, 'register'])
-router.post('/recuperar-password',  [AuthController, 'recuperarPassword'])
-router.post('/verificar-token',     [AuthController, 'verificarToken'])
-router.post('/restablecer-password',[AuthController, 'restablecerPassword'])
+router.post('/login',                [AuthController, 'login'])
+router.post('/register',             [AuthController, 'register'])
+router.post('/recuperar-password',   [AuthController, 'recuperarPassword'])
+router.post('/verificar-token',      [AuthController, 'verificarToken'])
+router.post('/restablecer-password', [AuthController, 'restablecerPassword'])
 
-// ─── Mi perfil (cualquier usuario autenticado) ───────────────────────────────
+// ─── Mi perfil (cualquier usuario autenticado) ────────────────────────────────
 router.group(() => {
-  router.get('/mi-perfil',                    [MiPerfilController, 'show'])
-  router.put('/mi-perfil',                    [MiPerfilController, 'update'])
-  router.post('/mi-perfil/cambiar-password',  [MiPerfilController, 'cambiarPassword'])
+  router.get('/mi-perfil',                   [MiPerfilController, 'show'])
+  router.put('/mi-perfil',                   [MiPerfilController, 'update'])
+  router.post('/mi-perfil/cambiar-password', [MiPerfilController, 'cambiarPassword'])
 }).use(middleware.jwtAuth())
 
-// ─── Catálogos de solo lectura (cualquier usuario autenticado) ───────────────
+// ─── Catálogos de solo lectura (cualquier usuario autenticado) ────────────────
 router.group(() => {
-  router.get('/cat_roles',                  [CatRolesController,                'index'])
-  router.get('/cat_roles/:id',              [CatRolesController,                'show'])
-  router.get('/cat_tipos_tratamientos',     [CatTiposTratamientosController,    'index'])
-  router.get('/cat_tipos_tratamientos/:id', [CatTiposTratamientosController,    'show'])
-  router.get('/cat_niveles_roya',           [CatNivelesRoyasController,         'index'])
-  router.get('/cat_niveles_roya/:id',       [CatNivelesRoyasController,         'show'])
-  router.get('/cat_prioridades',            [CatPrioridadesController,          'index'])
-  router.get('/cat_prioridades/:id',        [CatPrioridadesController,          'show'])
-  router.get('/cat_tipos_recomendaciones',  [CatTiposRecomendacionesController, 'index'])
+  router.get('/cat_roles',                     [CatRolesController,                'index'])
+  router.get('/cat_roles/:id',                 [CatRolesController,                'show'])
+  router.get('/cat_tipos_tratamientos',        [CatTiposTratamientosController,    'index'])
+  router.get('/cat_tipos_tratamientos/:id',    [CatTiposTratamientosController,    'show'])
+  router.get('/cat_niveles_roya',              [CatNivelesRoyasController,         'index'])
+  router.get('/cat_niveles_roya/:id',          [CatNivelesRoyasController,         'show'])
+  router.get('/cat_prioridades',               [CatPrioridadesController,          'index'])
+  router.get('/cat_prioridades/:id',           [CatPrioridadesController,          'show'])
+  router.get('/cat_tipos_recomendaciones',     [CatTiposRecomendacionesController, 'index'])
   router.get('/cat_tipos_recomendaciones/:id', [CatTiposRecomendacionesController, 'show'])
-  router.get('/cat_estados_analisis',       [CatEstadosAnalisisController,      'index'])
-  router.get('/cat_estados_analisis/:id',   [CatEstadosAnalisisController,      'show'])
-  router.get('/cat_estados_cultivo',        [CatEstadosCultivosController,      'index'])
-  router.get('/cat_estados_cultivo/:id',    [CatEstadosCultivosController,      'show'])
-  router.get('/categorias',                 [CategoriasController,              'index'])
-  router.get('/categorias/:id',             [CategoriasController,              'show'])
+  router.get('/cat_estados_analisis',          [CatEstadosAnalisisController,      'index'])
+  router.get('/cat_estados_analisis/:id',      [CatEstadosAnalisisController,      'show'])
+  router.get('/cat_estados_cultivo',           [CatEstadosCultivosController,      'index'])
+  router.get('/cat_estados_cultivo/:id',       [CatEstadosCultivosController,      'show'])
+  router.get('/categorias',                    [CategoriasController,              'index'])
+  router.get('/categorias/:id',                [CategoriasController,              'show'])
 }).use(middleware.jwtAuth())
 
-// ─── Solo ADMIN ──────────────────────────────────────────────────────────────
+// ─── Solo ADMIN ───────────────────────────────────────────────────────────────
 router.group(() => {
-  router.get('/dashboard',        [DashboardController, 'index'])
+  router.get('/dashboard',       [DashboardController, 'index'])
 
   // Usuarios
-  router.get('/usuarios',         [UsuariosController, 'index'])
-  router.post('/usuarios',        [UsuariosController, 'store'])
-  router.get('/usuarios/:id',     [UsuariosController, 'show'])
-  router.put('/usuarios/:id',     [UsuariosController, 'update'])
-  router.delete('/usuarios/:id',  [UsuariosController, 'destroy'])
+  router.get('/usuarios',        [UsuariosController, 'index'])
+  router.post('/usuarios',       [UsuariosController, 'store'])
+  router.get('/usuarios/:id',    [UsuariosController, 'show'])
+  router.put('/usuarios/:id',    [UsuariosController, 'update'])
+  router.delete('/usuarios/:id', [UsuariosController, 'destroy'])
 
   // Admins
-  router.get('/admins',           [AdminController, 'index'])
-  router.post('/admins',          [AdminController, 'store'])
-  router.get('/admins/:id',       [AdminController, 'show'])
-  router.put('/admins/:id',       [AdminController, 'update'])
-  router.delete('/admins/:id',    [AdminController, 'destroy'])
+  router.get('/admins',          [AdminController, 'index'])
+  router.post('/admins',         [AdminController, 'store'])
+  router.get('/admins/:id',      [AdminController, 'show'])
+  router.put('/admins/:id',      [AdminController, 'update'])
+  router.delete('/admins/:id',   [AdminController, 'destroy'])
 
   // Expertos
-  router.get('/expertos',         [ExpertosController, 'index'])
-  router.post('/expertos',        [ExpertosController, 'store'])
-  router.get('/expertos/:id',     [ExpertosController, 'show'])
-  router.put('/expertos/:id',     [ExpertosController, 'update'])
-  router.delete('/expertos/:id',  [ExpertosController, 'destroy'])
+  router.get('/expertos',        [ExpertosController, 'index'])
+  router.post('/expertos',       [ExpertosController, 'store'])
+  router.get('/expertos/:id',    [ExpertosController, 'show'])
+  router.put('/expertos/:id',    [ExpertosController, 'update'])
+  router.delete('/expertos/:id', [ExpertosController, 'destroy'])
 
   // Asignaciones — escritura solo admin
   router.post('/asignaciones_expertos',       [AsignacionesExpertosController, 'store'])
@@ -128,20 +130,20 @@ router.group(() => {
   router.delete('/categorias/:id',              [CategoriasController,              'destroy'])
 }).use(middleware.role(['admin']))
 
-// ─── ADMIN y EXPERTO ─────────────────────────────────────────────────────────
+// ─── ADMIN y EXPERTO ──────────────────────────────────────────────────────────
 router.group(() => {
   // Asignaciones — lectura
-  router.get('/asignaciones_expertos',      [AsignacionesExpertosController, 'index'])
-  router.get('/asignaciones_expertos/:id',  [AsignacionesExpertosController, 'show'])
+  router.get('/asignaciones_expertos',     [AsignacionesExpertosController, 'index'])
+  router.get('/asignaciones_expertos/:id', [AsignacionesExpertosController, 'show'])
 
   // Cafeteros — lectura
-  router.get('/cafeteros',      [CafeterosController, 'index'])
-  router.get('/cafeteros/:id',  [CafeterosController, 'show'])
+  router.get('/cafeteros',     [CafeterosController, 'index'])
+  router.get('/cafeteros/:id', [CafeterosController, 'show'])
 
   // Monitoreos — escritura
-  router.post('/monitoreos',        [MonitoreosController, 'store'])
-  router.put('/monitoreos/:id',     [MonitoreosController, 'update'])
-  router.delete('/monitoreos/:id',  [MonitoreosController, 'destroy'])
+  router.post('/monitoreos',       [MonitoreosController, 'store'])
+  router.put('/monitoreos/:id',    [MonitoreosController, 'update'])
+  router.delete('/monitoreos/:id', [MonitoreosController, 'destroy'])
 
   // Análisis IA — escritura
   router.post('/analisis_ia',       [AnalisisIaController, 'store'])
@@ -173,7 +175,7 @@ router.group(() => {
   router.delete('/imagenes/:id', [ImagenesController, 'destroy'])
 }).use(middleware.role(['admin', 'experto']))
 
-// ─── ADMIN, EXPERTO y CAFETERO ───────────────────────────────────────────────
+// ─── ADMIN, EXPERTO y CAFETERO ────────────────────────────────────────────────
 router.group(() => {
   // Cafeteros — escritura
   router.post('/cafeteros',       [CafeterosController, 'store'])
@@ -181,18 +183,18 @@ router.group(() => {
   router.delete('/cafeteros/:id', [CafeterosController, 'destroy'])
 
   // Fincas
-  router.get('/fincas',       [FincasController, 'index'])
-  router.post('/fincas',      [FincasController, 'store'])
-  router.get('/fincas/:id',   [FincasController, 'show'])
-  router.put('/fincas/:id',   [FincasController, 'update'])
-  router.delete('/fincas/:id',[FincasController, 'destroy'])
+  router.get('/fincas',        [FincasController, 'index'])
+  router.post('/fincas',       [FincasController, 'store'])
+  router.get('/fincas/:id',    [FincasController, 'show'])
+  router.put('/fincas/:id',    [FincasController, 'update'])
+  router.delete('/fincas/:id', [FincasController, 'destroy'])
 
   // Cultivos
-  router.get('/cultivos',       [CultivosController, 'index'])
-  router.post('/cultivos',      [CultivosController, 'store'])
-  router.get('/cultivos/:id',   [CultivosController, 'show'])
-  router.put('/cultivos/:id',   [CultivosController, 'update'])
-  router.delete('/cultivos/:id',[CultivosController, 'destroy'])
+  router.get('/cultivos',        [CultivosController, 'index'])
+  router.post('/cultivos',       [CultivosController, 'store'])
+  router.get('/cultivos/:id',    [CultivosController, 'show'])
+  router.put('/cultivos/:id',    [CultivosController, 'update'])
+  router.delete('/cultivos/:id', [CultivosController, 'destroy'])
 
   // Monitoreos — lectura
   router.get('/monitoreos',     [MonitoreosController, 'index'])
@@ -217,8 +219,38 @@ router.group(() => {
   // Recomendacion tratamientos — lectura
   router.get('/recomendacion_tratamientos',     [RecomendacionTratamientosController, 'index'])
   router.get('/recomendacion_tratamientos/:id', [RecomendacionTratamientosController, 'show'])
-// Imágenes — lectura y subida
-  router.get('/imagenes',       [ImagenesController, 'index'])
-  router.get('/imagenes/:id',   [ImagenesController, 'show'])
-  router.post('/imagenes',      [ImagenesController, 'store'])
+
+  // Imágenes — lectura y subida
+  router.get('/imagenes',      [ImagenesController, 'index'])
+  router.get('/imagenes/:id',  [ImagenesController, 'show'])
+  router.post('/imagenes',     [ImagenesController, 'store'])
 }).use(middleware.role(['admin', 'experto', 'cafetero']))
+
+// ─── EXPERTO (flujo propio del rol experto) ───────────────────────────────────
+router.group(() => {
+  router.get('/dashboard',                   [ExpertoController, 'dashboard'])
+  router.get('/fincas',                      [ExpertoController, 'fincas'])
+  router.get('/cultivos',                    [ExpertoController, 'cultivos'])
+  router.get('/monitoreos',                  [ExpertoController, 'monitoreos'])
+  router.post('/monitoreos',                 [ExpertoController, 'crearMonitoreo'])
+  router.put('/monitoreos/:id',              [ExpertoController, 'actualizarMonitoreo'])
+  router.get('/recomendaciones',             [ExpertoController, 'recomendaciones'])
+  router.post('/recomendaciones',            [ExpertoController, 'crearRecomendacion'])
+  router.put('/recomendaciones/:id',         [ExpertoController, 'actualizarRecomendacion'])
+  router.get('/tratamientos',                [ExpertoController, 'tratamientos'])
+  router.get('/aplicaciones_tratamiento',    [ExpertoController, 'aplicaciones_tratamiento'])
+  router.post('/aplicaciones_tratamiento',   [ExpertoController, 'crearAplicacionTratamiento'])
+  router.post('/recomendacion_tratamientos', [ExpertoController, 'crearRecomendacionTratamiento'])
+}).prefix('/experto').use(middleware.role(['experto']))
+
+// ─── CAFICULTOR (flujo propio del rol caficultor) ─────────────────────────────
+router.group(() => {
+  router.get('/dashboard',          [CaficultorController, 'dashboard'])
+  router.get('/fincas',             [CaficultorController, 'fincas'])
+  router.get('/cultivos',           [CaficultorController, 'cultivos'])
+  router.get('/monitoreos',         [CaficultorController, 'monitoreos'])
+  router.get('/recomendaciones',    [CaficultorController, 'recomendaciones'])
+  router.get('/analisis_ia',        [CaficultorController, 'analisis_ia'])
+ router.get('/expertos_asignados', [CaficultorController, 'expertos_asignados'])
+router.post('/analizar-imagen',   [CaficultorController, 'analizarImagen'])  // ← NUEVA
+}).prefix('/caficultor').use(middleware.role(['cafetero']))

@@ -18,10 +18,7 @@ export default class AuthController {
     try {
       const data = await request.validateUsing(loginValidator)
 
-      const usuario = await Usuario.query()
-        .where('correo', data.correo)
-        .preload('rol')
-        .first()
+      const usuario = await Usuario.query().where('correo', data.correo).preload('rol').first()
 
       if (!usuario) return response.unauthorized({ message: 'Correo o contraseña incorrectos' })
       if (!usuario.activo) return response.unauthorized({ message: 'Tu cuenta está desactivada. Contacta al administrador.' })
@@ -31,12 +28,12 @@ export default class AuthController {
 
       const token = jwt.sign(
         {
-          id:       usuario.idUsuario,
-          correo:   usuario.correo,
-          nombre:   usuario.nombre,
+          id: usuario.idUsuario,
+          correo: usuario.correo,
+          nombre: usuario.nombre,
           apellido: usuario.apellido,
           rol: {
-            idRol:     usuario.rol.idRol,
+            idRol: usuario.rol.idRol,
             nombreRol: usuario.rol.nombreRol,
           },
         },
@@ -48,12 +45,12 @@ export default class AuthController {
         message: 'Inicio de sesión exitoso',
         token,
         usuario: {
-          id:         usuario.idUsuario,
-          nombre:     usuario.nombre,
-          apellido:   usuario.apellido,
-          correo:     usuario.correo,
+          id: usuario.idUsuario,
+          nombre: usuario.nombre,
+          apellido: usuario.apellido,
+          correo: usuario.correo,
           fotoPerfil: usuario.fotoPerfil,
-          rol:        usuario.rol.nombreRol,
+          rol: usuario.rol.nombreRol,
         },
       })
     } catch (error: any) {
@@ -78,23 +75,23 @@ export default class AuthController {
         'nombre', 'apellido', 'correo', 'password', 'telefono', 'idRol',
       ])
 
-      if (!nombre)   return response.badRequest({ message: 'El nombre es obligatorio' })
+      if (!nombre) return response.badRequest({ message: 'El nombre es obligatorio' })
       if (!apellido) return response.badRequest({ message: 'El apellido es obligatorio' })
-      if (!correo)   return response.badRequest({ message: 'El correo es obligatorio' })
+      if (!correo) return response.badRequest({ message: 'El correo es obligatorio' })
       if (!password) return response.badRequest({ message: 'La contraseña es obligatoria' })
 
       const existe = await Usuario.findBy('correo', correo)
       if (existe) return response.conflict({ message: 'El correo ya está registrado' })
 
-      // ✅ Se pasa la contraseña en texto plano — el hook @beforeSave del modelo la hashea automáticamente
+      // Se pasa la contraseña en texto plano — el hook @beforeSave del modelo la hashea automáticamente
       const usuario = await Usuario.create({
-        idRol:        idRol ?? 3,
+        idRol: idRol ?? 3,
         nombre,
         apellido,
         correo,
-        telefono:     telefono ?? null,
+        telefono: telefono ?? null,
         passwordHash: password,
-        activo:       true,
+        activo: true,
       })
 
       await usuario.load('rol')
@@ -102,12 +99,9 @@ export default class AuthController {
       try {
         const mail = await import('@adonisjs/mail/services/main')
         await mail.default.send((message) => {
-          message
-            .to(usuario.correo)
-            .subject('Bienvenido a Coffee Life')
-            .html(`
+          message.to(usuario.correo).subject('Bienvenido a Coffee Life').html(`
               <div style="font-family:sans-serif;max-width:500px;margin:auto">
-                <h2 style="color:#6B4226">☕ Bienvenido a Coffee Life</h2>
+                <h2 style="color:#6B4226">Bienvenido a Coffee Life</h2>
                 <p>Hola <strong>${usuario.nombre}</strong>, tu cuenta fue creada exitosamente.</p>
                 <table style="width:100%;border-collapse:collapse;margin:16px 0">
                   <tr><td style="padding:8px;color:#666">Correo</td><td style="padding:8px">${usuario.correo}</td></tr>
@@ -124,10 +118,10 @@ export default class AuthController {
       return response.created({
         message: 'Usuario registrado correctamente',
         data: {
-          id:     usuario.idUsuario,
+          id: usuario.idUsuario,
           nombre: usuario.nombre,
           correo: usuario.correo,
-          rol:    usuario.rol.nombreRol,
+          rol: usuario.rol.nombreRol,
         },
       })
     } catch (error: any) {
@@ -159,12 +153,9 @@ export default class AuthController {
       try {
         const mail = await import('@adonisjs/mail/services/main')
         await mail.default.send((message) => {
-          message
-            .to(usuario.correo)
-            .subject('Recuperar contraseña - Coffee Life')
-            .html(`
+          message.to(usuario.correo).subject('Recuperar contraseña - Coffee Life').html(`
               <div style="font-family:sans-serif;max-width:500px;margin:auto">
-                <h2 style="color:#6B4226">☕ Recuperar contraseña</h2>
+                <h2 style="color:#6B4226">Recuperar contraseña</h2>
                 <p>Hola <strong>${usuario.nombre}</strong>, recibimos una solicitud para restablecer tu contraseña.</p>
                 <div style="text-align:center;margin:24px 0">
                   <span style="font-size:36px;font-weight:bold;letter-spacing:8px;color:#6B4226">${token}</span>
@@ -236,20 +227,17 @@ export default class AuthController {
       }
 
       // ✅ Se pasa en texto plano — el hook @beforeSave del modelo hashea automáticamente
-      usuario.passwordHash      = data.nuevaPassword
-      usuario.resetToken        = null
+      usuario.passwordHash = data.nuevaPassword
+      usuario.resetToken = null
       usuario.resetTokenExpires = null
       await usuario.save()
 
       try {
         const mail = await import('@adonisjs/mail/services/main')
         await mail.default.send((message) => {
-          message
-            .to(usuario.correo)
-            .subject('Contraseña restablecida - Coffee Life')
-            .html(`
+          message.to(usuario.correo).subject('Contraseña restablecida - Coffee Life').html(`
               <div style="font-family:sans-serif;max-width:500px;margin:auto">
-                <h2 style="color:#6B4226">☕ Contraseña restablecida</h2>
+                <h2 style="color:#6B4226">Contraseña restablecida</h2>
                 <p>Hola <strong>${usuario.nombre}</strong>, tu contraseña fue cambiada exitosamente.</p>
                 <p>Si no realizaste este cambio, contacta al administrador inmediatamente.</p>
               </div>
