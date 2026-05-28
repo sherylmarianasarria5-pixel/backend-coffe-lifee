@@ -355,7 +355,7 @@ export class UserSchema extends BaseModel {
 }
 
 export class UsuarioSchema extends BaseModel {
-  static $columns = ['activo', 'apellido', 'correo', 'fechaActualizacion', 'fechaRegistro', 'idRol', 'idUsuario', 'nombre', 'observaciones', 'passwordHash', 'resetToken', 'resetTokenExpires', 'telefono'] as const
+  static $columns = ['activo', 'apellido', 'correo', 'fechaActualizacion', 'fechaRegistro', 'fotoPerfil', 'idRol', 'idUsuario', 'nombre', 'observaciones', 'passwordHash', 'resetToken', 'resetTokenExpires', 'telefono'] as const
   $columns = UsuarioSchema.$columns
   @column()
   declare activo: boolean | null
@@ -367,6 +367,8 @@ export class UsuarioSchema extends BaseModel {
   declare fechaActualizacion: DateTime
   @column.dateTime()
   declare fechaRegistro: DateTime
+  @column()
+  declare fotoPerfil: string | null
   @column()
   declare idRol: number | null
   @column({ isPrimary: true })

@@ -70,13 +70,6 @@ export interface ApiDefinition {
     update: typeof routes['categorias.update']
     destroy: typeof routes['categorias.destroy']
   }
-  asignacionesExpertos: {
-    index: typeof routes['asignaciones_expertos.index']
-    show: typeof routes['asignaciones_expertos.show']
-    store: typeof routes['asignaciones_expertos.store']
-    update: typeof routes['asignaciones_expertos.update']
-    destroy: typeof routes['asignaciones_expertos.destroy']
-  }
   dashboard: {
     index: typeof routes['dashboard.index']
   }
@@ -100,6 +93,13 @@ export interface ApiDefinition {
     show: typeof routes['expertos.show']
     update: typeof routes['expertos.update']
     destroy: typeof routes['expertos.destroy']
+  }
+  asignacionesExpertos: {
+    store: typeof routes['asignaciones_expertos.store']
+    update: typeof routes['asignaciones_expertos.update']
+    destroy: typeof routes['asignaciones_expertos.destroy']
+    index: typeof routes['asignaciones_expertos.index']
+    show: typeof routes['asignaciones_expertos.show']
   }
   cafeteros: {
     index: typeof routes['cafeteros.index']
@@ -170,5 +170,30 @@ export interface ApiDefinition {
     show: typeof routes['cultivos.show']
     update: typeof routes['cultivos.update']
     destroy: typeof routes['cultivos.destroy']
+  }
+  experto: {
+    dashboard: typeof routes['experto.dashboard']
+    fincas: typeof routes['experto.fincas']
+    cultivos: typeof routes['experto.cultivos']
+    monitoreos: typeof routes['experto.monitoreos']
+    crearMonitoreo: typeof routes['experto.crear_monitoreo']
+    actualizarMonitoreo: typeof routes['experto.actualizar_monitoreo']
+    recomendaciones: typeof routes['experto.recomendaciones']
+    crearRecomendacion: typeof routes['experto.crear_recomendacion']
+    actualizarRecomendacion: typeof routes['experto.actualizar_recomendacion']
+    tratamientos: typeof routes['experto.tratamientos']
+    aplicacionesTratamiento: typeof routes['experto.aplicaciones_tratamiento']
+    crearAplicacionTratamiento: typeof routes['experto.crear_aplicacion_tratamiento']
+    crearRecomendacionTratamiento: typeof routes['experto.crear_recomendacion_tratamiento']
+  }
+  caficultor: {
+    dashboard: typeof routes['caficultor.dashboard']
+    fincas: typeof routes['caficultor.fincas']
+    cultivos: typeof routes['caficultor.cultivos']
+    monitoreos: typeof routes['caficultor.monitoreos']
+    recomendaciones: typeof routes['caficultor.recomendaciones']
+    analisisIa: typeof routes['caficultor.analisis_ia']
+    expertosAsignados: typeof routes['caficultor.expertos_asignados']
+    analizarImagen: typeof routes['caficultor.analizar_imagen']
   }
 }
