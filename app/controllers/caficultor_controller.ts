@@ -297,7 +297,7 @@ export default class CaficultorController {
         idImagen:            imagen.idImagen,
         idEstado:            Number(idEstado),
         resultado:           firstDetection.class,
-        porcentajeConfianza: Number((firstDetection.confidence * 100).toFixed(2)),
+        porcentajeConfianza: (firstDetection.confidence * 100).toFixed(2),
         idNivelRoya,
       })
 

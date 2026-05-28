@@ -6,12 +6,36 @@ import { DateTime } from 'luxon'
 
 function serializar(m: Monitoreo) {
   const exp = m.experto
+  const imagenes = m.imagenes ? m.imagenes.map((img: any) => ({
+    idImagen: img.idImagen,
+    rutaImagen: img.rutaImagen,
+    analisis: img.analisis ? img.analisis.map((a: any) => ({
+      idAnalisis: a.idAnalisis,
+      resultado: a.resultado,
+      porcentajeConfianza: a.porcentajeConfianza,
+      estadoAnalisis: a.estadoAnalisis ? { nombreEstado: a.estadoAnalisis.nombreEstado } : null,
+      nivelRoya: a.nivelRoya ? { nombreNivel: a.nivelRoya.nombreNivel } : null,
+    })) : [],
+  })) : []
   return {
     idMonitoreo:    m.idMonitoreo,
     idCultivo:      m.idCultivo,
     fechaMonitoreo: m.fechaMonitoreo,
     observaciones:  m.observaciones,
     fechaRegistro:  m.fechaRegistro,
+    fechaActualizacion: m.fechaActualizacion,
+    cultivo: m.cultivo ? {
+      idCultivo: m.cultivo.idCultivo,
+      idFinca: m.cultivo.idFinca,
+      nombreCultivo: m.cultivo.nombreCultivo,
+    } : null,
+    imagenes,
+    recomendaciones: m.recomendaciones ? m.recomendaciones.map((r: any) => ({
+      idRecomendacion: r.idRecomendacion,
+      descripcion: r.descripcion,
+      tipo: r.tipo ? { nombre: r.tipo.nombreTipo || r.tipo.nombre } : null,
+      tratamientos: r.tratamientos ? r.tratamientos.map(() => ({})) : [],
+    })) : [],
     experto: exp ? {
       idUsuario: exp.idUsuario,
       nombre:    exp.nombre,
@@ -60,7 +84,16 @@ export default class MonitoreosController {
       const query = Monitoreo.query()
         .preload('cultivo')
         .preload('experto')
-        .preload('imagenes')
+        .preload('imagenes', (q) => {
+          q.preload('analisis', (a) => {
+            a.preload('estadoAnalisis')
+            a.preload('nivelRoya')
+          })
+        })
+        .preload('recomendaciones', (r) => {
+          r.preload('tipo')
+          r.preload('tratamientos')
+        })
         .orderBy('fecha_monitoreo', 'desc')
 
       if (idCultivo) query.where('id_cultivo', idCultivo)
