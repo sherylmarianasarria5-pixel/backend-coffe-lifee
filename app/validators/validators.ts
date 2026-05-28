@@ -64,6 +64,7 @@ export const fincaStoreValidator = vine.compile(
 
 export const fincaUpdateValidator = vine.compile(
   vine.object({
+    id_usuario: vine.number().optional(),
     nombre_finca: vine.string().trim().minLength(2).optional(),
     municipio: vine.string().trim().optional(),
     departamento: vine.string().trim().optional(),
@@ -71,6 +72,7 @@ export const fincaUpdateValidator = vine.compile(
     longitud: vine.number().optional(),
     altitud_msnm: vine.number().optional(),
     area_hectareas: vine.number().optional(),
+    activo: vine.boolean().optional(),
   })
 )
 

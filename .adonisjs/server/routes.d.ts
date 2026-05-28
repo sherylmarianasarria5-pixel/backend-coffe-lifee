@@ -30,6 +30,9 @@ export type ScannedRoutes = {
     'categorias.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'asignaciones_expertos.index': { paramsTuple?: []; params?: {} }
     'asignaciones_expertos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'asignaciones_expertos.store': { paramsTuple?: []; params?: {} }
+    'asignaciones_expertos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'asignaciones_expertos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'dashboard.index': { paramsTuple?: []; params?: {} }
     'usuarios.index': { paramsTuple?: []; params?: {} }
     'usuarios.store': { paramsTuple?: []; params?: {} }
@@ -46,9 +49,6 @@ export type ScannedRoutes = {
     'expertos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'expertos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'expertos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'asignaciones_expertos.store': { paramsTuple?: []; params?: {} }
-    'asignaciones_expertos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'asignaciones_expertos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_roles.store': { paramsTuple?: []; params?: {} }
     'cat_roles.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_roles.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -227,10 +227,10 @@ export type ScannedRoutes = {
     'auth.verificar_token': { paramsTuple?: []; params?: {} }
     'auth.restablecer_password': { paramsTuple?: []; params?: {} }
     'mi_perfil.cambiar_password': { paramsTuple?: []; params?: {} }
+    'asignaciones_expertos.store': { paramsTuple?: []; params?: {} }
     'usuarios.store': { paramsTuple?: []; params?: {} }
     'admin.store': { paramsTuple?: []; params?: {} }
     'expertos.store': { paramsTuple?: []; params?: {} }
-    'asignaciones_expertos.store': { paramsTuple?: []; params?: {} }
     'cat_roles.store': { paramsTuple?: []; params?: {} }
     'cat_tipos_tratamientos.store': { paramsTuple?: []; params?: {} }
     'cat_niveles_royas.store': { paramsTuple?: []; params?: {} }
@@ -252,10 +252,10 @@ export type ScannedRoutes = {
   }
   PUT: {
     'mi_perfil.update': { paramsTuple?: []; params?: {} }
+    'asignaciones_expertos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'usuarios.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'expertos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'asignaciones_expertos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_roles.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_tipos_tratamientos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_niveles_royas.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -276,10 +276,10 @@ export type ScannedRoutes = {
     'cultivos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   DELETE: {
+    'asignaciones_expertos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'usuarios.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'expertos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'asignaciones_expertos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_roles.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_tipos_tratamientos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_niveles_royas.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

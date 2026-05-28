@@ -20,7 +20,16 @@ export default class MonitoreosController {
       const query = Monitoreo.query()
         .preload('cultivo')
         .preload('experto')
-        .preload('imagenes')
+        .preload('imagenes', (q) => {
+          q.preload('analisis', (a) => {
+            a.preload('estadoAnalisis')
+            a.preload('nivelRoya')
+          })
+        })
+        .preload('recomendaciones', (r) => {
+          r.preload('tipo')
+          r.preload('tratamientos')
+        })
         .orderBy('fecha_monitoreo', 'desc')
 
       if (idCultivo) query.where('id_cultivo', idCultivo)

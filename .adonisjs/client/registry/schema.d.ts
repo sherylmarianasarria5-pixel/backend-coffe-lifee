@@ -319,6 +319,42 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['show']>>>
     }
   }
+  'asignaciones_expertos.store': {
+    methods: ["POST"]
+    pattern: '/asignaciones_expertos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['store']>>>
+    }
+  }
+  'asignaciones_expertos.update': {
+    methods: ["PUT"]
+    pattern: '/asignaciones_expertos/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['update']>>>
+    }
+  }
+  'asignaciones_expertos.destroy': {
+    methods: ["DELETE"]
+    pattern: '/asignaciones_expertos/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['destroy']>>>
+    }
+  }
   'dashboard.index': {
     methods: ["GET","HEAD"]
     pattern: '/dashboard'
@@ -509,42 +545,6 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/expertos_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/expertos_controller').default['destroy']>>>
-    }
-  }
-  'asignaciones_expertos.store': {
-    methods: ["POST"]
-    pattern: '/asignaciones_expertos'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['store']>>>
-    }
-  }
-  'asignaciones_expertos.update': {
-    methods: ["PUT"]
-    pattern: '/asignaciones_expertos/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['update']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['update']>>>
-    }
-  }
-  'asignaciones_expertos.destroy': {
-    methods: ["DELETE"]
-    pattern: '/asignaciones_expertos/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/asignaciones_expertos_controller').default['destroy']>>>
     }
   }
   'cat_roles.store': {

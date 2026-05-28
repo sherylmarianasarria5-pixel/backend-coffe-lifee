@@ -99,6 +99,7 @@ export default class FincasController {
       const data  = await request.validateUsing(fincaUpdateValidator)
 
       const payload: Record<string, any> = {}
+      if (data.id_usuario     !== undefined) payload.idUsuario     = data.id_usuario
       if (data.nombre_finca   !== undefined) payload.nombreFinca   = data.nombre_finca
       if (data.municipio      !== undefined) payload.municipio     = data.municipio
       if (data.departamento   !== undefined) payload.departamento  = data.departamento
@@ -106,6 +107,7 @@ export default class FincasController {
       if (data.longitud       !== undefined) payload.longitud      = String(data.longitud)
       if (data.altitud_msnm   !== undefined) payload.altitudMsnm   = String(data.altitud_msnm)
       if (data.area_hectareas !== undefined) payload.areaHectareas = String(data.area_hectareas)
+      if (data.activo !== undefined) payload.activo = data.activo
 
       finca.merge(payload)
       await finca.save()

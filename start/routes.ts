@@ -70,12 +70,14 @@ router.group(() => {
   router.get('/categorias/:id', [CategoriasController, 'show'])
 }).use(middleware.jwtAuth())
 
-// MODIFICADO: lectura de asignaciones permitida para admin y experto.
-// Esto permite que el experto vea sus fincas asignadas desde el frontend.
+// MODIFICADO: CRUD completo de asignaciones permitido para admin y experto.
+// Esto permite que el experto vea y cree sus fincas asignadas desde el frontend.
 router.group(() => {
   router.get('/asignaciones_expertos', [AsignacionesExpertosController, 'index'])
   router.get('/asignaciones_expertos/:id', [AsignacionesExpertosController, 'show'])
-  
+  router.post('/asignaciones_expertos', [AsignacionesExpertosController, 'store'])
+  router.put('/asignaciones_expertos/:id', [AsignacionesExpertosController, 'update'])
+  router.delete('/asignaciones_expertos/:id', [AsignacionesExpertosController, 'destroy'])
 }).use(middleware.role(['admin', 'experto']))
 
 router.group(() => {
@@ -99,13 +101,7 @@ router.group(() => {
   router.put('/expertos/:id', [ExpertosController, 'update'])
   router.delete('/expertos/:id', [ExpertosController, 'destroy'])
 
-  // MODIFICADO: estos GET se movieron arriba para que tambien funcionen con experto.
-  // router.get('/asignaciones_expertos', [AsignacionesExpertosController, 'index'])
-  // router.get('/asignaciones_expertos/:id', [AsignacionesExpertosController, 'show'])
 
-  router.post('/asignaciones_expertos', [AsignacionesExpertosController, 'store'])
-  router.put('/asignaciones_expertos/:id', [AsignacionesExpertosController, 'update'])
-  router.delete('/asignaciones_expertos/:id', [AsignacionesExpertosController, 'destroy'])
 
   router.post('/cat_roles', [CatRolesController, 'store'])
   router.put('/cat_roles/:id', [CatRolesController, 'update'])
