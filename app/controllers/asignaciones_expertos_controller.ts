@@ -6,6 +6,7 @@ function serializar(a: AsignacionExperto) {
   const exp = a.experto
   return {
     idAsignacion:  a.idAsignacion,
+    idExperto:     a.idExperto,
     idFinca:       a.idFinca,
     fechaAsignada: a.fechaAsignada,
     fechaRegistro: a.fechaRegistro,
