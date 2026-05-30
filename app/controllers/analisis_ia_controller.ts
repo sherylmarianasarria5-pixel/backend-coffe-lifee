@@ -155,8 +155,8 @@ export default class AnalisisIaController {
         idImagen:            Number(idImagen),
         idEstado:            Number(idEstado),
         resultado:           firstDetection.class,
-        porcentajeConfianza: Number((firstDetection.confidence * 100).toFixed(2)),
-        idNivelRoya,
+        porcentajeConfianza: (firstDetection.confidence * 100).toFixed(2),
+        idNivelRoya, 
       })
 
       return response.ok({
