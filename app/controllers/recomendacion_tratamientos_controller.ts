@@ -8,12 +8,15 @@ export default class RecomendacionTratamientosController {
    * @summary Listar recomendación tratamientos
    * @responseBody 200 - [{"idRecTratamiento": 1, "idRecomendacion": 1, "idAplicacion": 2, "dosisAjustada": "500ml", "notas": "Aplicar en la mañana"}]
    */
-  async index({ response }: HttpContext) {
+  async index({ request, response }: HttpContext) {
     try {
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 10))
       const items = await RecomendacionTratamiento.query()
         .preload('recomendacion')
         .preload('aplicacion')
-      return response.ok(items)
+        .paginate(page, limit)
+      return response.ok(items.toJSON())
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener recomendación tratamientos', error: error.message })
     }

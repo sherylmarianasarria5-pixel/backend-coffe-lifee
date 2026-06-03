@@ -2,10 +2,12 @@ import type { HttpContext } from '@adonisjs/core/http'
 import CatPrioridad from '#models/cat_prioridad'
 
 export default class CatPrioridadesController {
-  async index({ response }: HttpContext) {
+  async index({ request, response }: HttpContext) {
     try {
-      const prioridades = await CatPrioridad.query().orderBy('nivel_orden', 'asc')
-      return response.ok(prioridades)
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 10))
+      const prioridades = await CatPrioridad.query().orderBy('nivel_orden', 'asc').paginate(page, limit)
+      return response.ok(prioridades.toJSON())
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener prioridades', error: error.message })
     }

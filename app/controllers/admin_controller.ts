@@ -9,14 +9,17 @@ export default class AdminController {
    * @summary Listar administradores
    * @responseBody 200 - [{"idUsuario": 1, "nombre": "Juan", "correo": "admin@gmail.com", "rol": {"nombreRol": "admin"}}]
    */
-  async index({ response }: HttpContext) {
+  async index({ request, response }: HttpContext) {
     try {
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 10))
       const usuarios = await Usuario.query()
         .whereHas('rol', (query: any) => {
           query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['admin'])
         })
         .preload('rol')
-      return response.ok(usuarios)
+        .paginate(page, limit)
+      return response.ok(usuarios.toJSON())
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener administradores', error: error.message })
     }

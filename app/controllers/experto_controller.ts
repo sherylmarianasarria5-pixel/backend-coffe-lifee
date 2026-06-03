@@ -87,12 +87,14 @@ export default class ExpertoController {
    */
   async fincas({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
     const idFincas = await this.fincasAsignadas(idUsuario)
-    if (!idFincas.length) return response.ok([])
+    if (!idFincas.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
-    const fincas = await Finca.query().whereIn('id_finca', idFincas)
+    const fincas = await Finca.query().whereIn('id_finca', idFincas).paginate(page, limit)
 
-    return response.ok(fincas)
+    return response.ok(fincas.toJSON())
   }
 
   /**
@@ -104,15 +106,18 @@ export default class ExpertoController {
    */
   async cultivos({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
     const idFincas = await this.fincasAsignadas(idUsuario)
-    if (!idFincas.length) return response.ok([])
+    if (!idFincas.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
     const cultivos = await Cultivo.query()
       .whereIn('id_finca', idFincas)
       .preload('finca')
       .preload('estadoCultivo')
+      .paginate(page, limit)
 
-    return response.ok(cultivos)
+    return response.ok(cultivos.toJSON())
   }
 
   /**
@@ -124,15 +129,18 @@ export default class ExpertoController {
    */
   async monitoreos({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
     const idCultivos = await this.cultivosDeExperto(idUsuario)
-    if (!idCultivos.length) return response.ok([])
+    if (!idCultivos.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
     const monitoreos = await Monitoreo.query()
       .whereIn('id_cultivo', idCultivos)
       .preload('cultivo')
       .orderBy('fecha_monitoreo', 'desc')
+      .paginate(page, limit)
 
-    return response.ok(monitoreos)
+    return response.ok(monitoreos.toJSON())
   }
 
   /**
@@ -199,14 +207,17 @@ export default class ExpertoController {
    */
   async recomendaciones({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
 
     const recomendaciones = await Recomendacione.query()
       .where('id_experto_emisor', idUsuario)
       .preload('monitoreo')
       .preload('tipo')
       .orderBy('fecha_registro', 'desc')
+      .paginate(page, limit)
 
-    return response.ok(recomendaciones)
+    return response.ok(recomendaciones.toJSON())
   }
 
   /**
@@ -274,13 +285,16 @@ export default class ExpertoController {
    */
   async aplicaciones_tratamiento({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
 
     const aplicaciones = await AplicacionesTratamiento.query()
       .where('id_usuario', idUsuario)
       .preload('tratamiento')
       .orderBy('fecha_registro', 'desc')
+      .paginate(page, limit)
 
-    return response.ok(aplicaciones)
+    return response.ok(aplicaciones.toJSON())
   }
 
   /**
@@ -355,11 +369,15 @@ export default class ExpertoController {
    * @responseBody 200 - [{ "idTratamiento": 1, "nombre": "Fungicida X", "descripcion": "..." }]
    * @responseBody 401 - { "message": "Token no proporcionado" }
    */
-  async tratamientos({ response }: HttpContext) {
+  async tratamientos({ request, response }: HttpContext) {
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
+
     const tratamientos = await Tratamiento.query()
       .preload('tipoTratamiento')
       .orderBy('nombre', 'asc')
+      .paginate(page, limit)
 
-    return response.ok(tratamientos)
+    return response.ok(tratamientos.toJSON())
   }
 }

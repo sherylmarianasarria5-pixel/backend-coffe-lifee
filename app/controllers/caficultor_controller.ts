@@ -54,8 +54,10 @@ export default class CaficultorController {
   // =========================================
   async fincas({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
-    const fincas = await Finca.query().where('id_usuario', idUsuario)
-    return response.ok(fincas)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
+    const fincas = await Finca.query().where('id_usuario', idUsuario).paginate(page, limit)
+    return response.ok(fincas.toJSON())
   }
 
   // =========================================
@@ -63,17 +65,20 @@ export default class CaficultorController {
   // =========================================
   async cultivos({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
 
     const fincas = await Finca.query().where('id_usuario', idUsuario).select('id_finca')
     const idFincas = fincas.map((f) => f.idFinca)
-    if (!idFincas.length) return response.ok([])
+    if (!idFincas.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
     const cultivos = await Cultivo.query()
       .whereIn('id_finca', idFincas)
       .preload('finca')
       .preload('estadoCultivo')
+      .paginate(page, limit)
 
-    return response.ok(cultivos)
+    return response.ok(cultivos.toJSON())
   }
 
   // =========================================
@@ -81,21 +86,24 @@ export default class CaficultorController {
   // =========================================
   async monitoreos({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
 
     const fincas = await Finca.query().where('id_usuario', idUsuario).select('id_finca')
     const idFincas = fincas.map((f) => f.idFinca)
-    if (!idFincas.length) return response.ok([])
+    if (!idFincas.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
     const cultivos = await Cultivo.query().whereIn('id_finca', idFincas).select('id_cultivo')
     const idCultivos = cultivos.map((c) => c.idCultivo)
-    if (!idCultivos.length) return response.ok([])
+    if (!idCultivos.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
     const monitoreos = await Monitoreo.query()
       .whereIn('id_cultivo', idCultivos)
       .preload('cultivo')
       .orderBy('fecha_monitoreo', 'desc')
+      .paginate(page, limit)
 
-    return response.ok(monitoreos)
+    return response.ok(monitoreos.toJSON())
   }
 
   // =========================================
@@ -103,20 +111,22 @@ export default class CaficultorController {
   // =========================================
   async recomendaciones({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
 
     const fincas = await Finca.query().where('id_usuario', idUsuario).select('id_finca')
     const idFincas = fincas.map((f) => f.idFinca)
-    if (!idFincas.length) return response.ok([])
+    if (!idFincas.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
     const cultivos = await Cultivo.query().whereIn('id_finca', idFincas).select('id_cultivo')
     const idCultivos = cultivos.map((c) => c.idCultivo)
-    if (!idCultivos.length) return response.ok([])
+    if (!idCultivos.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
     const monitoreos = await Monitoreo.query()
       .whereIn('id_cultivo', idCultivos)
       .select('id_monitoreo')
     const idMonitoreos = monitoreos.map((m) => m.idMonitoreo)
-    if (!idMonitoreos.length) return response.ok([])
+    if (!idMonitoreos.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
     const recomendaciones = await Recomendacione.query()
       .whereIn('id_monitoreo', idMonitoreos)
@@ -124,8 +134,9 @@ export default class CaficultorController {
       .preload('tipo')
       .preload('experto')
       .orderBy('fecha_registro', 'desc')
+      .paginate(page, limit)
 
-    return response.ok(recomendaciones)
+    return response.ok(recomendaciones.toJSON())
   }
 
   // =========================================
@@ -133,24 +144,26 @@ export default class CaficultorController {
   // =========================================
   async analisis_ia({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
 
     const fincas = await Finca.query().where('id_usuario', idUsuario).select('id_finca')
     const idFincas = fincas.map((f) => f.idFinca)
-    if (!idFincas.length) return response.ok([])
+    if (!idFincas.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
     const cultivos = await Cultivo.query().whereIn('id_finca', idFincas).select('id_cultivo')
     const idCultivos = cultivos.map((c) => c.idCultivo)
-    if (!idCultivos.length) return response.ok([])
+    if (!idCultivos.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
     const monitoreos = await Monitoreo.query()
       .whereIn('id_cultivo', idCultivos)
       .select('id_monitoreo')
     const idMonitoreos = monitoreos.map((m) => m.idMonitoreo)
-    if (!idMonitoreos.length) return response.ok([])
+    if (!idMonitoreos.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
     const imagenes = await Imagene.query().whereIn('id_monitoreo', idMonitoreos).select('id_imagen')
     const idImagenes = imagenes.map((i: any) => i.idImagen)
-    if (!idImagenes.length) return response.ok([])
+    if (!idImagenes.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
     const analisis = await AnalisisIa.query()
       .whereIn('idImagen', idImagenes)
@@ -158,8 +171,9 @@ export default class CaficultorController {
       .preload('estadoAnalisis')
       .preload('nivelRoya')
       .orderBy('fechaRegistro', 'desc')
+      .paginate(page, limit)
 
-    return response.ok(analisis)
+    return response.ok(analisis.toJSON())
   }
 
   // =========================================
@@ -167,17 +181,20 @@ export default class CaficultorController {
   // =========================================
   async expertos_asignados({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
 
     const fincas = await Finca.query().where('id_usuario', idUsuario).select('id_finca')
     const idFincas = fincas.map((f) => f.idFinca)
-    if (!idFincas.length) return response.ok([])
+    if (!idFincas.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
     const asignaciones = await AsignacionExperto.query()
       .whereIn('id_finca', idFincas)
       .preload('experto')
       .preload('finca')
+      .paginate(page, limit)
 
-    return response.ok(asignaciones)
+    return response.ok(asignaciones.toJSON())
   }
 
   // =========================================

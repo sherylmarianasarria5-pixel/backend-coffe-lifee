@@ -8,10 +8,12 @@ export default class UsuariosController {
    * @summary Listar todos los usuarios
    * @responseBody 200 - [{"idUsuario": 1, "nombre": "Juan", "correo": "juan@gmail.com", "rol": {"nombreRol": "admin"}}]
    */
-  async index({ response }: HttpContext) {
+  async index({ request, response }: HttpContext) {
     try {
-      const usuarios = await Usuario.query().preload('rol')
-      return response.ok(usuarios)
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 10))
+      const usuarios = await Usuario.query().preload('rol').paginate(page, limit)
+      return response.ok(usuarios.toJSON())
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener usuarios', error: error.message })
     }

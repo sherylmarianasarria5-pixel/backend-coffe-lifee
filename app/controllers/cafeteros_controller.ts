@@ -8,14 +8,17 @@ export default class CafeterosController {
    * @summary Listar cafeteros
    * @responseBody 200 - [{"idUsuario": 1, "nombre": "Juan", "correo": "juan@gmail.com", "rol": {"nombreRol": "cafetero"}}]
    */
-  async index({ response }: HttpContext) {
+  async index({ request, response }: HttpContext) {
     try {
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 10))
       const usuarios = await Usuario.query()
         .whereHas('rol', (query: any) => {
           query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero'])
         })
         .preload('rol')
-      return response.ok(usuarios)
+        .paginate(page, limit)
+      return response.ok(usuarios.toJSON())
     } catch (error: any) {
       return response.internalServerError({ message:'Error al obtener cafeteros', error: error.message })
     }
