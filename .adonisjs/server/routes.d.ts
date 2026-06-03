@@ -94,6 +94,12 @@ export type ScannedRoutes = {
     'recomendacion_tratamientos.store': { paramsTuple?: []; params?: {} }
     'recomendacion_tratamientos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recomendacion_tratamientos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'recomendacion_ia.store': { paramsTuple?: []; params?: {} }
+    'recomendacion_ia.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'recomendacion_ia.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'tratamiento_ia.store': { paramsTuple?: []; params?: {} }
+    'tratamiento_ia.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'tratamiento_ia.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cafeteros.store': { paramsTuple?: []; params?: {} }
@@ -121,6 +127,10 @@ export type ScannedRoutes = {
     'aplicaciones_tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recomendacion_tratamientos.index': { paramsTuple?: []; params?: {} }
     'recomendacion_tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'recomendacion_ia.index': { paramsTuple?: []; params?: {} }
+    'recomendacion_ia.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'tratamiento_ia.index': { paramsTuple?: []; params?: {} }
+    'tratamiento_ia.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.index': { paramsTuple?: []; params?: {} }
     'imagenes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.store': { paramsTuple?: []; params?: {} }
@@ -191,6 +201,10 @@ export type ScannedRoutes = {
     'aplicaciones_tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recomendacion_tratamientos.index': { paramsTuple?: []; params?: {} }
     'recomendacion_tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'recomendacion_ia.index': { paramsTuple?: []; params?: {} }
+    'recomendacion_ia.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'tratamiento_ia.index': { paramsTuple?: []; params?: {} }
+    'tratamiento_ia.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.index': { paramsTuple?: []; params?: {} }
     'imagenes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'experto.dashboard': { paramsTuple?: []; params?: {} }
@@ -253,6 +267,10 @@ export type ScannedRoutes = {
     'aplicaciones_tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recomendacion_tratamientos.index': { paramsTuple?: []; params?: {} }
     'recomendacion_tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'recomendacion_ia.index': { paramsTuple?: []; params?: {} }
+    'recomendacion_ia.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'tratamiento_ia.index': { paramsTuple?: []; params?: {} }
+    'tratamiento_ia.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.index': { paramsTuple?: []; params?: {} }
     'imagenes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'experto.dashboard': { paramsTuple?: []; params?: {} }
@@ -296,6 +314,8 @@ export type ScannedRoutes = {
     'tratamientos.store': { paramsTuple?: []; params?: {} }
     'aplicaciones_tratamientos.store': { paramsTuple?: []; params?: {} }
     'recomendacion_tratamientos.store': { paramsTuple?: []; params?: {} }
+    'recomendacion_ia.store': { paramsTuple?: []; params?: {} }
+    'tratamiento_ia.store': { paramsTuple?: []; params?: {} }
     'cafeteros.store': { paramsTuple?: []; params?: {} }
     'fincas.store': { paramsTuple?: []; params?: {} }
     'cultivos.store': { paramsTuple?: []; params?: {} }
@@ -326,6 +346,8 @@ export type ScannedRoutes = {
     'tratamientos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'aplicaciones_tratamientos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recomendacion_tratamientos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'recomendacion_ia.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'tratamiento_ia.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cafeteros.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'fincas.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -352,6 +374,8 @@ export type ScannedRoutes = {
     'tratamientos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'aplicaciones_tratamientos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recomendacion_tratamientos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'recomendacion_ia.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'tratamiento_ia.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cafeteros.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'fincas.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

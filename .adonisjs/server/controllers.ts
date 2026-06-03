@@ -30,9 +30,11 @@ export const controllers = {
   Monitoreos: () => import('#controllers/monitoreos_controller'),
   NewAccount: () => import('#controllers/new_account_controller'),
   Profile: () => import('#controllers/profile_controller'),
+  RecomendacionIa: () => import('#controllers/recomendacion_ia_controller'),
   RecomendacionTratamientos: () => import('#controllers/recomendacion_tratamientos_controller'),
   Recomendaciones: () => import('#controllers/recomendaciones_controller'),
   Roles: () => import('#controllers/roles_controller'),
+  TratamientoIa: () => import('#controllers/tratamiento_ia_controller'),
   Tratamientos: () => import('#controllers/tratamientos_controller'),
   Usuarios: () => import('#controllers/usuarios_controller'),
 }

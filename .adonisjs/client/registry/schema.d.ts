@@ -1087,6 +1087,78 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['destroy']>>>
     }
   }
+  'recomendacion_ia.store': {
+    methods: ["POST"]
+    pattern: '/recomendacion_ia'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/recomendacion_ia_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recomendacion_ia_controller').default['store']>>>
+    }
+  }
+  'recomendacion_ia.update': {
+    methods: ["PUT"]
+    pattern: '/recomendacion_ia/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/recomendacion_ia_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recomendacion_ia_controller').default['update']>>>
+    }
+  }
+  'recomendacion_ia.destroy': {
+    methods: ["DELETE"]
+    pattern: '/recomendacion_ia/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/recomendacion_ia_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recomendacion_ia_controller').default['destroy']>>>
+    }
+  }
+  'tratamiento_ia.store': {
+    methods: ["POST"]
+    pattern: '/tratamiento_ia'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/tratamiento_ia_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/tratamiento_ia_controller').default['store']>>>
+    }
+  }
+  'tratamiento_ia.update': {
+    methods: ["PUT"]
+    pattern: '/tratamiento_ia/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/tratamiento_ia_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/tratamiento_ia_controller').default['update']>>>
+    }
+  }
+  'tratamiento_ia.destroy': {
+    methods: ["DELETE"]
+    pattern: '/tratamiento_ia/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/tratamiento_ia_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/tratamiento_ia_controller').default['destroy']>>>
+    }
+  }
   'imagenes.update': {
     methods: ["PUT"]
     pattern: '/imagenes/:id'
@@ -1409,6 +1481,54 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['show']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['show']>>>
+    }
+  }
+  'recomendacion_ia.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/recomendacion_ia'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/recomendacion_ia_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recomendacion_ia_controller').default['index']>>>
+    }
+  }
+  'recomendacion_ia.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/recomendacion_ia/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/recomendacion_ia_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recomendacion_ia_controller').default['show']>>>
+    }
+  }
+  'tratamiento_ia.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/tratamiento_ia'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/tratamiento_ia_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/tratamiento_ia_controller').default['index']>>>
+    }
+  }
+  'tratamiento_ia.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/tratamiento_ia/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/tratamiento_ia_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/tratamiento_ia_controller').default['show']>>>
     }
   }
   'imagenes.index': {

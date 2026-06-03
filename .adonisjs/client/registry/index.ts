@@ -546,6 +546,42 @@ const routes = {
     tokens: [{"old":"/recomendacion_tratamientos/:id","type":0,"val":"recomendacion_tratamientos","end":""},{"old":"/recomendacion_tratamientos/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['recomendacion_tratamientos.destroy']['types'],
   },
+  'recomendacion_ia.store': {
+    methods: ["POST"],
+    pattern: '/recomendacion_ia',
+    tokens: [{"old":"/recomendacion_ia","type":0,"val":"recomendacion_ia","end":""}],
+    types: placeholder as Registry['recomendacion_ia.store']['types'],
+  },
+  'recomendacion_ia.update': {
+    methods: ["PUT"],
+    pattern: '/recomendacion_ia/:id',
+    tokens: [{"old":"/recomendacion_ia/:id","type":0,"val":"recomendacion_ia","end":""},{"old":"/recomendacion_ia/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['recomendacion_ia.update']['types'],
+  },
+  'recomendacion_ia.destroy': {
+    methods: ["DELETE"],
+    pattern: '/recomendacion_ia/:id',
+    tokens: [{"old":"/recomendacion_ia/:id","type":0,"val":"recomendacion_ia","end":""},{"old":"/recomendacion_ia/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['recomendacion_ia.destroy']['types'],
+  },
+  'tratamiento_ia.store': {
+    methods: ["POST"],
+    pattern: '/tratamiento_ia',
+    tokens: [{"old":"/tratamiento_ia","type":0,"val":"tratamiento_ia","end":""}],
+    types: placeholder as Registry['tratamiento_ia.store']['types'],
+  },
+  'tratamiento_ia.update': {
+    methods: ["PUT"],
+    pattern: '/tratamiento_ia/:id',
+    tokens: [{"old":"/tratamiento_ia/:id","type":0,"val":"tratamiento_ia","end":""},{"old":"/tratamiento_ia/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['tratamiento_ia.update']['types'],
+  },
+  'tratamiento_ia.destroy': {
+    methods: ["DELETE"],
+    pattern: '/tratamiento_ia/:id',
+    tokens: [{"old":"/tratamiento_ia/:id","type":0,"val":"tratamiento_ia","end":""},{"old":"/tratamiento_ia/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['tratamiento_ia.destroy']['types'],
+  },
   'imagenes.update': {
     methods: ["PUT"],
     pattern: '/imagenes/:id',
@@ -707,6 +743,30 @@ const routes = {
     pattern: '/recomendacion_tratamientos/:id',
     tokens: [{"old":"/recomendacion_tratamientos/:id","type":0,"val":"recomendacion_tratamientos","end":""},{"old":"/recomendacion_tratamientos/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['recomendacion_tratamientos.show']['types'],
+  },
+  'recomendacion_ia.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/recomendacion_ia',
+    tokens: [{"old":"/recomendacion_ia","type":0,"val":"recomendacion_ia","end":""}],
+    types: placeholder as Registry['recomendacion_ia.index']['types'],
+  },
+  'recomendacion_ia.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/recomendacion_ia/:id',
+    tokens: [{"old":"/recomendacion_ia/:id","type":0,"val":"recomendacion_ia","end":""},{"old":"/recomendacion_ia/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['recomendacion_ia.show']['types'],
+  },
+  'tratamiento_ia.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/tratamiento_ia',
+    tokens: [{"old":"/tratamiento_ia","type":0,"val":"tratamiento_ia","end":""}],
+    types: placeholder as Registry['tratamiento_ia.index']['types'],
+  },
+  'tratamiento_ia.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/tratamiento_ia/:id',
+    tokens: [{"old":"/tratamiento_ia/:id","type":0,"val":"tratamiento_ia","end":""},{"old":"/tratamiento_ia/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['tratamiento_ia.show']['types'],
   },
   'imagenes.index': {
     methods: ["GET","HEAD"],
