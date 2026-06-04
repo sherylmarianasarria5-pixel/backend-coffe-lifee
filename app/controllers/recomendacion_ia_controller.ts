@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import RecomendacionIa from '#models/recomendacion_ia'
 
+
 function serializar(r: RecomendacionIa) {
   return {
     idRecomendacion:    r.idRecomendacion,
@@ -22,16 +23,29 @@ export default class RecomendacionIaController {
     try {
       const page        = Number(request.input('page', 1))
       const limit       = Number(request.input('limit', 10))
+      const search      = request.input('search', '')
       const idAnalisis  = request.input('id_analisis')
       const idPrioridad = request.input('id_prioridad')
+      const idTipo      = request.input('id_tipo')
+      const ALLOWED = ['id_recomendacion', 'descripcion', 'fecha_limite', 'fecha_registro', 'fecha_actualizacion', 'id_analisis', 'id_prioridad', 'id_tipo']
+      const orderBy = request.input('order_by', 'id_recomendacion')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_recomendacion'
 
       const query = RecomendacionIa.query()
         .preload('analisis')
         .preload('tratamientos')
-        .orderBy('fecha_registro', 'desc')
 
+      if (search) {
+        query.where((q) => {
+          q.whereILike('descripcion', `%${search}%`)
+        })
+      }
       if (idAnalisis)  query.where('id_analisis', idAnalisis)
       if (idPrioridad) query.where('id_prioridad', idPrioridad)
+      if (idTipo) query.where('id_tipo', idTipo)
+
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
 
       const paginado = await query.paginate(page, limit)
       const json     = paginado.toJSON()

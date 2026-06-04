@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import CatTiposRecomendacion from '#models/cat_tipo_recomendacion'
 import { catalogoStoreValidator, catalogoUpdateValidator } from '#validators/validators'
 
+
 export default class CatTiposRecomendacionsController {
 
   /**
@@ -11,9 +12,20 @@ export default class CatTiposRecomendacionsController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page  = Number(request.input('page', 1))
-      const limit = Number(request.input('limit', 20))
-      const tipos = await CatTiposRecomendacion.query().paginate(page, limit)
+      const page     = Number(request.input('page', 1))
+      const limit    = Number(request.input('limit', 20))
+      const search   = request.input('search', '')
+      const query = CatTiposRecomendacion.query()
+      if (search) {
+        query.whereILike('nombre_tipo', `%${search}%`)
+      }
+      const ALLOWED = ['id_tipo', 'nombre_tipo', 'descripcion', 'created_at', 'updated_at']
+      const orderBy = request.input('order_by', 'id_tipo')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_tipo'
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+
+      const tipos = await query.paginate(page, limit)
       return response.ok(tipos)
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener tipos de recomendación', error: error.message })

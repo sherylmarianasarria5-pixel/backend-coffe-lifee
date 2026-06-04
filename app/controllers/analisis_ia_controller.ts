@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import AnalisisIa from '#models/analisis_ia'
 import { analisisIaStoreValidator, analisisIaUpdateValidator } from '#validators/validators'
+
 import axios from 'axios'
 import FormData from 'form-data'
 import * as fs from 'node:fs'
@@ -8,19 +9,32 @@ import * as fs from 'node:fs'
 export default class AnalisisIaController {
   async index({ request, response }: HttpContext) {
     try {
-      const page     = Number(request.input('page', 1))
-      const limit    = Number(request.input('limit', 10))
-      const idImagen = request.input('id_imagen')
-      const idEstado = request.input('id_estado')
+      const page        = Number(request.input('page', 1))
+      const limit       = Number(request.input('limit', 10))
+      const search      = request.input('search', '')
+      const idImagen    = request.input('id_imagen')
+      const idEstado    = request.input('id_estado')
+      const idNivelRoya = request.input('id_nivel_roya')
+      const ALLOWED = ['id_analisis', 'resultado', 'porcentaje_confianza', 'fecha_registro', 'id_imagen', 'id_estado', 'id_nivel_roya']
+      const orderBy = request.input('order_by', 'id_analisis')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_analisis'
 
       const query = AnalisisIa.query()
         .preload('imagen')
         .preload('estadoAnalisis')
         .preload('nivelRoya')
-        .orderBy('fechaRegistro', 'desc')
 
-      if (idImagen) query.where('idImagen', idImagen)
-      if (idEstado) query.where('idEstado', idEstado)
+      if (search) {
+        query.where((q) => {
+          q.whereILike('resultado', `%${search}%`)
+        })
+      }
+      if (idImagen)    query.where('idImagen', idImagen)
+      if (idEstado)    query.where('idEstado', idEstado)
+      if (idNivelRoya) query.where('idNivelRoya', idNivelRoya)
+
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
 
       const analisis = await query.paginate(page, limit)
       return response.ok(analisis)

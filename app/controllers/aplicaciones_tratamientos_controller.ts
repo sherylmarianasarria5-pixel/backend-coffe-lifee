@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import AplicacionesTratamiento from '#models/aplicaciones_tratamiento'
 
+
 export default class AplicacionesTratamientosController {
   /**
    * @index
@@ -9,13 +10,33 @@ export default class AplicacionesTratamientosController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page = Number(request.input('page', 1))
-      const limit = Number(request.input('limit', 10))
-      const aplicaciones = await AplicacionesTratamiento.query()
+      const page          = Number(request.input('page', 1))
+      const limit         = Number(request.input('limit', 10))
+      const search        = request.input('search', '')
+      const idTratamiento = request.input('id_tratamiento')
+      const idUsuario     = request.input('id_usuario')
+
+      const ALLOWED = ['id_aplicacion', 'dosis', 'frecuencia', 'observaciones', 'fecha_registro', 'fecha_actualizacion', 'id_tratamiento', 'id_usuario']
+      const orderBy = request.input('order_by', 'id_aplicacion')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_aplicacion'
+
+      const query = AplicacionesTratamiento.query()
         .preload('tratamiento')
         .preload('usuario')
-        .orderBy('fecha_registro', 'desc')
-        .paginate(page, limit)
+
+      if (search) {
+        query.where((q) => {
+          q.whereILike('dosis', `%${search}%`)
+           .orWhereILike('frecuencia', `%${search}%`)
+        })
+      }
+      if (idTratamiento) query.where('id_tratamiento', idTratamiento)
+      if (idUsuario)     query.where('id_usuario', idUsuario)
+
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+
+      const aplicaciones = await query.paginate(page, limit)
       return response.ok(aplicaciones.toJSON())
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener aplicaciones de tratamiento', error: error.message })

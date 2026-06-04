@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import CatRol from '#models/cat_rol'
 import { catalogoStoreValidator, catalogoUpdateValidator } from '#validators/validators'
 
+
 export default class CatRolesController {
 
   /**
@@ -11,9 +12,20 @@ export default class CatRolesController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page  = Number(request.input('page', 1))
-      const limit = Number(request.input('limit', 20))
-      const roles = await CatRol.query().paginate(page, limit)
+      const page     = Number(request.input('page', 1))
+      const limit    = Number(request.input('limit', 20))
+      const search   = request.input('search', '')
+      const query = CatRol.query()
+      if (search) {
+        query.whereILike('nombre_rol', `%${search}%`)
+      }
+      const ALLOWED = ['id_rol', 'nombre_rol', 'descripcion', 'created_at', 'updated_at']
+      const orderBy = request.input('order_by', 'id_rol')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_rol'
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+
+      const roles = await query.paginate(page, limit)
       return response.ok(roles)
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener roles', error: error.message })

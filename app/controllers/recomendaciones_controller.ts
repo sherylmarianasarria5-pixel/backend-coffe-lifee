@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Recomendacione from '#models/recomendacione'
 
+
 function serializar(r: Recomendacione) {
   const exp = r.experto
   return {
@@ -57,20 +58,33 @@ export default class RecomendacionesController {
     try {
       const page        = Number(request.input('page', 1))
       const limit       = Number(request.input('limit', 10))
+      const search      = request.input('search', '')
       const idMonitoreo = request.input('id_monitoreo')
       const idExperto   = request.input('id_experto_emisor')
       const idPrioridad = request.input('id_prioridad')
+      const idTipo      = request.input('id_tipo')
+      const ALLOWED = ['id_recomendacion', 'descripcion', 'fecha_limite', 'fecha_registro', 'fecha_actualizacion', 'id_monitoreo', 'id_experto_emisor', 'id_prioridad', 'id_tipo']
+      const orderBy = request.input('order_by', 'id_recomendacion')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_recomendacion'
 
       const query = Recomendacione.query()
         .preload('monitoreo')
         .preload('experto')
         .preload('tipo')
         .preload('tratamientos')
-        .orderBy('fecha_registro', 'desc')
 
+      if (search) {
+        query.where((q) => {
+          q.whereILike('descripcion', `%${search}%`)
+        })
+      }
       if (idMonitoreo) query.where('id_monitoreo', idMonitoreo)
       if (idExperto)   query.where('id_experto_emisor', idExperto)
       if (idPrioridad) query.where('id_prioridad', idPrioridad)
+      if (idTipo)      query.where('id_tipo', idTipo)
+
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
 
       const paginado = await query.paginate(page, limit)
       const json = paginado.toJSON()

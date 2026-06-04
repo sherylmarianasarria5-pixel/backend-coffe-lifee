@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Cultivo from '#models/cultivo'
 import { cultivoStoreValidator, cultivoUpdateValidator } from '#validators/validators'
 
+
 export default class CultivosController {
 
   /**
@@ -15,15 +16,30 @@ export default class CultivosController {
       const limit           = Number(request.input('limit', 10))
       const idFinca         = request.input('id_finca')
       const idEstadoCultivo = request.input('id_estado_cultivo')
+      const idUsuario       = request.input('id_usuario')
+      const tipoCultivo     = request.input('tipo_cultivo')
       const search          = request.input('search', '')
-
       const query = Cultivo.query()
-        .preload('finca')
-        .preload('estadoCultivo')
-
-      if (idFinca)         query.where('id_finca', idFinca)
-      if (idEstadoCultivo) query.where('id_estado', idEstadoCultivo)
-      if (search)          query.whereILike('nombre_cultivo', `%${search}%`)
+      if (search) {
+        query.whereILike('nombre_cultivo', `%${search}%`)
+      }
+      if (idFinca) {
+        query.where('id_finca', idFinca)
+      }
+      if (idEstadoCultivo) {
+        query.where('id_estado_cultivo', idEstadoCultivo)
+      }
+      if (idUsuario) {
+        query.where('id_usuario', idUsuario)
+      }
+      if (tipoCultivo) {
+        query.where('tipo_cultivo', tipoCultivo)
+      }
+      const ALLOWED = ['id_cultivo', 'nombre_cultivo', 'tipo_cultivo', 'created_at', 'updated_at', 'id_finca', 'id_estado']
+      const orderBy = request.input('order_by', 'id_cultivo')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_cultivo'
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
 
       const cultivos = await query.paginate(page, limit)
       return response.ok(cultivos)

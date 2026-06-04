@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import RecomendacionTratamiento from '#models/recomendacion_tratamiento'
 
+
 export default class RecomendacionTratamientosController {
 
   /**
@@ -10,12 +11,32 @@ export default class RecomendacionTratamientosController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page = Number(request.input('page', 1))
-      const limit = Number(request.input('limit', 10))
-      const items = await RecomendacionTratamiento.query()
+      const page            = Number(request.input('page', 1))
+      const limit           = Number(request.input('limit', 10))
+      const search          = request.input('search', '')
+      const idRecomendacion = request.input('id_recomendacion')
+      const idAplicacion    = request.input('id_aplicacion')
+
+      const query = RecomendacionTratamiento.query()
         .preload('recomendacion')
         .preload('aplicacion')
-        .paginate(page, limit)
+
+      if (search) {
+        query.where((q) => {
+          q.whereILike('notas', `%${search}%`)
+           .orWhereILike('dosis_ajustada', `%${search}%`)
+        })
+      }
+      if (idRecomendacion) query.where('id_recomendacion', idRecomendacion)
+      if (idAplicacion)    query.where('id_aplicacion', idAplicacion)
+
+      const ALLOWED = ['id_rec_tratamiento', 'dosis_ajustada', 'notas', 'created_at', 'updated_at', 'id_recomendacion', 'id_aplicacion']
+      const orderBy = request.input('order_by', 'id_rec_tratamiento')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_rec_tratamiento'
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+
+      const items = await query.paginate(page, limit)
       return response.ok(items.toJSON())
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener recomendación tratamientos', error: error.message })

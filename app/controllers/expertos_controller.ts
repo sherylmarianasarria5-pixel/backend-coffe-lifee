@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Usuario from '#models/usuario'
 import CatRol from '#models/cat_rol'
 
+
 export default class ExpertosController {
 
   /**
@@ -13,14 +14,33 @@ export default class ExpertosController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page = Number(request.input('page', 1))
-      const limit = Number(request.input('limit', 10))
-      const usuarios = await Usuario.query()
+      const page   = Number(request.input('page', 1))
+      const limit  = Number(request.input('limit', 10))
+      const search = request.input('search', '')
+      const activo = request.input('activo')
+
+      const query = Usuario.query()
         .whereHas('rol', (query: any) => {
           query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['experto'])
         })
         .preload('rol')
-        .paginate(page, limit)
+
+      if (search) {
+        query.where((q) => {
+          q.whereILike('nombre', `%${search}%`)
+           .orWhereILike('apellido', `%${search}%`)
+           .orWhereILike('correo', `%${search}%`)
+        })
+      }
+      if (activo !== undefined && activo !== '') query.where('activo', activo === 'true' || activo === '1')
+
+      const ALLOWED = ['id_usuario', 'nombre', 'apellido', 'correo', 'telefono', 'activo', 'fecha_registro', 'fecha_actualizacion']
+      const orderBy = request.input('order_by', 'id_usuario')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_usuario'
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+
+      const usuarios = await query.paginate(page, limit)
       return response.ok(usuarios.toJSON())
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener expertos', error: error.message })

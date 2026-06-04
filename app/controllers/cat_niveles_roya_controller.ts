@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import CatNivelesRoya from '#models/cat_nivel_roya'
 import { catalogoStoreValidator, catalogoUpdateValidator } from '#validators/validators'
 
+
 export default class CatNivelesRoyasController {
 
   /**
@@ -11,9 +12,20 @@ export default class CatNivelesRoyasController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page    = Number(request.input('page', 1))
-      const limit   = Number(request.input('limit', 20))
-      const niveles = await CatNivelesRoya.query().paginate(page, limit)
+      const page     = Number(request.input('page', 1))
+      const limit    = Number(request.input('limit', 20))
+      const search   = request.input('search', '')
+      const query = CatNivelesRoya.query()
+      if (search) {
+        query.whereILike('nombre_nivel', `%${search}%`)
+      }
+      const ALLOWED = ['id_nivel', 'nombre_nivel', 'descripcion', 'created_at', 'updated_at']
+      const orderBy = request.input('order_by', 'id_nivel')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_nivel'
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+
+      const niveles = await query.paginate(page, limit)
       return response.ok(niveles)
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener niveles de roya', error: error.message })

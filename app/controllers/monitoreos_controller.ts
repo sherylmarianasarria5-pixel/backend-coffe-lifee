@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Monitoreo from '#models/monitoreo'
 import Usuario from '#models/usuario'
 import { monitoreoStoreValidator, monitoreoUpdateValidator } from '#validators/validators'
+
 import { DateTime } from 'luxon'
 
 function serializar(m: Monitoreo) {
@@ -78,8 +79,13 @@ export default class MonitoreosController {
     try {
       const page      = Number(request.input('page', 1))
       const limit     = Number(request.input('limit', 10))
+      const search    = request.input('search', '')
       const idCultivo = request.input('id_cultivo')
       const idExperto = request.input('id_experto')
+      const ALLOWED = ['id_monitoreo', 'fecha_monitoreo', 'observaciones', 'fecha_registro', 'fecha_actualizacion', 'id_cultivo', 'id_experto']
+      const orderBy = request.input('order_by', 'id_monitoreo')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_monitoreo'
 
       const query = Monitoreo.query()
         .preload('cultivo')
@@ -94,10 +100,16 @@ export default class MonitoreosController {
           r.preload('tipo')
           r.preload('tratamientos')
         })
-        .orderBy('fecha_monitoreo', 'desc')
 
+      if (search) {
+        query.where((q) => {
+          q.whereILike('observaciones', `%${search}%`)
+        })
+      }
       if (idCultivo) query.where('id_cultivo', idCultivo)
       if (idExperto) query.where('id_experto', idExperto)
+
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
 
       const paginado = await query.paginate(page, limit)
       const json = paginado.toJSON()

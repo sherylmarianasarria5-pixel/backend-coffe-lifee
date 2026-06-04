@@ -8,6 +8,7 @@ import AplicacionesTratamiento from '#models/aplicaciones_tratamiento'
 import RecomendacionTratamiento from '#models/recomendacion_tratamiento'
 import Tratamiento from '#models/tratamiento'
 
+
 export default class ExpertoController {
   // ─── Obtiene el id del usuario desde el JWT ────────────────────────────────
   private getIdUsuario(request: HttpContext['request']): number {
@@ -89,11 +90,26 @@ export default class ExpertoController {
     const idUsuario = this.getIdUsuario(request)
     const page = Number(request.input('page', 1))
     const limit = Number(request.input('limit', 10))
+    const search = request.input('search', '')
+    const ALLOWED = ['id_finca', 'nombre_finca', 'municipio', 'departamento', 'area_hectareas', 'altitud_msnm', 'latitud', 'longitud']
+    const orderBy = request.input('order_by', 'id_finca')
+    const orderDir = request.input('order_dir', 'desc')
+    const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_finca'
     const idFincas = await this.fincasAsignadas(idUsuario)
     if (!idFincas.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
-    const fincas = await Finca.query().whereIn('id_finca', idFincas).paginate(page, limit)
+    const query = Finca.query().whereIn('id_finca', idFincas)
 
+    if (search) {
+      query.where((q) => {
+        q.whereILike('nombre_finca', `%${search}%`)
+         .orWhereILike('municipio', `%${search}%`)
+         .orWhereILike('departamento', `%${search}%`)
+      })
+    }
+
+    query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+    const fincas = await query.paginate(page, limit)
     return response.ok(fincas.toJSON())
   }
 
@@ -108,15 +124,25 @@ export default class ExpertoController {
     const idUsuario = this.getIdUsuario(request)
     const page = Number(request.input('page', 1))
     const limit = Number(request.input('limit', 10))
+    const search = request.input('search', '')
+    const idEstadoCultivo = request.input('id_estado_cultivo')
+    const ALLOWED = ['id_cultivo', 'nombre_cultivo', 'tipo_cultivo', 'created_at', 'updated_at', 'id_finca', 'id_estado']
+    const orderBy = request.input('order_by', 'id_cultivo')
+    const orderDir = request.input('order_dir', 'desc')
+    const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_cultivo'
     const idFincas = await this.fincasAsignadas(idUsuario)
     if (!idFincas.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
-    const cultivos = await Cultivo.query()
+    const query = Cultivo.query()
       .whereIn('id_finca', idFincas)
       .preload('finca')
       .preload('estadoCultivo')
-      .paginate(page, limit)
 
+    if (search)          query.whereILike('nombre_cultivo', `%${search}%`)
+    if (idEstadoCultivo) query.where('id_estado', idEstadoCultivo)
+
+    query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+    const cultivos = await query.paginate(page, limit)
     return response.ok(cultivos.toJSON())
   }
 
@@ -131,15 +157,26 @@ export default class ExpertoController {
     const idUsuario = this.getIdUsuario(request)
     const page = Number(request.input('page', 1))
     const limit = Number(request.input('limit', 10))
+    const search = request.input('search', '')
+    const ALLOWED = ['id_monitoreo', 'fecha_monitoreo', 'observaciones', 'fecha_registro', 'fecha_actualizacion', 'id_cultivo', 'id_experto']
+    const orderBy = request.input('order_by', 'id_monitoreo')
+    const orderDir = request.input('order_dir', 'desc')
+    const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_monitoreo'
     const idCultivos = await this.cultivosDeExperto(idUsuario)
     if (!idCultivos.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
-    const monitoreos = await Monitoreo.query()
+    const query = Monitoreo.query()
       .whereIn('id_cultivo', idCultivos)
       .preload('cultivo')
-      .orderBy('fecha_monitoreo', 'desc')
-      .paginate(page, limit)
 
+    if (search) {
+      query.where((q) => {
+        q.whereILike('observaciones', `%${search}%`)
+      })
+    }
+
+    query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+    const monitoreos = await query.paginate(page, limit)
     return response.ok(monitoreos.toJSON())
   }
 
@@ -209,14 +246,25 @@ export default class ExpertoController {
     const idUsuario = this.getIdUsuario(request)
     const page = Number(request.input('page', 1))
     const limit = Number(request.input('limit', 10))
+    const search = request.input('search', '')
+    const ALLOWED = ['id_recomendacion', 'descripcion', 'fecha_limite', 'fecha_registro', 'fecha_actualizacion', 'id_monitoreo', 'id_experto_emisor', 'id_prioridad', 'id_tipo']
+    const orderBy = request.input('order_by', 'id_recomendacion')
+    const orderDir = request.input('order_dir', 'desc')
+    const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_recomendacion'
 
-    const recomendaciones = await Recomendacione.query()
+    const query = Recomendacione.query()
       .where('id_experto_emisor', idUsuario)
       .preload('monitoreo')
       .preload('tipo')
-      .orderBy('fecha_registro', 'desc')
-      .paginate(page, limit)
 
+    if (search) {
+      query.where((q) => {
+        q.whereILike('descripcion', `%${search}%`)
+      })
+    }
+
+    query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+    const recomendaciones = await query.paginate(page, limit)
     return response.ok(recomendaciones.toJSON())
   }
 
@@ -287,13 +335,27 @@ export default class ExpertoController {
     const idUsuario = this.getIdUsuario(request)
     const page = Number(request.input('page', 1))
     const limit = Number(request.input('limit', 10))
+    const search = request.input('search', '')
+    const idTratamiento = request.input('id_tratamiento')
+    const ALLOWED = ['id_aplicacion', 'dosis', 'frecuencia', 'observaciones', 'fecha_registro', 'fecha_actualizacion', 'id_tratamiento', 'id_usuario']
+    const orderBy = request.input('order_by', 'id_aplicacion')
+    const orderDir = request.input('order_dir', 'desc')
+    const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_aplicacion'
 
-    const aplicaciones = await AplicacionesTratamiento.query()
+    const query = AplicacionesTratamiento.query()
       .where('id_usuario', idUsuario)
       .preload('tratamiento')
-      .orderBy('fecha_registro', 'desc')
-      .paginate(page, limit)
 
+    if (search) {
+      query.where((q) => {
+        q.whereILike('dosis', `%${search}%`)
+         .orWhereILike('frecuencia', `%${search}%`)
+      })
+    }
+    if (idTratamiento) query.where('id_tratamiento', idTratamiento)
+
+    query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+    const aplicaciones = await query.paginate(page, limit)
     return response.ok(aplicaciones.toJSON())
   }
 
@@ -372,12 +434,26 @@ export default class ExpertoController {
   async tratamientos({ request, response }: HttpContext) {
     const page = Number(request.input('page', 1))
     const limit = Number(request.input('limit', 10))
+    const search = request.input('search', '')
+    const idTipo = request.input('id_tipo')
+    const ALLOWED = ['id_tratamiento', 'nombre', 'fecha_registro', 'fecha_actualizacion']
+    const orderBy = request.input('order_by', 'id_tratamiento')
+    const orderDir = request.input('order_dir', 'desc')
+    const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_tratamiento'
 
-    const tratamientos = await Tratamiento.query()
+    const query = Tratamiento.query()
       .preload('tipoTratamiento')
-      .orderBy('nombre', 'asc')
-      .paginate(page, limit)
 
+    if (search) {
+      query.where((q) => {
+        q.whereILike('nombre', `%${search}%`)
+         .orWhereILike('descripcion', `%${search}%`)
+      })
+    }
+    if (idTipo) query.where('id_tipo_tratamiento', idTipo)
+
+    query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+    const tratamientos = await query.paginate(page, limit)
     return response.ok(tratamientos.toJSON())
   }
 }

@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import TratamientoIa from '#models/tratamiento_ia'
 
+
 function serializar(t: TratamientoIa) {
   return {
     idTratamiento:      t.idTratamiento,
@@ -18,15 +19,29 @@ export default class TratamientoIaController {
 
   async index({ request, response }: HttpContext) {
     try {
-      const page            = Number(request.input('page', 1))
-      const limit           = Number(request.input('limit', 10))
-      const idRecomendacion = request.input('id_recomendacion')
+      const page               = Number(request.input('page', 1))
+      const limit              = Number(request.input('limit', 10))
+      const search             = request.input('search', '')
+      const idRecomendacion    = request.input('id_recomendacion')
+      const idTipoTratamiento  = request.input('id_tipo_tratamiento')
+      const ALLOWED = ['id_tratamiento', 'nombre', 'descripcion', 'fecha_registro', 'fecha_actualizacion', 'id_recomendacion', 'id_tipo_tratamiento']
+      const orderBy = request.input('order_by', 'id_tratamiento')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_tratamiento'
 
       const query = TratamientoIa.query()
         .preload('recomendacion')
-        .orderBy('fecha_registro', 'desc')
 
-      if (idRecomendacion) query.where('id_recomendacion', idRecomendacion)
+      if (search) {
+        query.where((q) => {
+          q.whereILike('nombre', `%${search}%`)
+           .orWhereILike('descripcion', `%${search}%`)
+        })
+      }
+      if (idRecomendacion)   query.where('id_recomendacion', idRecomendacion)
+      if (idTipoTratamiento) query.where('id_tipo_tratamiento', idTipoTratamiento)
+
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
 
       const paginado = await query.paginate(page, limit)
       const json     = paginado.toJSON()

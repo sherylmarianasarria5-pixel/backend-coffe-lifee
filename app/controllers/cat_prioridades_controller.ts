@@ -1,12 +1,24 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import CatPrioridad from '#models/cat_prioridad'
 
+
 export default class CatPrioridadesController {
   async index({ request, response }: HttpContext) {
     try {
-      const page = Number(request.input('page', 1))
-      const limit = Number(request.input('limit', 10))
-      const prioridades = await CatPrioridad.query().orderBy('nivel_orden', 'asc').paginate(page, limit)
+      const page     = Number(request.input('page', 1))
+      const limit    = Number(request.input('limit', 10))
+      const search   = request.input('search', '')
+      const query = CatPrioridad.query()
+      if (search) {
+        query.whereILike('nombre', `%${search}%`)
+      }
+      const ALLOWED = ['id_prioridad', 'nombre', 'nivel_orden', 'created_at', 'updated_at']
+      const orderBy = request.input('order_by', 'id_prioridad')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_prioridad'
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+
+      const prioridades = await query.paginate(page, limit)
       return response.ok(prioridades.toJSON())
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener prioridades', error: error.message })

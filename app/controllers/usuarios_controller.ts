@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Usuario from '#models/usuario'
 
+
 export default class UsuariosController {
 
   /**
@@ -10,9 +11,31 @@ export default class UsuariosController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page = Number(request.input('page', 1))
-      const limit = Number(request.input('limit', 10))
-      const usuarios = await Usuario.query().preload('rol').paginate(page, limit)
+      const page   = Number(request.input('page', 1))
+      const limit  = Number(request.input('limit', 10))
+      const search = request.input('search', '')
+      const idRol  = request.input('id_rol')
+      const activo = request.input('activo')
+
+      const query = Usuario.query().preload('rol')
+
+      if (search) {
+        query.where((q) => {
+          q.whereILike('nombre', `%${search}%`)
+           .orWhereILike('apellido', `%${search}%`)
+           .orWhereILike('correo', `%${search}%`)
+        })
+      }
+      if (idRol)  query.where('id_rol', idRol)
+      if (activo !== undefined && activo !== '') query.where('activo', activo === 'true' || activo === '1')
+
+      const ALLOWED = ['id_usuario', 'nombre', 'apellido', 'correo', 'telefono', 'activo', 'fecha_registro', 'fecha_actualizacion']
+      const orderBy = request.input('order_by', 'id_usuario')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_usuario'
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+
+      const usuarios = await query.paginate(page, limit)
       return response.ok(usuarios.toJSON())
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener usuarios', error: error.message })

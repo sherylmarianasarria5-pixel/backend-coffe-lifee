@@ -2,26 +2,36 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Tratamiento from '#models/tratamiento'
 
+
 export default class TratamientosController {
 
   // GET /tratamientos
   async index({ request, response }: HttpContext) {
     try {
-      const page   = Number(request.input('page', 1))
-      const limit  = Number(request.input('limit', 10))
-      const search = request.input('search', '')
-      const idTipo = request.input('id_tipo')
-
-      const query = Tratamiento.query().preload('tipoTratamiento')
-
+      const page        = Number(request.input('page', 1))
+      const limit       = Number(request.input('limit', 10))
+      const search      = request.input('search', '')
+      const idTipo      = request.input('id_tipo')
+      const fechaDesde  = request.input('fecha_desde')
+      const fechaHasta  = request.input('fecha_hasta')
+      const query = Tratamiento.query()
       if (search) {
-        query.where((q) => {
-          q.whereILike('nombre', `%${search}%`)
-           .orWhereILike('descripcion', `%${search}%`)
-        })
+        query.whereILike('nombre', `%${search}%`)
       }
-
-      if (idTipo) query.where('id_tipo_tratamiento', idTipo)
+      if (idTipo) {
+        query.where('id_tipo_tratamiento', idTipo)
+      }
+      if (fechaDesde) {
+        query.where('fecha_aplicacion', '>=', fechaDesde)
+      }
+      if (fechaHasta) {
+        query.where('fecha_aplicacion', '<=', fechaHasta)
+      }
+      const ALLOWED = ['id_tratamiento', 'nombre', 'fecha_registro', 'fecha_actualizacion']
+      const orderBy = request.input('order_by', 'id_tratamiento')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_tratamiento'
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
 
       const tratamientos = await query.paginate(page, limit)
       return response.ok(tratamientos)
