@@ -197,10 +197,12 @@ export class CatTiposTratamientoSchema extends BaseModel {
 }
 
 export class CultivoSchema extends BaseModel {
-  static $columns = ['createdAt', 'idCultivo', 'idEstado', 'idFinca', 'nombreCultivo', 'tipoCultivo', 'updatedAt'] as const
+  static $columns = ['createdAt', 'fotoUrl', 'idCultivo', 'idEstado', 'idFinca', 'nombreCultivo', 'tipoCultivo', 'updatedAt'] as const
   $columns = CultivoSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
+  @column()
+  declare fotoUrl: string | null
   @column({ isPrimary: true })
   declare idCultivo: number
   @column()
@@ -216,10 +218,8 @@ export class CultivoSchema extends BaseModel {
 }
 
 export class FincaSchema extends BaseModel {
-  static $columns = ['activo', 'altitudMsnm', 'areaHectareas', 'departamento', 'fechaActualizacion', 'fechaRegistro', 'idFinca', 'idUsuario', 'latitud', 'longitud', 'municipio', 'nombreFinca'] as const
+  static $columns = ['altitudMsnm', 'areaHectareas', 'departamento', 'fechaActualizacion', 'fechaRegistro', 'fotoUrl', 'idFinca', 'idUsuario', 'latitud', 'longitud', 'municipio', 'nombreFinca'] as const
   $columns = FincaSchema.$columns
-  @column()
-  declare activo: boolean | null
   @column()
   declare altitudMsnm: string | null
   @column()
@@ -230,6 +230,8 @@ export class FincaSchema extends BaseModel {
   declare fechaActualizacion: DateTime
   @column.dateTime()
   declare fechaRegistro: DateTime
+  @column()
+  declare fotoUrl: string | null
   @column({ isPrimary: true })
   declare idFinca: number
   @column()
@@ -278,21 +280,19 @@ export class MonitoreoSchema extends BaseModel {
   declare observaciones: string | null
 }
 
-export class RecomendacioneSchema extends BaseModel {
-  static $columns = ['descripcion', 'fechaActualizacion', 'fechaLimite', 'fechaRegistro', 'idExpertoEmisor', 'idMonitoreo', 'idPrioridad', 'idRecomendacion', 'idTipo'] as const
-  $columns = RecomendacioneSchema.$columns
+export class RecomendacionIaSchema extends BaseModel {
+  static $columns = ['descripcion', 'fechaActualizacion', 'fechaLimite', 'fechaRegistro', 'idAnalisis', 'idPrioridad', 'idRecomendacion', 'idTipo'] as const
+  $columns = RecomendacionIaSchema.$columns
   @column()
   declare descripcion: string | null
   @column.dateTime()
-  declare fechaActualizacion: DateTime
+  declare fechaActualizacion: DateTime | null
   @column.date()
   declare fechaLimite: DateTime | null
   @column.dateTime()
-  declare fechaRegistro: DateTime
+  declare fechaRegistro: DateTime | null
   @column()
-  declare idExpertoEmisor: number | null
-  @column()
-  declare idMonitoreo: number | null
+  declare idAnalisis: number
   @column()
   declare idPrioridad: number | null
   @column({ isPrimary: true })
@@ -318,6 +318,48 @@ export class RecomendacionTratamientoSchema extends BaseModel {
   declare notas: string | null
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+}
+
+export class RecomendacioneSchema extends BaseModel {
+  static $columns = ['descripcion', 'fechaActualizacion', 'fechaLimite', 'fechaRegistro', 'idExpertoEmisor', 'idMonitoreo', 'idPrioridad', 'idRecomendacion', 'idTipo'] as const
+  $columns = RecomendacioneSchema.$columns
+  @column()
+  declare descripcion: string | null
+  @column.dateTime()
+  declare fechaActualizacion: DateTime
+  @column.date()
+  declare fechaLimite: DateTime | null
+  @column.dateTime()
+  declare fechaRegistro: DateTime
+  @column()
+  declare idExpertoEmisor: number | null
+  @column()
+  declare idMonitoreo: number | null
+  @column()
+  declare idPrioridad: number | null
+  @column({ isPrimary: true })
+  declare idRecomendacion: number
+  @column()
+  declare idTipo: number | null
+}
+
+export class TratamientoIaSchema extends BaseModel {
+  static $columns = ['descripcion', 'fechaActualizacion', 'fechaRegistro', 'idRecomendacion', 'idTipoTratamiento', 'idTratamiento', 'nombre'] as const
+  $columns = TratamientoIaSchema.$columns
+  @column()
+  declare descripcion: string | null
+  @column.dateTime()
+  declare fechaActualizacion: DateTime | null
+  @column.dateTime()
+  declare fechaRegistro: DateTime | null
+  @column()
+  declare idRecomendacion: number
+  @column()
+  declare idTipoTratamiento: number | null
+  @column({ isPrimary: true })
+  declare idTratamiento: number
+  @column()
+  declare nombre: string | null
 }
 
 export class TratamientoSchema extends BaseModel {

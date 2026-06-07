@@ -196,18 +196,20 @@ router.group(() => {
   router.delete('/cafeteros/:id', [CafeterosController, 'destroy'])
 
   // Fincas
-  router.get('/fincas',        [FincasController, 'index'])
-  router.post('/fincas',       [FincasController, 'store'])
-  router.get('/fincas/:id',    [FincasController, 'show'])
-  router.put('/fincas/:id',    [FincasController, 'update'])
-  router.delete('/fincas/:id', [FincasController, 'destroy'])
+  router.get('/fincas',            [FincasController, 'index'])
+  router.post('/fincas',           [FincasController, 'store'])
+  router.get('/fincas/:id',        [FincasController, 'show'])
+  router.put('/fincas/:id',        [FincasController, 'update'])
+  router.delete('/fincas/:id',     [FincasController, 'destroy'])
+  router.post('/fincas/:id/foto',  [FincasController, 'uploadPhoto'])
 
   // Cultivos
-  router.get('/cultivos',        [CultivosController, 'index'])
-  router.post('/cultivos',       [CultivosController, 'store'])
-  router.get('/cultivos/:id',    [CultivosController, 'show'])
-  router.put('/cultivos/:id',    [CultivosController, 'update'])
-  router.delete('/cultivos/:id', [CultivosController, 'destroy'])
+  router.get('/cultivos',            [CultivosController, 'index'])
+  router.post('/cultivos',           [CultivosController, 'store'])
+  router.get('/cultivos/:id',        [CultivosController, 'show'])
+  router.put('/cultivos/:id',        [CultivosController, 'update'])
+  router.delete('/cultivos/:id',     [CultivosController, 'destroy'])
+  router.post('/cultivos/:id/foto',  [CultivosController, 'uploadPhoto'])
 
   // Monitoreos — lectura
   router.get('/monitoreos',     [MonitoreosController, 'index'])

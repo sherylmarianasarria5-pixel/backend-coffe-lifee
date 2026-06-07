@@ -1,5 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Cultivo from '#models/cultivo'
+import app from '@adonisjs/core/services/app'
+import { subirImagen } from '#services/cloudinary_service'
 import { cultivoStoreValidator, cultivoUpdateValidator } from '#validators/validators'
 
 
@@ -125,6 +127,43 @@ export default class CultivosController {
         return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
       }
       return response.internalServerError({ message: 'Error al actualizar cultivo', error: error.message })
+    }
+  }
+
+  /**
+   * @uploadPhoto
+   * @summary Subir foto del cultivo
+   * @responseBody 200 - {"message": "Foto subida correctamente", "data": {"fotoUrl": "https://..."}}
+   * @responseBody 404 - {"message": "Cultivo no encontrado"}
+   */
+  async uploadPhoto({ params, request, response }: HttpContext) {
+    try {
+      const cultivo = await Cultivo.findOrFail(params.id)
+
+      const archivo = request.file('imagen', {
+        size: '10mb',
+        extnames: ['jpg', 'jpeg', 'png', 'webp'],
+      })
+
+      if (!archivo) {
+        return response.badRequest({ message: 'Debes enviar un archivo con el campo "imagen"' })
+      }
+      if (!archivo.isValid) {
+        return response.badRequest({ message: 'Archivo inválido', errors: archivo.errors })
+      }
+
+      await archivo.move(app.tmpPath('uploads'))
+      const urlImagen = await subirImagen(archivo.filePath!)
+
+      cultivo.fotoUrl = urlImagen
+      await cultivo.save()
+
+      return response.ok({ message: 'Foto subida correctamente', data: { fotoUrl: urlImagen } })
+    } catch (error: any) {
+      if (error.code === 'E_ROW_NOT_FOUND') {
+        return response.notFound({ message: 'Cultivo no encontrado' })
+      }
+      return response.internalServerError({ message: 'Error al subir foto', error: error.message })
     }
   }
 

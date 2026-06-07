@@ -1,10 +1,13 @@
 import { FincaSchema } from '#database/schema'
-import { belongsTo, hasMany } from '@adonisjs/lucid/orm'
+import { column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import Usuario from '#models/usuario'
 import Cultivo from '#models/cultivo'
 
 export default class Finca extends FincaSchema {
+  @column({ columnName: 'foto_url' })
+  declare fotoUrl: string | null
+
   @belongsTo(() => Usuario, {
     foreignKey: 'idUsuario',
   })
