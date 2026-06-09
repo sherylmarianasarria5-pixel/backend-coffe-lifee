@@ -12,7 +12,7 @@ export default class UsuariosController {
   async index({ request, response }: HttpContext) {
     try {
       const page   = Number(request.input('page', 1))
-      const limit  = Number(request.input('limit', 10))
+      const limit  = Number(request.input('limit', 100))
       const search = request.input('search', '')
       const idRol  = request.input('id_rol')
       const activo = request.input('activo')

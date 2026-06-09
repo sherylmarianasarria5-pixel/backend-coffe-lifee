@@ -110,11 +110,13 @@ export type ScannedRoutes = {
     'fincas.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'fincas.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'fincas.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'fincas.upload_photo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cultivos.index': { paramsTuple?: []; params?: {} }
     'cultivos.store': { paramsTuple?: []; params?: {} }
     'cultivos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cultivos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cultivos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cultivos.upload_photo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'monitoreos.index': { paramsTuple?: []; params?: {} }
     'monitoreos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'analisis_ia.index': { paramsTuple?: []; params?: {} }
@@ -318,7 +320,9 @@ export type ScannedRoutes = {
     'tratamiento_ia.store': { paramsTuple?: []; params?: {} }
     'cafeteros.store': { paramsTuple?: []; params?: {} }
     'fincas.store': { paramsTuple?: []; params?: {} }
+    'fincas.upload_photo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cultivos.store': { paramsTuple?: []; params?: {} }
+    'cultivos.upload_photo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.store': { paramsTuple?: []; params?: {} }
     'experto.crear_monitoreo': { paramsTuple?: []; params?: {} }
     'experto.crear_recomendacion': { paramsTuple?: []; params?: {} }

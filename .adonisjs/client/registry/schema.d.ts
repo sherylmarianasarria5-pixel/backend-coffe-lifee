@@ -1279,6 +1279,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/fincas_controller').default['destroy']>>>
     }
   }
+  'fincas.upload_photo': {
+    methods: ["POST"]
+    pattern: '/fincas/:id/foto'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/fincas_controller').default['uploadPhoto']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/fincas_controller').default['uploadPhoto']>>>
+    }
+  }
   'cultivos.index': {
     methods: ["GET","HEAD"]
     pattern: '/cultivos'
@@ -1337,6 +1349,18 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/cultivos_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cultivos_controller').default['destroy']>>>
+    }
+  }
+  'cultivos.upload_photo': {
+    methods: ["POST"]
+    pattern: '/cultivos/:id/foto'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cultivos_controller').default['uploadPhoto']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cultivos_controller').default['uploadPhoto']>>>
     }
   }
   'monitoreos.index': {

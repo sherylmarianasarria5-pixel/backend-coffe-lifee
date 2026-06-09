@@ -178,6 +178,7 @@ export interface ApiDefinition {
     show: typeof routes['fincas.show']
     update: typeof routes['fincas.update']
     destroy: typeof routes['fincas.destroy']
+    uploadPhoto: typeof routes['fincas.upload_photo']
   }
   cultivos: {
     index: typeof routes['cultivos.index']
@@ -185,6 +186,7 @@ export interface ApiDefinition {
     show: typeof routes['cultivos.show']
     update: typeof routes['cultivos.update']
     destroy: typeof routes['cultivos.destroy']
+    uploadPhoto: typeof routes['cultivos.upload_photo']
   }
   experto: {
     dashboard: typeof routes['experto.dashboard']

@@ -642,6 +642,12 @@ const routes = {
     tokens: [{"old":"/fincas/:id","type":0,"val":"fincas","end":""},{"old":"/fincas/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['fincas.destroy']['types'],
   },
+  'fincas.upload_photo': {
+    methods: ["POST"],
+    pattern: '/fincas/:id/foto',
+    tokens: [{"old":"/fincas/:id/foto","type":0,"val":"fincas","end":""},{"old":"/fincas/:id/foto","type":1,"val":"id","end":""},{"old":"/fincas/:id/foto","type":0,"val":"foto","end":""}],
+    types: placeholder as Registry['fincas.upload_photo']['types'],
+  },
   'cultivos.index': {
     methods: ["GET","HEAD"],
     pattern: '/cultivos',
@@ -671,6 +677,12 @@ const routes = {
     pattern: '/cultivos/:id',
     tokens: [{"old":"/cultivos/:id","type":0,"val":"cultivos","end":""},{"old":"/cultivos/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['cultivos.destroy']['types'],
+  },
+  'cultivos.upload_photo': {
+    methods: ["POST"],
+    pattern: '/cultivos/:id/foto',
+    tokens: [{"old":"/cultivos/:id/foto","type":0,"val":"cultivos","end":""},{"old":"/cultivos/:id/foto","type":1,"val":"id","end":""},{"old":"/cultivos/:id/foto","type":0,"val":"foto","end":""}],
+    types: placeholder as Registry['cultivos.upload_photo']['types'],
   },
   'monitoreos.index': {
     methods: ["GET","HEAD"],
