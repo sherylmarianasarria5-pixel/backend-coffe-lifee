@@ -4,6 +4,7 @@
  * Run "node ace migration:run" command to re-generate this file
  */
 
+
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
