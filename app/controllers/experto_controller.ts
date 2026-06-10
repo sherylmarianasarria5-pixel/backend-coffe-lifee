@@ -200,7 +200,7 @@ export default class ExpertoController {
 
     const monitoreo = await Monitoreo.create({
       idCultivo: idCultivo,
-      idExperto: idUsuario,
+      idUsuario: idUsuario,
       observaciones: body.observaciones ?? null,
       fechaMonitoreo: body.fecha_monitoreo ?? body.fechaMonitoreo,
     })

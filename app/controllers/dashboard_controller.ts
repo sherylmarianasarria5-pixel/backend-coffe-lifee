@@ -29,7 +29,7 @@ export default class DashboardController {
 
       const ultimosMonitoreos = await Monitoreo.query()
         .preload('cultivo')
-        .preload('experto')
+        .preload('usuario')
         .orderBy('fecha_monitoreo', 'desc')
         .limit(5)
 
