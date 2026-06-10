@@ -143,12 +143,10 @@ router.group(() => {
   router.get('/cafeteros/:id', [CafeterosController, 'show'])
 
   // Monitoreos — escritura
-  router.post('/monitoreos',       [MonitoreosController, 'store'])
   router.put('/monitoreos/:id',    [MonitoreosController, 'update'])
   router.delete('/monitoreos/:id', [MonitoreosController, 'destroy'])
 
   // Análisis IA — escritura + predicción
-  router.post('/analisis_ia',         [AnalisisIaController, 'store'])
   router.put('/analisis_ia/:id',      [AnalisisIaController, 'update'])
   router.delete('/analisis_ia/:id',   [AnalisisIaController, 'destroy'])
   router.post('/analisis_ia/predict', [AnalisisIaController, 'predict'])
@@ -211,13 +209,15 @@ router.group(() => {
   router.delete('/cultivos/:id',     [CultivosController, 'destroy'])
   router.post('/cultivos/:id/foto',  [CultivosController, 'uploadPhoto'])
 
-  // Monitoreos — lectura
+  // Monitoreos — lectura y creación
   router.get('/monitoreos',     [MonitoreosController, 'index'])
   router.get('/monitoreos/:id', [MonitoreosController, 'show'])
+  router.post('/monitoreos',    [MonitoreosController, 'store'])
 
-  // Análisis IA — lectura
+  // Análisis IA — lectura y creación
   router.get('/analisis_ia',     [AnalisisIaController, 'index'])
   router.get('/analisis_ia/:id', [AnalisisIaController, 'show'])
+  router.post('/analisis_ia',    [AnalisisIaController, 'store'])
 
   // Recomendaciones — lectura
   router.get('/recomendaciones',     [RecomendacionesController, 'index'])

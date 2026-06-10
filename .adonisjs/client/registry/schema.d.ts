@@ -859,18 +859,6 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cafeteros_controller').default['show']>>>
     }
   }
-  'monitoreos.store': {
-    methods: ["POST"]
-    pattern: '/monitoreos'
-    types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/validators').monitoreoStoreValidator)>>
-      paramsTuple: []
-      params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/validators').monitoreoStoreValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
-    }
-  }
   'monitoreos.update': {
     methods: ["PUT"]
     pattern: '/monitoreos/:id'
@@ -893,18 +881,6 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['destroy']>>>
-    }
-  }
-  'analisis_ia.store': {
-    methods: ["POST"]
-    pattern: '/analisis_ia'
-    types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/validators').analisisIaStoreValidator)>>
-      paramsTuple: []
-      params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/validators').analisisIaStoreValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'analisis_ia.update': {
@@ -1387,6 +1363,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['show']>>>
     }
   }
+  'monitoreos.store': {
+    methods: ["POST"]
+    pattern: '/monitoreos'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/validators').monitoreoStoreValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/validators').monitoreoStoreValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'analisis_ia.index': {
     methods: ["GET","HEAD"]
     pattern: '/analisis_ia'
@@ -1409,6 +1397,18 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['show']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['show']>>>
+    }
+  }
+  'analisis_ia.store': {
+    methods: ["POST"]
+    pattern: '/analisis_ia'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/validators').analisisIaStoreValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/validators').analisisIaStoreValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'recomendaciones.index': {

@@ -6,7 +6,7 @@ import { monitoreoStoreValidator, monitoreoUpdateValidator } from '#validators/v
 import { DateTime } from 'luxon'
 
 function serializar(m: Monitoreo) {
-  const exp = m.experto
+  const exp = m.usuario
   const imagenes = m.imagenes ? m.imagenes.map((img: any) => ({
     idImagen: img.idImagen,
     rutaImagen: img.rutaImagen,
@@ -37,7 +37,7 @@ function serializar(m: Monitoreo) {
       tipo: r.tipo ? { nombre: r.tipo.nombreTipo || r.tipo.nombre } : null,
       tratamientos: r.tratamientos ? r.tratamientos.map(() => ({})) : [],
     })) : [],
-    experto: exp ? {
+    usuario: exp ? {
       idUsuario: exp.idUsuario,
       nombre:    exp.nombre,
       apellido:  exp.apellido,
@@ -82,14 +82,14 @@ export default class MonitoreosController {
       const search    = request.input('search', '')
       const idCultivo = request.input('id_cultivo')
       const idExperto = request.input('id_experto')
-      const ALLOWED = ['id_monitoreo', 'fecha_monitoreo', 'observaciones', 'fecha_registro', 'fecha_actualizacion', 'id_cultivo', 'id_experto']
+      const ALLOWED = ['id_monitoreo', 'fecha_monitoreo', 'observaciones', 'fecha_registro', 'fecha_actualizacion', 'id_cultivo', 'id_usuario']
       const orderBy = request.input('order_by', 'id_monitoreo')
       const orderDir = request.input('order_dir', 'desc')
       const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_monitoreo'
 
       const query = Monitoreo.query()
         .preload('cultivo')
-        .preload('experto')
+        .preload('usuario')
         .preload('imagenes', (q) => {
           q.preload('analisis', (a) => {
             a.preload('estadoAnalisis')
@@ -107,7 +107,7 @@ export default class MonitoreosController {
         })
       }
       if (idCultivo) query.where('id_cultivo', idCultivo)
-      if (idExperto) query.where('id_experto', idExperto)
+      if (idExperto) query.where('id_usuario', idExperto)
 
       query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
 
@@ -157,25 +157,21 @@ export default class MonitoreosController {
   async store({ request, response }: HttpContext) {
     try {
       const jwt       = (request as any).usuarioJwt
-      const idExperto = jwt?.id as number | undefined
+      const idUsuario = jwt?.id as number | undefined
 
-      if (!idExperto) {
+      if (!idUsuario) {
         return response.unauthorized({ 
           message: 'Token inválido: no se encontró el id del usuario' 
         })
       }
 
-      const experto = await Usuario.query()
-        .where('id_usuario', idExperto)
-        .whereHas('rol', (q: any) =>
-          q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['experto'])
-        )
-        .preload('rol')
+      const usuario = await Usuario.query()
+        .where('id_usuario', idUsuario)
         .first()
 
-      if (!experto) {
+      if (!usuario) {
         return response.forbidden({ 
-          message: 'Solo los expertos pueden registrar monitoreos' 
+          message: 'Usuario no encontrado' 
         })
       }
 
@@ -183,7 +179,7 @@ export default class MonitoreosController {
 
       const monitoreo = await Monitoreo.create({
         idCultivo:      data.id_cultivo,
-        idExperto:      idExperto,
+        idUsuario:      idUsuario,
         fechaMonitoreo: DateTime.fromISO(data.fecha_monitoreo),
         observaciones:  data.observaciones ?? null,
       })
@@ -195,12 +191,12 @@ export default class MonitoreosController {
           idCultivo:      monitoreo.idCultivo,
           fechaMonitoreo: monitoreo.fechaMonitoreo,
           observaciones:  monitoreo.observaciones,
-          experto: {
-            idUsuario: experto.idUsuario,
-            nombre:    experto.nombre,
-            apellido:  experto.apellido,
-            correo:    experto.correo,
-            telefono:  experto.telefono,
+          usuario: {
+            idUsuario: usuario.idUsuario,
+            nombre:    usuario.nombre,
+            apellido:  usuario.apellido,
+            correo:    usuario.correo,
+            telefono:  usuario.telefono,
           }
         },
       })
@@ -244,7 +240,7 @@ export default class MonitoreosController {
       const monitoreo = await Monitoreo.query()
         .where('id_monitoreo', params.id)
         .preload('cultivo')
-        .preload('experto')
+        .preload('usuario')
         .preload('imagenes')
         .preload('analisisIas')
         .firstOrFail()

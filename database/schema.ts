@@ -262,7 +262,7 @@ export class ImageneSchema extends BaseModel {
 }
 
 export class MonitoreoSchema extends BaseModel {
-  static $columns = ['fechaActualizacion', 'fechaMonitoreo', 'fechaRegistro', 'idCultivo', 'idExperto', 'idMonitoreo', 'observaciones'] as const
+  static $columns = ['fechaActualizacion', 'fechaMonitoreo', 'fechaRegistro', 'idCultivo', 'idUsuario', 'idMonitoreo', 'observaciones'] as const
   $columns = MonitoreoSchema.$columns
   @column.dateTime()
   declare fechaActualizacion: DateTime
@@ -273,7 +273,7 @@ export class MonitoreoSchema extends BaseModel {
   @column()
   declare idCultivo: number | null
   @column()
-  declare idExperto: number | null
+  declare idUsuario: number | null
   @column({ isPrimary: true })
   declare idMonitoreo: number
   @column()

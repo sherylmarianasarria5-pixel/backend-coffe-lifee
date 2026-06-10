@@ -75,10 +75,8 @@ export type ScannedRoutes = {
     'asignaciones_expertos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cafeteros.index': { paramsTuple?: []; params?: {} }
     'cafeteros.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'monitoreos.store': { paramsTuple?: []; params?: {} }
     'monitoreos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'monitoreos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'analisis_ia.store': { paramsTuple?: []; params?: {} }
     'analisis_ia.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'analisis_ia.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'analisis_ia.predict': { paramsTuple?: []; params?: {} }
@@ -119,8 +117,10 @@ export type ScannedRoutes = {
     'cultivos.upload_photo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'monitoreos.index': { paramsTuple?: []; params?: {} }
     'monitoreos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'monitoreos.store': { paramsTuple?: []; params?: {} }
     'analisis_ia.index': { paramsTuple?: []; params?: {} }
     'analisis_ia.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'analisis_ia.store': { paramsTuple?: []; params?: {} }
     'recomendaciones.index': { paramsTuple?: []; params?: {} }
     'recomendaciones.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tratamientos.index': { paramsTuple?: []; params?: {} }
@@ -309,8 +309,6 @@ export type ScannedRoutes = {
     'cat_estados_analisis.store': { paramsTuple?: []; params?: {} }
     'cat_estados_cultivos.store': { paramsTuple?: []; params?: {} }
     'categorias.store': { paramsTuple?: []; params?: {} }
-    'monitoreos.store': { paramsTuple?: []; params?: {} }
-    'analisis_ia.store': { paramsTuple?: []; params?: {} }
     'analisis_ia.predict': { paramsTuple?: []; params?: {} }
     'recomendaciones.store': { paramsTuple?: []; params?: {} }
     'tratamientos.store': { paramsTuple?: []; params?: {} }
@@ -323,6 +321,8 @@ export type ScannedRoutes = {
     'fincas.upload_photo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cultivos.store': { paramsTuple?: []; params?: {} }
     'cultivos.upload_photo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'monitoreos.store': { paramsTuple?: []; params?: {} }
+    'analisis_ia.store': { paramsTuple?: []; params?: {} }
     'imagenes.store': { paramsTuple?: []; params?: {} }
     'experto.crear_monitoreo': { paramsTuple?: []; params?: {} }
     'experto.crear_recomendacion': { paramsTuple?: []; params?: {} }

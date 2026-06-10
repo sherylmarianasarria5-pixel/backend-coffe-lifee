@@ -109,19 +109,19 @@ export interface ApiDefinition {
     destroy: typeof routes['cafeteros.destroy']
   }
   monitoreos: {
-    store: typeof routes['monitoreos.store']
     update: typeof routes['monitoreos.update']
     destroy: typeof routes['monitoreos.destroy']
     index: typeof routes['monitoreos.index']
     show: typeof routes['monitoreos.show']
+    store: typeof routes['monitoreos.store']
   }
   analisisIa: {
-    store: typeof routes['analisis_ia.store']
     update: typeof routes['analisis_ia.update']
     destroy: typeof routes['analisis_ia.destroy']
     predict: typeof routes['analisis_ia.predict']
     index: typeof routes['analisis_ia.index']
     show: typeof routes['analisis_ia.show']
+    store: typeof routes['analisis_ia.store']
   }
   recomendaciones: {
     store: typeof routes['recomendaciones.store']

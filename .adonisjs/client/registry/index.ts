@@ -432,12 +432,6 @@ const routes = {
     tokens: [{"old":"/cafeteros/:id","type":0,"val":"cafeteros","end":""},{"old":"/cafeteros/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['cafeteros.show']['types'],
   },
-  'monitoreos.store': {
-    methods: ["POST"],
-    pattern: '/monitoreos',
-    tokens: [{"old":"/monitoreos","type":0,"val":"monitoreos","end":""}],
-    types: placeholder as Registry['monitoreos.store']['types'],
-  },
   'monitoreos.update': {
     methods: ["PUT"],
     pattern: '/monitoreos/:id',
@@ -449,12 +443,6 @@ const routes = {
     pattern: '/monitoreos/:id',
     tokens: [{"old":"/monitoreos/:id","type":0,"val":"monitoreos","end":""},{"old":"/monitoreos/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['monitoreos.destroy']['types'],
-  },
-  'analisis_ia.store': {
-    methods: ["POST"],
-    pattern: '/analisis_ia',
-    tokens: [{"old":"/analisis_ia","type":0,"val":"analisis_ia","end":""}],
-    types: placeholder as Registry['analisis_ia.store']['types'],
   },
   'analisis_ia.update': {
     methods: ["PUT"],
@@ -696,6 +684,12 @@ const routes = {
     tokens: [{"old":"/monitoreos/:id","type":0,"val":"monitoreos","end":""},{"old":"/monitoreos/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['monitoreos.show']['types'],
   },
+  'monitoreos.store': {
+    methods: ["POST"],
+    pattern: '/monitoreos',
+    tokens: [{"old":"/monitoreos","type":0,"val":"monitoreos","end":""}],
+    types: placeholder as Registry['monitoreos.store']['types'],
+  },
   'analisis_ia.index': {
     methods: ["GET","HEAD"],
     pattern: '/analisis_ia',
@@ -707,6 +701,12 @@ const routes = {
     pattern: '/analisis_ia/:id',
     tokens: [{"old":"/analisis_ia/:id","type":0,"val":"analisis_ia","end":""},{"old":"/analisis_ia/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['analisis_ia.show']['types'],
+  },
+  'analisis_ia.store': {
+    methods: ["POST"],
+    pattern: '/analisis_ia',
+    tokens: [{"old":"/analisis_ia","type":0,"val":"analisis_ia","end":""}],
+    types: placeholder as Registry['analisis_ia.store']['types'],
   },
   'recomendaciones.index': {
     methods: ["GET","HEAD"],

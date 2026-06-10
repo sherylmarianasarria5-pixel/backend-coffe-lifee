@@ -15,9 +15,9 @@ export default class Monitoreo extends MonitoreoSchema {
   declare cultivo: BelongsTo<typeof Cultivo>
 
   @belongsTo(() => Usuario, {
-    foreignKey: 'idExperto',
+    foreignKey: 'idUsuario',
   })
-  declare experto: BelongsTo<typeof Usuario>
+  declare usuario: BelongsTo<typeof Usuario>
 
   @hasMany(() => Imagene, {
     foreignKey: 'idMonitoreo',
