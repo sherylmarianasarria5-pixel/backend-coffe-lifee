@@ -151,20 +151,6 @@ export interface ApiDefinition {
     index: typeof routes['recomendacion_tratamientos.index']
     show: typeof routes['recomendacion_tratamientos.show']
   }
-  recomendacionIa: {
-    store: typeof routes['recomendacion_ia.store']
-    update: typeof routes['recomendacion_ia.update']
-    destroy: typeof routes['recomendacion_ia.destroy']
-    index: typeof routes['recomendacion_ia.index']
-    show: typeof routes['recomendacion_ia.show']
-  }
-  tratamientoIa: {
-    store: typeof routes['tratamiento_ia.store']
-    update: typeof routes['tratamiento_ia.update']
-    destroy: typeof routes['tratamiento_ia.destroy']
-    index: typeof routes['tratamiento_ia.index']
-    show: typeof routes['tratamiento_ia.show']
-  }
   imagenes: {
     update: typeof routes['imagenes.update']
     destroy: typeof routes['imagenes.destroy']

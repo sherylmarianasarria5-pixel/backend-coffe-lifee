@@ -30,8 +30,7 @@ const ImagenesController                  = () => import('#controllers/imagenes_
 const AnalisisIaController                = () => import('#controllers/analisis_ia_controller')
 const RecomendacionesController           = () => import('#controllers/recomendaciones_controller')
 const AsignacionesExpertosController      = () => import('#controllers/asignaciones_expertos_controller')
-const RecomendacionIaController           = () => import('#controllers/recomendacion_ia_controller')
-const TratamientoIaController             = () => import('#controllers/tratamiento_ia_controller')
+
 
 // ─── Público ──────────────────────────────────────────────────────────────────
 router.get('/', async () => ({
@@ -171,15 +170,7 @@ router.group(() => {
   router.put('/recomendacion_tratamientos/:id',    [RecomendacionTratamientosController, 'update'])
   router.delete('/recomendacion_tratamientos/:id', [RecomendacionTratamientosController, 'destroy'])
 
-  // Recomendaciones IA — escritura
-  router.post('/recomendacion_ia',       [RecomendacionIaController, 'store'])
-  router.put('/recomendacion_ia/:id',    [RecomendacionIaController, 'update'])
-  router.delete('/recomendacion_ia/:id', [RecomendacionIaController, 'destroy'])
 
-  // Tratamientos IA — escritura
-  router.post('/tratamiento_ia',       [TratamientoIaController, 'store'])
-  router.put('/tratamiento_ia/:id',    [TratamientoIaController, 'update'])
-  router.delete('/tratamiento_ia/:id', [TratamientoIaController, 'destroy'])
 
   // Imágenes — escritura
   router.put('/imagenes/:id',    [ImagenesController, 'update'])
@@ -235,13 +226,7 @@ router.group(() => {
   router.get('/recomendacion_tratamientos',     [RecomendacionTratamientosController, 'index'])
   router.get('/recomendacion_tratamientos/:id', [RecomendacionTratamientosController, 'show'])
 
-  // Recomendaciones IA — lectura
-  router.get('/recomendacion_ia',     [RecomendacionIaController, 'index'])
-  router.get('/recomendacion_ia/:id', [RecomendacionIaController, 'show'])
 
-  // Tratamientos IA — lectura
-  router.get('/tratamiento_ia',     [TratamientoIaController, 'index'])
-  router.get('/tratamiento_ia/:id', [TratamientoIaController, 'show'])
 
   // Imágenes — lectura y subida
   router.get('/imagenes',      [ImagenesController, 'index'])
