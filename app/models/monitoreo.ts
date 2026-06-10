@@ -1,5 +1,5 @@
 import { MonitoreoSchema } from '#database/schema'
-import { belongsTo, hasMany } from '@adonisjs/lucid/orm'
+import { belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 
 import Cultivo from '#models/cultivo'
@@ -9,6 +9,10 @@ import AnalisisIa from '#models/analisis_ia'
 import Recomendacione from '#models/recomendacione'
 
 export default class Monitoreo extends MonitoreoSchema {
+
+  @column()
+  declare idUsuario: number | null
+
   @belongsTo(() => Cultivo, {
     foreignKey: 'idCultivo',
   })
