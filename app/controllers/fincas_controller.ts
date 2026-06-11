@@ -20,13 +20,10 @@ export default class FincasController {
       const page      = Number(request.input('page', 1))
       const limit     = Number(request.input('limit', 10))
       const search    = request.input('search', '')
-      const idUsuario = request.input('id_usuario')
-      const query = Finca.query()
+      const payload  = (request as any).usuarioJwt
+      const query = Finca.query().where('id_usuario', payload.id)
       if (search) {
         query.whereILike('nombre_finca', `%${search}%`)
-      }
-      if (idUsuario) {
-        query.where('id_usuario', idUsuario)
       }
       const ALLOWED = ['id_finca', 'nombre_finca', 'municipio', 'departamento', 'area_hectareas', 'altitud_msnm', 'latitud', 'longitud', 'id_usuario', 'activo', 'fecha_registro', 'fecha_actualizacion']
       const orderBy = request.input('order_by', 'id_finca')
