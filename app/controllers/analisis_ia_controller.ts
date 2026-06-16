@@ -15,10 +15,10 @@ export default class AnalisisIaController {
       const idImagen    = request.input('id_imagen')
       const idEstado    = request.input('id_estado')
       const idNivelRoya = request.input('id_nivel_roya')
-      const ALLOWED = ['id_analisis', 'resultado', 'porcentaje_confianza', 'fecha_registro', 'id_imagen', 'id_estado', 'id_nivel_roya']
-      const orderBy = request.input('order_by', 'id_analisis')
+      const ALLOWED = ['idAnalisis', 'resultado', 'porcentajeConfianza', 'fechaRegistro', 'idImagen', 'idEstado', 'idNivelRoya']
+      const orderBy = request.input('order_by', 'idAnalisis')
       const orderDir = request.input('order_dir', 'desc')
-      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_analisis'
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'idAnalisis'
 
       const query = AnalisisIa.query()
         .preload('imagen')

@@ -20,8 +20,11 @@ export default class FincasController {
       const page      = Number(request.input('page', 1))
       const limit     = Number(request.input('limit', 10))
       const search    = request.input('search', '')
-      const payload  = (request as any).usuarioJwt
-      const query = Finca.query().where('id_usuario', payload.id)
+      const payload = (request as any).usuarioJwt
+      const query = Finca.query()
+      if (payload.rol?.nombreRol !== 'admin') {
+        query.where('id_usuario', payload.id)
+      }
       if (search) {
         query.whereILike('nombre_finca', `%${search}%`)
       }

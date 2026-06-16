@@ -5,6 +5,9 @@ import Usuario from '#models/usuario'
 import Cultivo from '#models/cultivo'
 
 export default class Finca extends FincaSchema {
+  @column()
+  declare activo: boolean
+
   @column({ columnName: 'foto_url' })
   declare fotoUrl: string | null
 
