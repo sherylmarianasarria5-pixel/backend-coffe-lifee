@@ -219,8 +219,10 @@ export class CultivoSchema extends BaseModel {
 }
 
 export class FincaSchema extends BaseModel {
-  static $columns = ['altitudMsnm', 'areaHectareas', 'departamento', 'fechaActualizacion', 'fechaRegistro', 'fotoUrl', 'idFinca', 'idUsuario', 'latitud', 'longitud', 'municipio', 'nombreFinca'] as const
+  static $columns = ['activo', 'altitudMsnm', 'areaHectareas', 'departamento', 'fechaActualizacion', 'fechaRegistro', 'fotoUrl', 'idFinca', 'idUsuario', 'latitud', 'longitud', 'municipio', 'nombreFinca'] as const
   $columns = FincaSchema.$columns
+  @column()
+  declare activo: boolean | null
   @column()
   declare altitudMsnm: string | null
   @column()
