@@ -4,14 +4,20 @@ export default class extends BaseSchema {
   protected tableName = 'fincas'
 
   async up() {
-    this.schema.alterTable(this.tableName, (table) => {
-      table.boolean('activo').defaultTo(true).notNullable()
-    })
+    const hasColumn = await this.schema.hasColumn(this.tableName, 'activo')
+    if (!hasColumn) {
+      this.schema.alterTable(this.tableName, (table) => {
+        table.boolean('activo').defaultTo(true).notNullable()
+      })
+    }
   }
 
   async down() {
-    this.schema.alterTable(this.tableName, (table) => {
-      table.dropColumn('activo')
-    })
+    const hasColumn = await this.schema.hasColumn(this.tableName, 'activo')
+    if (hasColumn) {
+      this.schema.alterTable(this.tableName, (table) => {
+        table.dropColumn('activo')
+      })
+    }
   }
 }
