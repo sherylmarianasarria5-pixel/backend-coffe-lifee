@@ -240,6 +240,7 @@ router.group(() => {
   router.get('/fincas',                      [ExpertoController, 'fincas'])
   router.get('/cultivos',                    [ExpertoController, 'cultivos'])
   router.get('/monitoreos',                  [ExpertoController, 'monitoreos'])
+  router.get('/analisis_ia',                 [ExpertoController, 'analisis_ia'])
   router.post('/monitoreos',                 [ExpertoController, 'crearMonitoreo'])
   router.put('/monitoreos/:id',              [ExpertoController, 'actualizarMonitoreo'])
   router.get('/recomendaciones',             [ExpertoController, 'recomendaciones'])

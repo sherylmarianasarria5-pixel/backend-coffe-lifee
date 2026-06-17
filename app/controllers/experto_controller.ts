@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Finca from '#models/finca'
 import Cultivo from '#models/cultivo'
 import Monitoreo from '#models/monitoreo'
+import AnalisisIa from '#models/analisis_ia'
 import Recomendacione from '#models/recomendacione'
 import AsignacionExperto from '#models/asignacion_experto'
 import AplicacionesTratamiento from '#models/aplicaciones_tratamiento'
@@ -178,6 +179,36 @@ export default class ExpertoController {
     query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
     const monitoreos = await query.paginate(page, limit)
     return response.ok(monitoreos.toJSON())
+  }
+
+  /**
+   * @analisis_ia
+   * @summary Listar análisis de IA de mis fincas asignadas
+   * @description Retorna los análisis de IA de monitoreos en cultivos de las fincas asignadas al experto
+   * @responseBody 200 - [{ "idAnalisis": 1, "resultado": "Roya detectada", "porcentajeConfianza": "60.00" }]
+   * @responseBody 401 - { "message": "Token no proporcionado" }
+   */
+  async analisis_ia({ request, response }: HttpContext) {
+    const idUsuario = this.getIdUsuario(request)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
+
+    const idMonitoreos = await this.monitoreosDeExperto(idUsuario)
+    if (!idMonitoreos.length) {
+      return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
+    }
+
+    const query = AnalisisIa.query()
+      .whereHas('imagen', (q) => {
+        q.whereIn('idMonitoreo', idMonitoreos)
+      })
+      .preload('imagen')
+      .preload('estadoAnalisis')
+      .preload('nivelRoya')
+
+    query.orderBy('idAnalisis', 'desc')
+    const analisis = await query.paginate(page, limit)
+    return response.ok(analisis.toJSON())
   }
 
   /**
