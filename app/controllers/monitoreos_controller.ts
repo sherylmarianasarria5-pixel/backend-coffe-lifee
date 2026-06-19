@@ -177,10 +177,27 @@ export default class MonitoreosController {
 
       const data = await request.validateUsing(monitoreoStoreValidator)
 
+      // ── Validación anti-duplicados ──────────────────────────────
+      const fechaMonitoreo = DateTime.fromISO(data.fecha_monitoreo)
+      const haceDiezSegundos = DateTime.now().minus({ seconds: 10 })
+
+      const duplicado = await Monitoreo.query()
+        .where('id_cultivo', data.id_cultivo)
+        .where('fecha_monitoreo', fechaMonitoreo.toSQLDate()!)
+        .where('fecha_registro', '>=', haceDiezSegundos.toSQL()!)
+        .first()
+
+      if (duplicado) {
+        return response.conflict({
+          message: 'Ya se registró un monitoreo para este cultivo con la misma fecha hace unos segundos. Evita enviar el diagnóstico dos veces.',
+        })
+      }
+      // ─────────────────────────────────────────────────────────────
+
       const monitoreo = await Monitoreo.create({
         idCultivo:      data.id_cultivo,
         idUsuario:      idUsuario,
-        fechaMonitoreo: DateTime.fromISO(data.fecha_monitoreo),
+        fechaMonitoreo: fechaMonitoreo,
         observaciones:  data.observaciones ?? null,
       })
 

@@ -50,6 +50,7 @@ export default class AuthController {
           apellido: usuario.apellido,
           correo: usuario.correo,
           fotoPerfil: usuario.fotoPerfil,
+          genero: usuario.genero,
           rol: usuario.rol.nombreRol,
         },
       })
