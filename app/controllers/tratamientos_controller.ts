@@ -1,31 +1,23 @@
-// app/controllers/tratamientos_controller.ts
 import type { HttpContext } from '@adonisjs/core/http'
 import Tratamiento from '#models/tratamiento'
 
-
 export default class TratamientosController {
 
-  // GET /tratamientos
   async index({ request, response }: HttpContext) {
     try {
       const page        = Number(request.input('page', 1))
       const limit       = Number(request.input('limit', 10))
       const search      = request.input('search', '')
       const idTipo      = request.input('id_tipo')
-      const fechaDesde  = request.input('fecha_desde')
-      const fechaHasta  = request.input('fecha_hasta')
-      const query = Tratamiento.query()
+      const query = Tratamiento.query().preload('tipoTratamiento').preload('insumo')
       if (search) {
-        query.whereILike('nombre', `%${search}%`)
+        query.where((q) => {
+          q.whereILike('nombre', `%${search}%`)
+           .orWhereILike('descripcion', `%${search}%`)
+        })
       }
       if (idTipo) {
         query.where('id_tipo_tratamiento', idTipo)
-      }
-      if (fechaDesde) {
-        query.where('fecha_aplicacion', '>=', fechaDesde)
-      }
-      if (fechaHasta) {
-        query.where('fecha_aplicacion', '<=', fechaHasta)
       }
       const ALLOWED = ['id_tratamiento', 'nombre', 'fecha_registro', 'fecha_actualizacion']
       const orderBy = request.input('order_by', 'id_tratamiento')
@@ -43,12 +35,12 @@ export default class TratamientosController {
     }
   }
 
-  // GET /tratamientos/:id
   async show({ params, response }: HttpContext) {
     try {
       const tratamiento = await Tratamiento.query()
         .where('id_tratamiento', params.id)
         .preload('tipoTratamiento')
+        .preload('insumo')
         .firstOrFail()
       return response.ok(tratamiento)
     } catch {
@@ -56,13 +48,16 @@ export default class TratamientosController {
     }
   }
 
-  // POST /tratamientos
   async store({ request, response }: HttpContext) {
     try {
       const data = request.only([
         'id_tipo_tratamiento',
+        'id_insumo',
         'nombre',
         'descripcion',
+        'dosis',
+        'frecuencia',
+        'observaciones',
       ])
 
       if (!data.nombre) {
@@ -71,11 +66,16 @@ export default class TratamientosController {
 
       const tratamiento = await Tratamiento.create({
         idTipoTratamiento: data.id_tipo_tratamiento ?? null,
+        idInsumo:          data.id_insumo          ?? null,
         nombre:            data.nombre,
-        descripcion:       data.descripcion ?? null,
+        descripcion:       data.descripcion        ?? null,
+        dosis:             data.dosis              ?? null,
+        frecuencia:        data.frecuencia          ?? null,
+        observaciones:     data.observaciones       ?? null,
       })
 
       await tratamiento.load('tipoTratamiento')
+      await tratamiento.load('insumo')
 
       return response.created({
         message: 'Tratamiento creado correctamente',
@@ -89,25 +89,33 @@ export default class TratamientosController {
     }
   }
 
-  // PUT /tratamientos/:id
   async update({ params, request, response }: HttpContext) {
     try {
       const tratamiento = await Tratamiento.findOrFail(params.id)
 
       const data = request.only([
         'id_tipo_tratamiento',
+        'id_insumo',
         'nombre',
         'descripcion',
+        'dosis',
+        'frecuencia',
+        'observaciones',
       ])
 
       const payload: Record<string, any> = {}
       if (data.id_tipo_tratamiento !== undefined) payload.idTipoTratamiento = data.id_tipo_tratamiento
-      if (data.nombre              !== undefined) payload.nombre            = data.nombre
-      if (data.descripcion         !== undefined) payload.descripcion       = data.descripcion
+      if (data.id_insumo          !== undefined) payload.idInsumo          = data.id_insumo
+      if (data.nombre             !== undefined) payload.nombre            = data.nombre
+      if (data.descripcion        !== undefined) payload.descripcion       = data.descripcion
+      if (data.dosis              !== undefined) payload.dosis             = data.dosis
+      if (data.frecuencia         !== undefined) payload.frecuencia        = data.frecuencia
+      if (data.observaciones      !== undefined) payload.observaciones     = data.observaciones
 
       tratamiento.merge(payload)
       await tratamiento.save()
       await tratamiento.load('tipoTratamiento')
+      await tratamiento.load('insumo')
 
       return response.ok({
         message: 'Tratamiento actualizado correctamente',
@@ -121,7 +129,6 @@ export default class TratamientosController {
     }
   }
 
-  // DELETE /tratamientos/:id
   async destroy({ params, response }: HttpContext) {
     try {
       const tratamiento = await Tratamiento.findOrFail(params.id)

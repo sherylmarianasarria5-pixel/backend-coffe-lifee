@@ -23,13 +23,14 @@ const CatPrioridadesController            = () => import('#controllers/cat_prior
 const CatTiposRecomendacionesController   = () => import('#controllers/cat_tipos_recomendaciones_controller')
 const CatEstadosAnalisisController        = () => import('#controllers/cat_estados_analises_controller')
 const CatEstadosCultivosController        = () => import('#controllers/cat_estados_cultivo_controller')
-const RecomendacionTratamientosController = () => import('#controllers/recomendacion_tratamientos_controller')
 const TratamientosController              = () => import('#controllers/tratamientos_controller')
 const AplicacionesTratamientosController  = () => import('#controllers/aplicaciones_tratamientos_controller')
 const ImagenesController                  = () => import('#controllers/imagenes_controller')
 const AnalisisIaController                = () => import('#controllers/analisis_ia_controller')
 const RecomendacionesController           = () => import('#controllers/recomendaciones_controller')
 const AsignacionesExpertosController      = () => import('#controllers/asignaciones_expertos_controller')
+const CatTiposInsumosController           = () => import('#controllers/cat_tipos_insumos_controller')
+const InsumosController                   = () => import('#controllers/insumos_controller')
 
 
 // ─── Público ──────────────────────────────────────────────────────────────────
@@ -72,6 +73,10 @@ router.group(() => {
   router.get('/cat_estados_cultivo/:id',       [CatEstadosCultivosController,      'show'])
   router.get('/categorias',                    [CategoriasController,              'index'])
   router.get('/categorias/:id',                [CategoriasController,              'show'])
+  router.get('/cat_tipos_insumos',             [CatTiposInsumosController,         'index'])
+  router.get('/cat_tipos_insumos/:id',         [CatTiposInsumosController,         'show'])
+  router.get('/insumos',                       [InsumosController,                 'index'])
+  router.get('/insumos/:id',                   [InsumosController,                 'show'])
 }).use(middleware.jwtAuth())
 
 // ─── Solo ADMIN ───────────────────────────────────────────────────────────────
@@ -129,6 +134,12 @@ router.group(() => {
   router.post('/categorias',                    [CategoriasController,              'store'])
   router.put('/categorias/:id',                 [CategoriasController,              'update'])
   router.delete('/categorias/:id',              [CategoriasController,              'destroy'])
+  router.post('/cat_tipos_insumos',             [CatTiposInsumosController,         'store'])
+  router.put('/cat_tipos_insumos/:id',          [CatTiposInsumosController,         'update'])
+  router.delete('/cat_tipos_insumos/:id',       [CatTiposInsumosController,         'destroy'])
+  router.post('/insumos',                       [InsumosController,                 'store'])
+  router.put('/insumos/:id',                    [InsumosController,                 'update'])
+  router.delete('/insumos/:id',                 [InsumosController,                 'destroy'])
 }).use(middleware.role(['admin']))
 
 // ─── ADMIN y EXPERTO ──────────────────────────────────────────────────────────
@@ -143,7 +154,6 @@ router.group(() => {
 
   // Monitoreos — escritura
   router.put('/monitoreos/:id',    [MonitoreosController, 'update'])
-  router.delete('/monitoreos/:id', [MonitoreosController, 'destroy'])
 
   // Análisis IA — escritura + predicción
   router.put('/analisis_ia/:id',      [AnalisisIaController, 'update'])
@@ -165,10 +175,6 @@ router.group(() => {
   router.put('/aplicaciones_tratamientos/:id',    [AplicacionesTratamientosController, 'update'])
   router.delete('/aplicaciones_tratamientos/:id', [AplicacionesTratamientosController, 'destroy'])
 
-  // Recomendacion tratamientos — escritura
-  router.post('/recomendacion_tratamientos',       [RecomendacionTratamientosController, 'store'])
-  router.put('/recomendacion_tratamientos/:id',    [RecomendacionTratamientosController, 'update'])
-  router.delete('/recomendacion_tratamientos/:id', [RecomendacionTratamientosController, 'destroy'])
 
 
 
@@ -200,10 +206,11 @@ router.group(() => {
   router.delete('/cultivos/:id',     [CultivosController, 'destroy'])
   router.post('/cultivos/:id/foto',  [CultivosController, 'uploadPhoto'])
 
-  // Monitoreos — lectura y creación
+  // Monitoreos — lectura, creación y eliminación
   router.get('/monitoreos',     [MonitoreosController, 'index'])
   router.get('/monitoreos/:id', [MonitoreosController, 'show'])
   router.post('/monitoreos',    [MonitoreosController, 'store'])
+  router.delete('/monitoreos/:id', [MonitoreosController, 'destroy'])
 
   // Análisis IA — lectura y creación
   router.get('/analisis_ia',     [AnalisisIaController, 'index'])
@@ -222,9 +229,6 @@ router.group(() => {
   router.get('/aplicaciones_tratamientos',     [AplicacionesTratamientosController, 'index'])
   router.get('/aplicaciones_tratamientos/:id', [AplicacionesTratamientosController, 'show'])
 
-  // Recomendacion tratamientos — lectura
-  router.get('/recomendacion_tratamientos',     [RecomendacionTratamientosController, 'index'])
-  router.get('/recomendacion_tratamientos/:id', [RecomendacionTratamientosController, 'show'])
 
 
 
@@ -249,7 +253,7 @@ router.group(() => {
   router.get('/tratamientos',                [ExpertoController, 'tratamientos'])
   router.get('/aplicaciones_tratamiento',    [ExpertoController, 'aplicaciones_tratamiento'])
   router.post('/aplicaciones_tratamiento',   [ExpertoController, 'crearAplicacionTratamiento'])
-  router.post('/recomendacion_tratamientos', [ExpertoController, 'crearRecomendacionTratamiento'])
+
 }).prefix('/experto').use(middleware.role(['experto']))
 
 // ─── CAFICULTOR (flujo propio del rol caficultor) ─────────────────────────────

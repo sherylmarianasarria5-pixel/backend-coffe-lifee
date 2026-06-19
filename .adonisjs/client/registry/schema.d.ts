@@ -295,6 +295,54 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/categorias_controller').default['show']>>>
     }
   }
+  'cat_tipos_insumos.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/cat_tipos_insumos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['index']>>>
+    }
+  }
+  'cat_tipos_insumos.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/cat_tipos_insumos/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['show']>>>
+    }
+  }
+  'insumos.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/insumos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['index']>>>
+    }
+  }
+  'insumos.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/insumos/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['show']>>>
+    }
+  }
   'dashboard.index': {
     methods: ["GET","HEAD"]
     pattern: '/dashboard'
@@ -809,6 +857,78 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/categorias_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/categorias_controller').default['destroy']>>>
+    }
+  }
+  'cat_tipos_insumos.store': {
+    methods: ["POST"]
+    pattern: '/cat_tipos_insumos'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/validators').catalogoStoreValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/validators').catalogoStoreValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'cat_tipos_insumos.update': {
+    methods: ["PUT"]
+    pattern: '/cat_tipos_insumos/:id'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/validators').catalogoUpdateValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/validators').catalogoUpdateValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'cat_tipos_insumos.destroy': {
+    methods: ["DELETE"]
+    pattern: '/cat_tipos_insumos/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['destroy']>>>
+    }
+  }
+  'insumos.store': {
+    methods: ["POST"]
+    pattern: '/insumos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['store']>>>
+    }
+  }
+  'insumos.update': {
+    methods: ["PUT"]
+    pattern: '/insumos/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['update']>>>
+    }
+  }
+  'insumos.destroy': {
+    methods: ["DELETE"]
+    pattern: '/insumos/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['destroy']>>>
     }
   }
   'asignaciones_expertos.index': {
@@ -1517,6 +1637,18 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['monitoreos']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['monitoreos']>>>
+    }
+  }
+  'experto.analisis_ia': {
+    methods: ["GET","HEAD"]
+    pattern: '/experto/analisis_ia'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['analisis_ia']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['analisis_ia']>>>
     }
   }
   'experto.crear_monitoreo': {

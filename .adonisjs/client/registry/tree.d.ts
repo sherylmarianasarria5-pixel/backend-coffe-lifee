@@ -70,6 +70,20 @@ export interface ApiDefinition {
     update: typeof routes['categorias.update']
     destroy: typeof routes['categorias.destroy']
   }
+  catTiposInsumos: {
+    index: typeof routes['cat_tipos_insumos.index']
+    show: typeof routes['cat_tipos_insumos.show']
+    store: typeof routes['cat_tipos_insumos.store']
+    update: typeof routes['cat_tipos_insumos.update']
+    destroy: typeof routes['cat_tipos_insumos.destroy']
+  }
+  insumos: {
+    index: typeof routes['insumos.index']
+    show: typeof routes['insumos.show']
+    store: typeof routes['insumos.store']
+    update: typeof routes['insumos.update']
+    destroy: typeof routes['insumos.destroy']
+  }
   dashboard: {
     index: typeof routes['dashboard.index']
   }
@@ -179,6 +193,7 @@ export interface ApiDefinition {
     fincas: typeof routes['experto.fincas']
     cultivos: typeof routes['experto.cultivos']
     monitoreos: typeof routes['experto.monitoreos']
+    analisisIa: typeof routes['experto.analisis_ia']
     crearMonitoreo: typeof routes['experto.crear_monitoreo']
     actualizarMonitoreo: typeof routes['experto.actualizar_monitoreo']
     recomendaciones: typeof routes['experto.recomendaciones']

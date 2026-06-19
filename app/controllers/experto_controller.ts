@@ -6,7 +6,6 @@ import AnalisisIa from '#models/analisis_ia'
 import Recomendacione from '#models/recomendacione'
 import AsignacionExperto from '#models/asignacion_experto'
 import AplicacionesTratamiento from '#models/aplicaciones_tratamiento'
-import RecomendacionTratamiento from '#models/recomendacion_tratamiento'
 import Tratamiento from '#models/tratamiento'
 
 
@@ -323,6 +322,7 @@ export default class ExpertoController {
       descripcion: body.descripcion,
       idTipo: body.id_tipo ?? body.idTipo ?? null,
       idPrioridad: body.id_prioridad ?? body.idPrioridad ?? null,
+      idTratamiento: body.id_tratamiento ?? body.idTratamiento ?? null,
       fechaLimite: body.fecha_limite ?? body.fechaLimite ?? null,
     })
 
@@ -359,7 +359,7 @@ export default class ExpertoController {
    * @aplicaciones_tratamiento
    * @summary Listar mis aplicaciones de tratamiento registradas
    * @description Retorna las aplicaciones de tratamiento registradas por este experto
-   * @responseBody 200 - [{ "idAplicacion": 1, "dosis": "50ml", "frecuencia": "semanal" }]
+   * @responseBody 200 - [{ "idAplicacion": 1, "fechaAplicacion": "2026-06-18", "observacion": "Aplicado" }]
    * @responseBody 401 - { "message": "Token no proporcionado" }
    */
   async aplicaciones_tratamiento({ request, response }: HttpContext) {
@@ -368,7 +368,7 @@ export default class ExpertoController {
     const limit = Number(request.input('limit', 10))
     const search = request.input('search', '')
     const idTratamiento = request.input('id_tratamiento')
-    const ALLOWED = ['id_aplicacion', 'dosis', 'frecuencia', 'observaciones', 'fecha_registro', 'fecha_actualizacion', 'id_tratamiento', 'id_usuario']
+    const ALLOWED = ['id_aplicacion', 'observacion', 'fecha_aplicacion', 'fecha_registro', 'fecha_actualizacion', 'id_tratamiento', 'id_usuario']
     const orderBy = request.input('order_by', 'id_aplicacion')
     const orderDir = request.input('order_dir', 'desc')
     const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_aplicacion'
@@ -379,8 +379,7 @@ export default class ExpertoController {
 
     if (search) {
       query.where((q) => {
-        q.whereILike('dosis', `%${search}%`)
-         .orWhereILike('frecuencia', `%${search}%`)
+        q.whereILike('observacion', `%${search}%`)
       })
     }
     if (idTratamiento) query.where('id_tratamiento', idTratamiento)
@@ -394,8 +393,8 @@ export default class ExpertoController {
    * @crearAplicacionTratamiento
    * @summary Registrar una aplicación de tratamiento
    * @description El experto registra una aplicación de tratamiento que realizó
-   * @requestBody { "id_tratamiento": 1, "dosis": "50ml", "frecuencia": "semanal", "observaciones": "Aplicado en zona norte" }
-   * @responseBody 201 - { "idAplicacion": 8, "dosis": "50ml" }
+   * @requestBody { "id_tratamiento": 1, "fecha_aplicacion": "2026-06-18", "observacion": "Aplicado en zona norte" }
+   * @responseBody 201 - { "idAplicacion": 8 }
    * @responseBody 401 - { "message": "Token no proporcionado" }
    */
   async crearAplicacionTratamiento({ request, response }: HttpContext) {
@@ -405,54 +404,11 @@ export default class ExpertoController {
     const aplicacion = await AplicacionesTratamiento.create({
       idUsuario: idUsuario,
       idTratamiento: body.id_tratamiento ?? body.idTratamiento,
-      dosis: body.dosis,
-      frecuencia: body.frecuencia ?? null,
-      observaciones: body.observaciones ?? null,
+      fechaAplicacion: body.fecha_aplicacion ?? body.fechaAplicacion,
+      observacion: body.observacion ?? null,
     })
 
     return response.created(aplicacion)
-  }
-
-  /**
-   * @crearRecomendacionTratamiento
-   * @summary Vincular una aplicación de tratamiento a una recomendación
-   * @description Asocia una aplicación registrada con una recomendación emitida por el experto
-   * @requestBody { "id_aplicacion": 8, "id_recomendacion": 5, "dosis_ajustada": "60ml", "notas": "Se ajustó por lluvia" }
-   * @responseBody 201 - { "idRecTratamiento": 3 }
-   * @responseBody 403 - { "message": "La aplicación no te pertenece" }
-   */
-  async crearRecomendacionTratamiento({ request, response }: HttpContext) {
-    const idUsuario = this.getIdUsuario(request)
-    const body = request.body()
-    const idAplicacion = body.id_aplicacion ?? body.idAplicacion
-    const idRecomendacion = body.id_recomendacion ?? body.idRecomendacion
-
-    const aplicacion = await AplicacionesTratamiento.query()
-      .where('id_aplicacion', idAplicacion)
-      .where('id_usuario', idUsuario)
-      .first()
-
-    if (!aplicacion) {
-      return response.forbidden({ message: 'La aplicación no te pertenece' })
-    }
-
-    const recomendacion = await Recomendacione.query()
-      .where('id_recomendacion', idRecomendacion)
-      .where('id_experto_emisor', idUsuario)
-      .first()
-
-    if (!recomendacion) {
-      return response.forbidden({ message: 'La recomendación no te pertenece' })
-    }
-
-    const vinculo = await RecomendacionTratamiento.create({
-      idAplicacion: idAplicacion,
-      idRecomendacion: idRecomendacion,
-      dosisAjustada: body.dosis_ajustada ?? body.dosisAjustada ?? null,
-      notas: body.notas ?? null,
-    })
-
-    return response.created(vinculo)
   }
 
   /**

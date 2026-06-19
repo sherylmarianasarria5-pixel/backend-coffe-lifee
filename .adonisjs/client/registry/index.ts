@@ -150,6 +150,30 @@ const routes = {
     tokens: [{"old":"/categorias/:id","type":0,"val":"categorias","end":""},{"old":"/categorias/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['categorias.show']['types'],
   },
+  'cat_tipos_insumos.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/cat_tipos_insumos',
+    tokens: [{"old":"/cat_tipos_insumos","type":0,"val":"cat_tipos_insumos","end":""}],
+    types: placeholder as Registry['cat_tipos_insumos.index']['types'],
+  },
+  'cat_tipos_insumos.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/cat_tipos_insumos/:id',
+    tokens: [{"old":"/cat_tipos_insumos/:id","type":0,"val":"cat_tipos_insumos","end":""},{"old":"/cat_tipos_insumos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['cat_tipos_insumos.show']['types'],
+  },
+  'insumos.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/insumos',
+    tokens: [{"old":"/insumos","type":0,"val":"insumos","end":""}],
+    types: placeholder as Registry['insumos.index']['types'],
+  },
+  'insumos.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/insumos/:id',
+    tokens: [{"old":"/insumos/:id","type":0,"val":"insumos","end":""},{"old":"/insumos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['insumos.show']['types'],
+  },
   'dashboard.index': {
     methods: ["GET","HEAD"],
     pattern: '/dashboard',
@@ -407,6 +431,42 @@ const routes = {
     pattern: '/categorias/:id',
     tokens: [{"old":"/categorias/:id","type":0,"val":"categorias","end":""},{"old":"/categorias/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['categorias.destroy']['types'],
+  },
+  'cat_tipos_insumos.store': {
+    methods: ["POST"],
+    pattern: '/cat_tipos_insumos',
+    tokens: [{"old":"/cat_tipos_insumos","type":0,"val":"cat_tipos_insumos","end":""}],
+    types: placeholder as Registry['cat_tipos_insumos.store']['types'],
+  },
+  'cat_tipos_insumos.update': {
+    methods: ["PUT"],
+    pattern: '/cat_tipos_insumos/:id',
+    tokens: [{"old":"/cat_tipos_insumos/:id","type":0,"val":"cat_tipos_insumos","end":""},{"old":"/cat_tipos_insumos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['cat_tipos_insumos.update']['types'],
+  },
+  'cat_tipos_insumos.destroy': {
+    methods: ["DELETE"],
+    pattern: '/cat_tipos_insumos/:id',
+    tokens: [{"old":"/cat_tipos_insumos/:id","type":0,"val":"cat_tipos_insumos","end":""},{"old":"/cat_tipos_insumos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['cat_tipos_insumos.destroy']['types'],
+  },
+  'insumos.store': {
+    methods: ["POST"],
+    pattern: '/insumos',
+    tokens: [{"old":"/insumos","type":0,"val":"insumos","end":""}],
+    types: placeholder as Registry['insumos.store']['types'],
+  },
+  'insumos.update': {
+    methods: ["PUT"],
+    pattern: '/insumos/:id',
+    tokens: [{"old":"/insumos/:id","type":0,"val":"insumos","end":""},{"old":"/insumos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['insumos.update']['types'],
+  },
+  'insumos.destroy': {
+    methods: ["DELETE"],
+    pattern: '/insumos/:id',
+    tokens: [{"old":"/insumos/:id","type":0,"val":"insumos","end":""},{"old":"/insumos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['insumos.destroy']['types'],
   },
   'asignaciones_expertos.index': {
     methods: ["GET","HEAD"],
@@ -761,6 +821,12 @@ const routes = {
     pattern: '/experto/monitoreos',
     tokens: [{"old":"/experto/monitoreos","type":0,"val":"experto","end":""},{"old":"/experto/monitoreos","type":0,"val":"monitoreos","end":""}],
     types: placeholder as Registry['experto.monitoreos']['types'],
+  },
+  'experto.analisis_ia': {
+    methods: ["GET","HEAD"],
+    pattern: '/experto/analisis_ia',
+    tokens: [{"old":"/experto/analisis_ia","type":0,"val":"experto","end":""},{"old":"/experto/analisis_ia","type":0,"val":"analisis_ia","end":""}],
+    types: placeholder as Registry['experto.analisis_ia']['types'],
   },
   'experto.crear_monitoreo': {
     methods: ["POST"],

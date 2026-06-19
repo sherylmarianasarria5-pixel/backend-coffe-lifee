@@ -25,6 +25,9 @@ export default class Cultivo extends BaseModel {
   @column({ columnName: 'tipo_cultivo' })
   declare tipoCultivo: string
 
+  @column({ columnName: 'numero_arboles' })
+  declare numeroArboles: number | null
+
   @column.dateTime({ autoCreate: true, columnName: 'created_at' })
   declare createdAt: DateTime
 

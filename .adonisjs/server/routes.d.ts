@@ -28,6 +28,10 @@ export type ScannedRoutes = {
     'cat_estados_cultivos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'categorias.index': { paramsTuple?: []; params?: {} }
     'categorias.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_insumos.index': { paramsTuple?: []; params?: {} }
+    'cat_tipos_insumos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'insumos.index': { paramsTuple?: []; params?: {} }
+    'insumos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'dashboard.index': { paramsTuple?: []; params?: {} }
     'usuarios.index': { paramsTuple?: []; params?: {} }
     'usuarios.store': { paramsTuple?: []; params?: {} }
@@ -71,6 +75,12 @@ export type ScannedRoutes = {
     'categorias.store': { paramsTuple?: []; params?: {} }
     'categorias.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'categorias.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_insumos.store': { paramsTuple?: []; params?: {} }
+    'cat_tipos_insumos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_insumos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'insumos.store': { paramsTuple?: []; params?: {} }
+    'insumos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'insumos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'asignaciones_expertos.index': { paramsTuple?: []; params?: {} }
     'asignaciones_expertos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cafeteros.index': { paramsTuple?: []; params?: {} }
@@ -130,6 +140,7 @@ export type ScannedRoutes = {
     'experto.fincas': { paramsTuple?: []; params?: {} }
     'experto.cultivos': { paramsTuple?: []; params?: {} }
     'experto.monitoreos': { paramsTuple?: []; params?: {} }
+    'experto.analisis_ia': { paramsTuple?: []; params?: {} }
     'experto.crear_monitoreo': { paramsTuple?: []; params?: {} }
     'experto.actualizar_monitoreo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'experto.recomendaciones': { paramsTuple?: []; params?: {} }
@@ -166,6 +177,10 @@ export type ScannedRoutes = {
     'cat_estados_cultivos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'categorias.index': { paramsTuple?: []; params?: {} }
     'categorias.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_insumos.index': { paramsTuple?: []; params?: {} }
+    'cat_tipos_insumos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'insumos.index': { paramsTuple?: []; params?: {} }
+    'insumos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'dashboard.index': { paramsTuple?: []; params?: {} }
     'usuarios.index': { paramsTuple?: []; params?: {} }
     'usuarios.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -199,6 +214,7 @@ export type ScannedRoutes = {
     'experto.fincas': { paramsTuple?: []; params?: {} }
     'experto.cultivos': { paramsTuple?: []; params?: {} }
     'experto.monitoreos': { paramsTuple?: []; params?: {} }
+    'experto.analisis_ia': { paramsTuple?: []; params?: {} }
     'experto.recomendaciones': { paramsTuple?: []; params?: {} }
     'experto.tratamientos': { paramsTuple?: []; params?: {} }
     'experto.aplicaciones_tratamiento': { paramsTuple?: []; params?: {} }
@@ -228,6 +244,10 @@ export type ScannedRoutes = {
     'cat_estados_cultivos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'categorias.index': { paramsTuple?: []; params?: {} }
     'categorias.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_insumos.index': { paramsTuple?: []; params?: {} }
+    'cat_tipos_insumos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'insumos.index': { paramsTuple?: []; params?: {} }
+    'insumos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'dashboard.index': { paramsTuple?: []; params?: {} }
     'usuarios.index': { paramsTuple?: []; params?: {} }
     'usuarios.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -261,6 +281,7 @@ export type ScannedRoutes = {
     'experto.fincas': { paramsTuple?: []; params?: {} }
     'experto.cultivos': { paramsTuple?: []; params?: {} }
     'experto.monitoreos': { paramsTuple?: []; params?: {} }
+    'experto.analisis_ia': { paramsTuple?: []; params?: {} }
     'experto.recomendaciones': { paramsTuple?: []; params?: {} }
     'experto.tratamientos': { paramsTuple?: []; params?: {} }
     'experto.aplicaciones_tratamiento': { paramsTuple?: []; params?: {} }
@@ -291,6 +312,8 @@ export type ScannedRoutes = {
     'cat_estados_analisis.store': { paramsTuple?: []; params?: {} }
     'cat_estados_cultivos.store': { paramsTuple?: []; params?: {} }
     'categorias.store': { paramsTuple?: []; params?: {} }
+    'cat_tipos_insumos.store': { paramsTuple?: []; params?: {} }
+    'insumos.store': { paramsTuple?: []; params?: {} }
     'analisis_ia.predict': { paramsTuple?: []; params?: {} }
     'recomendaciones.store': { paramsTuple?: []; params?: {} }
     'tratamientos.store': { paramsTuple?: []; params?: {} }
@@ -324,6 +347,8 @@ export type ScannedRoutes = {
     'cat_estados_analisis.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_estados_cultivos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'categorias.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_insumos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'insumos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'monitoreos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'analisis_ia.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recomendaciones.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -350,6 +375,8 @@ export type ScannedRoutes = {
     'cat_estados_analisis.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_estados_cultivos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'categorias.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_insumos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'insumos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'monitoreos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'analisis_ia.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recomendaciones.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

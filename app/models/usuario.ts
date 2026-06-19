@@ -31,6 +31,9 @@ export default class Usuario extends BaseModel {
   @column()
   declare telefono: string | null
 
+  @column()
+  declare cedula: string | null
+
   @column({ columnName: 'password_hash', serializeAs: null })
   declare passwordHash: string
 

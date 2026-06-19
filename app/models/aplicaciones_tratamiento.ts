@@ -12,19 +12,16 @@ export default class AplicacionesTratamiento extends BaseModel {
   declare idAplicacion: number
 
   @column({ columnName: 'id_tratamiento' })
-  declare idTratamiento: number | null
+  declare idTratamiento: number
 
   @column({ columnName: 'id_usuario' })
   declare idUsuario: number | null
 
-  @column()
-  declare dosis: string
+  @column.date({ columnName: 'fecha_aplicacion' })
+  declare fechaAplicacion: DateTime | null
 
   @column()
-  declare frecuencia: string | null
-
-  @column()
-  declare observaciones: string | null
+  declare observacion: string | null
 
   @column.dateTime({ autoCreate: true, columnName: 'fecha_registro' })
   declare fechaRegistro: DateTime

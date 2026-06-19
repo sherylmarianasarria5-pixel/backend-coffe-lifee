@@ -98,7 +98,7 @@ export default class MonitoreosController {
         })
         .preload('recomendaciones', (r) => {
           r.preload('tipo')
-          r.preload('tratamientos')
+           r.preload('tratamiento')
         })
 
       if (search) {
@@ -304,9 +304,27 @@ export default class MonitoreosController {
    * @responseBody 404 - {"message": "Monitoreo no encontrado"}
    * @responseBody 500 - {"message": "Error al eliminar monitoreo", "error": "string"}
    */
-  async destroy({ params, response }: HttpContext) {
+  async destroy({ params, request, response }: HttpContext) {
     try {
       const monitoreo = await Monitoreo.findOrFail(params.id)
+
+      const jwt = (request as any).usuarioJwt
+      const idUsuarioJwt = jwt?.id
+      const nombreRol: string = (
+        jwt?.rol?.nombreRol ??
+        jwt?.rol?.nombre_rol ??
+        ''
+      ).toLowerCase().trim()
+
+      const esAdmin = nombreRol === 'admin'
+      const esDueño = monitoreo.idUsuario === idUsuarioJwt
+
+      if (!esAdmin && !esDueño) {
+        return response.forbidden({ 
+          message: 'No tienes permiso para eliminar este monitoreo' 
+        })
+      }
+
       await monitoreo.delete()
       return response.ok({ message: 'Monitoreo eliminado correctamente' })
     } catch (error: any) {

@@ -66,6 +66,7 @@ export default class CultivosController {
         nombreCultivo:   data.nombre_cultivo,
         tipoCultivo:     data.tipo_cultivo,
         idEstadoCultivo: data.id_estado_cultivo ?? null,
+        numeroArboles:   data.numero_arboles ?? 0,
       })
 
       await cultivo.load('finca')
@@ -115,6 +116,7 @@ export default class CultivosController {
       if (data.nombre_cultivo    !== undefined) payload.nombreCultivo   = data.nombre_cultivo
       if (data.tipo_cultivo      !== undefined) payload.tipoCultivo     = data.tipo_cultivo
       if (data.id_estado_cultivo !== undefined) payload.idEstadoCultivo = data.id_estado_cultivo
+      if (data.numero_arboles    !== undefined) payload.numeroArboles   = data.numero_arboles
 
       cultivo.merge(payload)
       await cultivo.save()
