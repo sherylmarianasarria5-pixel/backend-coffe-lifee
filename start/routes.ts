@@ -134,9 +134,6 @@ router.group(() => {
   router.post('/categorias',                    [CategoriasController,              'store'])
   router.put('/categorias/:id',                 [CategoriasController,              'update'])
   router.delete('/categorias/:id',              [CategoriasController,              'destroy'])
-  router.post('/cat_tipos_insumos',             [CatTiposInsumosController,         'store'])
-  router.put('/cat_tipos_insumos/:id',          [CatTiposInsumosController,         'update'])
-  router.delete('/cat_tipos_insumos/:id',       [CatTiposInsumosController,         'destroy'])
 }).use(middleware.role(['admin']))
 
 // ─── ADMIN y EXPERTO ──────────────────────────────────────────────────────────
@@ -183,6 +180,11 @@ router.group(() => {
   router.post('/insumos',       [InsumosController, 'store'])
   router.put('/insumos/:id',    [InsumosController, 'update'])
   router.delete('/insumos/:id', [InsumosController, 'destroy'])
+
+  // Cat tipos insumos — escritura
+  router.post('/cat_tipos_insumos',       [CatTiposInsumosController, 'store'])
+  router.put('/cat_tipos_insumos/:id',    [CatTiposInsumosController, 'update'])
+  router.delete('/cat_tipos_insumos/:id', [CatTiposInsumosController, 'destroy'])
 }).use(middleware.role(['admin', 'experto']))
 
 // ─── ADMIN, EXPERTO y CAFETERO ────────────────────────────────────────────────
