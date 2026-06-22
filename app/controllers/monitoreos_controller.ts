@@ -274,7 +274,7 @@ export default class MonitoreosController {
   /**
    * @update
    * @summary Actualizar un monitoreo
-   * @description Actualiza la fecha o las observaciones de un monitoreo existente
+   * @description Actualiza solo las observaciones de un monitoreo. La fecha del monitoreo es inmutable.
    * @paramPath id - ID del monitoreo - @type(number) @required
    * @requestBody {
    *   "fecha_monitoreo": "2026-05-27",
@@ -291,8 +291,7 @@ export default class MonitoreosController {
       const data      = await request.validateUsing(monitoreoUpdateValidator)
 
       const payload: Record<string, any> = {}
-      if (data.observaciones   !== undefined) payload.observaciones  = data.observaciones
-      if (data.fecha_monitoreo !== undefined) payload.fechaMonitoreo = DateTime.fromISO(data.fecha_monitoreo)
+      if (data.observaciones !== undefined) payload.observaciones = data.observaciones
 
       monitoreo.merge(payload)
       await monitoreo.save()
