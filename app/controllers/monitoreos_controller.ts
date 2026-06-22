@@ -178,32 +178,20 @@ export default class MonitoreosController {
       const data = await request.validateUsing(monitoreoStoreValidator)
       const fechaMonitoreo = DateTime.fromISO(data.fecha_monitoreo)
 
-      // ── Anti-duplicados: reutilizar el existente en vez de bloquear ──
-      const haceDiezSegundos = DateTime.now().minus({ seconds: 10 })
-
+      // ── Regla: 1 monitoreo por día por cultivo ──
       const existente = await Monitoreo.query()
         .where('id_cultivo', data.id_cultivo)
         .where('fecha_monitoreo', fechaMonitoreo.toSQLDate()!)
-        .where('id_usuario', idUsuario)
-        .where('fecha_registro', '>=', haceDiezSegundos.toSQL()!)
-        .orderBy('id_monitoreo', 'desc')
         .first()
 
       if (existente) {
-        return response.ok({
-          message: 'Monitoreo ya existente, reutilizado para evitar duplicado',
+        return response.conflict({
+          message: 'Ya existe un monitoreo para este cultivo en esta fecha. Si necesitas corregir algo, edita el monitoreo existente en lugar de crear uno nuevo.',
           data: {
             idMonitoreo:    existente.idMonitoreo,
             idCultivo:      existente.idCultivo,
             fechaMonitoreo: existente.fechaMonitoreo,
             observaciones:  existente.observaciones,
-            usuario: {
-              idUsuario: usuario.idUsuario,
-              nombre:    usuario.nombre,
-              apellido:  usuario.apellido,
-              correo:    usuario.correo,
-              telefono:  usuario.telefono,
-            }
           },
         })
       }

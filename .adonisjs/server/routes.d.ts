@@ -75,18 +75,11 @@ export type ScannedRoutes = {
     'categorias.store': { paramsTuple?: []; params?: {} }
     'categorias.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'categorias.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'cat_tipos_insumos.store': { paramsTuple?: []; params?: {} }
-    'cat_tipos_insumos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'cat_tipos_insumos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'insumos.store': { paramsTuple?: []; params?: {} }
-    'insumos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'insumos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'asignaciones_expertos.index': { paramsTuple?: []; params?: {} }
     'asignaciones_expertos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cafeteros.index': { paramsTuple?: []; params?: {} }
     'cafeteros.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'monitoreos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'monitoreos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'analisis_ia.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'analisis_ia.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'analisis_ia.predict': { paramsTuple?: []; params?: {} }
@@ -99,11 +92,14 @@ export type ScannedRoutes = {
     'aplicaciones_tratamientos.store': { paramsTuple?: []; params?: {} }
     'aplicaciones_tratamientos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'aplicaciones_tratamientos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'recomendacion_tratamientos.store': { paramsTuple?: []; params?: {} }
-    'recomendacion_tratamientos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'recomendacion_tratamientos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'insumos.store': { paramsTuple?: []; params?: {} }
+    'insumos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'insumos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_insumos.store': { paramsTuple?: []; params?: {} }
+    'cat_tipos_insumos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_insumos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cafeteros.store': { paramsTuple?: []; params?: {} }
     'cafeteros.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cafeteros.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -122,6 +118,7 @@ export type ScannedRoutes = {
     'monitoreos.index': { paramsTuple?: []; params?: {} }
     'monitoreos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'monitoreos.store': { paramsTuple?: []; params?: {} }
+    'monitoreos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'analisis_ia.index': { paramsTuple?: []; params?: {} }
     'analisis_ia.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'analisis_ia.store': { paramsTuple?: []; params?: {} }
@@ -131,8 +128,6 @@ export type ScannedRoutes = {
     'tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'aplicaciones_tratamientos.index': { paramsTuple?: []; params?: {} }
     'aplicaciones_tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'recomendacion_tratamientos.index': { paramsTuple?: []; params?: {} }
-    'recomendacion_tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.index': { paramsTuple?: []; params?: {} }
     'imagenes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.store': { paramsTuple?: []; params?: {} }
@@ -149,7 +144,6 @@ export type ScannedRoutes = {
     'experto.tratamientos': { paramsTuple?: []; params?: {} }
     'experto.aplicaciones_tratamiento': { paramsTuple?: []; params?: {} }
     'experto.crear_aplicacion_tratamiento': { paramsTuple?: []; params?: {} }
-    'experto.crear_recomendacion_tratamiento': { paramsTuple?: []; params?: {} }
     'caficultor.dashboard': { paramsTuple?: []; params?: {} }
     'caficultor.fincas': { paramsTuple?: []; params?: {} }
     'caficultor.cultivos': { paramsTuple?: []; params?: {} }
@@ -206,8 +200,6 @@ export type ScannedRoutes = {
     'tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'aplicaciones_tratamientos.index': { paramsTuple?: []; params?: {} }
     'aplicaciones_tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'recomendacion_tratamientos.index': { paramsTuple?: []; params?: {} }
-    'recomendacion_tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.index': { paramsTuple?: []; params?: {} }
     'imagenes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'experto.dashboard': { paramsTuple?: []; params?: {} }
@@ -273,8 +265,6 @@ export type ScannedRoutes = {
     'tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'aplicaciones_tratamientos.index': { paramsTuple?: []; params?: {} }
     'aplicaciones_tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'recomendacion_tratamientos.index': { paramsTuple?: []; params?: {} }
-    'recomendacion_tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.index': { paramsTuple?: []; params?: {} }
     'imagenes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'experto.dashboard': { paramsTuple?: []; params?: {} }
@@ -312,13 +302,12 @@ export type ScannedRoutes = {
     'cat_estados_analisis.store': { paramsTuple?: []; params?: {} }
     'cat_estados_cultivos.store': { paramsTuple?: []; params?: {} }
     'categorias.store': { paramsTuple?: []; params?: {} }
-    'cat_tipos_insumos.store': { paramsTuple?: []; params?: {} }
-    'insumos.store': { paramsTuple?: []; params?: {} }
     'analisis_ia.predict': { paramsTuple?: []; params?: {} }
     'recomendaciones.store': { paramsTuple?: []; params?: {} }
     'tratamientos.store': { paramsTuple?: []; params?: {} }
     'aplicaciones_tratamientos.store': { paramsTuple?: []; params?: {} }
-    'recomendacion_tratamientos.store': { paramsTuple?: []; params?: {} }
+    'insumos.store': { paramsTuple?: []; params?: {} }
+    'cat_tipos_insumos.store': { paramsTuple?: []; params?: {} }
     'cafeteros.store': { paramsTuple?: []; params?: {} }
     'fincas.store': { paramsTuple?: []; params?: {} }
     'fincas.upload_photo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -330,7 +319,6 @@ export type ScannedRoutes = {
     'experto.crear_monitoreo': { paramsTuple?: []; params?: {} }
     'experto.crear_recomendacion': { paramsTuple?: []; params?: {} }
     'experto.crear_aplicacion_tratamiento': { paramsTuple?: []; params?: {} }
-    'experto.crear_recomendacion_tratamiento': { paramsTuple?: []; params?: {} }
     'caficultor.analizar_imagen': { paramsTuple?: []; params?: {} }
   }
   PUT: {
@@ -347,15 +335,14 @@ export type ScannedRoutes = {
     'cat_estados_analisis.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_estados_cultivos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'categorias.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'cat_tipos_insumos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'insumos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'monitoreos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'analisis_ia.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recomendaciones.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tratamientos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'aplicaciones_tratamientos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'recomendacion_tratamientos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'insumos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_insumos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cafeteros.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'fincas.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cultivos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -375,18 +362,17 @@ export type ScannedRoutes = {
     'cat_estados_analisis.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_estados_cultivos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'categorias.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'cat_tipos_insumos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'insumos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'monitoreos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'analisis_ia.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recomendaciones.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tratamientos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'aplicaciones_tratamientos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'recomendacion_tratamientos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'insumos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cat_tipos_insumos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cafeteros.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'fincas.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cultivos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'monitoreos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {

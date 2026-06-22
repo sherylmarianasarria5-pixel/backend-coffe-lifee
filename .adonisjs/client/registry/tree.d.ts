@@ -124,10 +124,10 @@ export interface ApiDefinition {
   }
   monitoreos: {
     update: typeof routes['monitoreos.update']
-    destroy: typeof routes['monitoreos.destroy']
     index: typeof routes['monitoreos.index']
     show: typeof routes['monitoreos.show']
     store: typeof routes['monitoreos.store']
+    destroy: typeof routes['monitoreos.destroy']
   }
   analisisIa: {
     update: typeof routes['analisis_ia.update']
@@ -157,13 +157,6 @@ export interface ApiDefinition {
     destroy: typeof routes['aplicaciones_tratamientos.destroy']
     index: typeof routes['aplicaciones_tratamientos.index']
     show: typeof routes['aplicaciones_tratamientos.show']
-  }
-  recomendacionTratamientos: {
-    store: typeof routes['recomendacion_tratamientos.store']
-    update: typeof routes['recomendacion_tratamientos.update']
-    destroy: typeof routes['recomendacion_tratamientos.destroy']
-    index: typeof routes['recomendacion_tratamientos.index']
-    show: typeof routes['recomendacion_tratamientos.show']
   }
   imagenes: {
     update: typeof routes['imagenes.update']
@@ -202,7 +195,6 @@ export interface ApiDefinition {
     tratamientos: typeof routes['experto.tratamientos']
     aplicacionesTratamiento: typeof routes['experto.aplicaciones_tratamiento']
     crearAplicacionTratamiento: typeof routes['experto.crear_aplicacion_tratamiento']
-    crearRecomendacionTratamiento: typeof routes['experto.crear_recomendacion_tratamiento']
   }
   caficultor: {
     dashboard: typeof routes['caficultor.dashboard']

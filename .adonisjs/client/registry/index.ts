@@ -432,42 +432,6 @@ const routes = {
     tokens: [{"old":"/categorias/:id","type":0,"val":"categorias","end":""},{"old":"/categorias/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['categorias.destroy']['types'],
   },
-  'cat_tipos_insumos.store': {
-    methods: ["POST"],
-    pattern: '/cat_tipos_insumos',
-    tokens: [{"old":"/cat_tipos_insumos","type":0,"val":"cat_tipos_insumos","end":""}],
-    types: placeholder as Registry['cat_tipos_insumos.store']['types'],
-  },
-  'cat_tipos_insumos.update': {
-    methods: ["PUT"],
-    pattern: '/cat_tipos_insumos/:id',
-    tokens: [{"old":"/cat_tipos_insumos/:id","type":0,"val":"cat_tipos_insumos","end":""},{"old":"/cat_tipos_insumos/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['cat_tipos_insumos.update']['types'],
-  },
-  'cat_tipos_insumos.destroy': {
-    methods: ["DELETE"],
-    pattern: '/cat_tipos_insumos/:id',
-    tokens: [{"old":"/cat_tipos_insumos/:id","type":0,"val":"cat_tipos_insumos","end":""},{"old":"/cat_tipos_insumos/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['cat_tipos_insumos.destroy']['types'],
-  },
-  'insumos.store': {
-    methods: ["POST"],
-    pattern: '/insumos',
-    tokens: [{"old":"/insumos","type":0,"val":"insumos","end":""}],
-    types: placeholder as Registry['insumos.store']['types'],
-  },
-  'insumos.update': {
-    methods: ["PUT"],
-    pattern: '/insumos/:id',
-    tokens: [{"old":"/insumos/:id","type":0,"val":"insumos","end":""},{"old":"/insumos/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['insumos.update']['types'],
-  },
-  'insumos.destroy': {
-    methods: ["DELETE"],
-    pattern: '/insumos/:id',
-    tokens: [{"old":"/insumos/:id","type":0,"val":"insumos","end":""},{"old":"/insumos/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['insumos.destroy']['types'],
-  },
   'asignaciones_expertos.index': {
     methods: ["GET","HEAD"],
     pattern: '/asignaciones_expertos',
@@ -497,12 +461,6 @@ const routes = {
     pattern: '/monitoreos/:id',
     tokens: [{"old":"/monitoreos/:id","type":0,"val":"monitoreos","end":""},{"old":"/monitoreos/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['monitoreos.update']['types'],
-  },
-  'monitoreos.destroy': {
-    methods: ["DELETE"],
-    pattern: '/monitoreos/:id',
-    tokens: [{"old":"/monitoreos/:id","type":0,"val":"monitoreos","end":""},{"old":"/monitoreos/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['monitoreos.destroy']['types'],
   },
   'analisis_ia.update': {
     methods: ["PUT"],
@@ -576,24 +534,6 @@ const routes = {
     tokens: [{"old":"/aplicaciones_tratamientos/:id","type":0,"val":"aplicaciones_tratamientos","end":""},{"old":"/aplicaciones_tratamientos/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['aplicaciones_tratamientos.destroy']['types'],
   },
-  'recomendacion_tratamientos.store': {
-    methods: ["POST"],
-    pattern: '/recomendacion_tratamientos',
-    tokens: [{"old":"/recomendacion_tratamientos","type":0,"val":"recomendacion_tratamientos","end":""}],
-    types: placeholder as Registry['recomendacion_tratamientos.store']['types'],
-  },
-  'recomendacion_tratamientos.update': {
-    methods: ["PUT"],
-    pattern: '/recomendacion_tratamientos/:id',
-    tokens: [{"old":"/recomendacion_tratamientos/:id","type":0,"val":"recomendacion_tratamientos","end":""},{"old":"/recomendacion_tratamientos/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['recomendacion_tratamientos.update']['types'],
-  },
-  'recomendacion_tratamientos.destroy': {
-    methods: ["DELETE"],
-    pattern: '/recomendacion_tratamientos/:id',
-    tokens: [{"old":"/recomendacion_tratamientos/:id","type":0,"val":"recomendacion_tratamientos","end":""},{"old":"/recomendacion_tratamientos/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['recomendacion_tratamientos.destroy']['types'],
-  },
   'imagenes.update': {
     methods: ["PUT"],
     pattern: '/imagenes/:id',
@@ -605,6 +545,42 @@ const routes = {
     pattern: '/imagenes/:id',
     tokens: [{"old":"/imagenes/:id","type":0,"val":"imagenes","end":""},{"old":"/imagenes/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['imagenes.destroy']['types'],
+  },
+  'insumos.store': {
+    methods: ["POST"],
+    pattern: '/insumos',
+    tokens: [{"old":"/insumos","type":0,"val":"insumos","end":""}],
+    types: placeholder as Registry['insumos.store']['types'],
+  },
+  'insumos.update': {
+    methods: ["PUT"],
+    pattern: '/insumos/:id',
+    tokens: [{"old":"/insumos/:id","type":0,"val":"insumos","end":""},{"old":"/insumos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['insumos.update']['types'],
+  },
+  'insumos.destroy': {
+    methods: ["DELETE"],
+    pattern: '/insumos/:id',
+    tokens: [{"old":"/insumos/:id","type":0,"val":"insumos","end":""},{"old":"/insumos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['insumos.destroy']['types'],
+  },
+  'cat_tipos_insumos.store': {
+    methods: ["POST"],
+    pattern: '/cat_tipos_insumos',
+    tokens: [{"old":"/cat_tipos_insumos","type":0,"val":"cat_tipos_insumos","end":""}],
+    types: placeholder as Registry['cat_tipos_insumos.store']['types'],
+  },
+  'cat_tipos_insumos.update': {
+    methods: ["PUT"],
+    pattern: '/cat_tipos_insumos/:id',
+    tokens: [{"old":"/cat_tipos_insumos/:id","type":0,"val":"cat_tipos_insumos","end":""},{"old":"/cat_tipos_insumos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['cat_tipos_insumos.update']['types'],
+  },
+  'cat_tipos_insumos.destroy': {
+    methods: ["DELETE"],
+    pattern: '/cat_tipos_insumos/:id',
+    tokens: [{"old":"/cat_tipos_insumos/:id","type":0,"val":"cat_tipos_insumos","end":""},{"old":"/cat_tipos_insumos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['cat_tipos_insumos.destroy']['types'],
   },
   'cafeteros.store': {
     methods: ["POST"],
@@ -714,6 +690,12 @@ const routes = {
     tokens: [{"old":"/monitoreos","type":0,"val":"monitoreos","end":""}],
     types: placeholder as Registry['monitoreos.store']['types'],
   },
+  'monitoreos.destroy': {
+    methods: ["DELETE"],
+    pattern: '/monitoreos/:id',
+    tokens: [{"old":"/monitoreos/:id","type":0,"val":"monitoreos","end":""},{"old":"/monitoreos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['monitoreos.destroy']['types'],
+  },
   'analisis_ia.index': {
     methods: ["GET","HEAD"],
     pattern: '/analisis_ia',
@@ -767,18 +749,6 @@ const routes = {
     pattern: '/aplicaciones_tratamientos/:id',
     tokens: [{"old":"/aplicaciones_tratamientos/:id","type":0,"val":"aplicaciones_tratamientos","end":""},{"old":"/aplicaciones_tratamientos/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['aplicaciones_tratamientos.show']['types'],
-  },
-  'recomendacion_tratamientos.index': {
-    methods: ["GET","HEAD"],
-    pattern: '/recomendacion_tratamientos',
-    tokens: [{"old":"/recomendacion_tratamientos","type":0,"val":"recomendacion_tratamientos","end":""}],
-    types: placeholder as Registry['recomendacion_tratamientos.index']['types'],
-  },
-  'recomendacion_tratamientos.show': {
-    methods: ["GET","HEAD"],
-    pattern: '/recomendacion_tratamientos/:id',
-    tokens: [{"old":"/recomendacion_tratamientos/:id","type":0,"val":"recomendacion_tratamientos","end":""},{"old":"/recomendacion_tratamientos/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['recomendacion_tratamientos.show']['types'],
   },
   'imagenes.index': {
     methods: ["GET","HEAD"],
@@ -875,12 +845,6 @@ const routes = {
     pattern: '/experto/aplicaciones_tratamiento',
     tokens: [{"old":"/experto/aplicaciones_tratamiento","type":0,"val":"experto","end":""},{"old":"/experto/aplicaciones_tratamiento","type":0,"val":"aplicaciones_tratamiento","end":""}],
     types: placeholder as Registry['experto.crear_aplicacion_tratamiento']['types'],
-  },
-  'experto.crear_recomendacion_tratamiento': {
-    methods: ["POST"],
-    pattern: '/experto/recomendacion_tratamientos',
-    tokens: [{"old":"/experto/recomendacion_tratamientos","type":0,"val":"experto","end":""},{"old":"/experto/recomendacion_tratamientos","type":0,"val":"recomendacion_tratamientos","end":""}],
-    types: placeholder as Registry['experto.crear_recomendacion_tratamiento']['types'],
   },
   'caficultor.dashboard': {
     methods: ["GET","HEAD"],
