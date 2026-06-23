@@ -81,7 +81,15 @@ router.group(() => {
 
 // ─── Solo ADMIN ───────────────────────────────────────────────────────────────
 router.group(() => {
-  router.get('/dashboard',       [DashboardController, 'index'])
+  router.get('/dashboard',                          [DashboardController, 'index'])
+  router.get('/dashboard/monitoreos-por-estado',    [DashboardController, 'monitoreosPorEstado'])
+  router.get('/dashboard/tendencia-roya',           [DashboardController, 'tendenciaRoya'])
+  router.get('/dashboard/actividad-reciente',       [DashboardController, 'actividadReciente'])
+  router.get('/dashboard/monitoreos-recientes',     [DashboardController, 'monitoreosRecientes'])
+  router.get('/dashboard/top-fincas-roya',          [DashboardController, 'topFincasRoya'])
+  router.get('/dashboard/proximos-monitoreos',      [DashboardController, 'proximosMonitoreos'])
+  router.get('/dashboard/mapa-fincas',              [DashboardController, 'mapaFincas'])
+  router.get('/dashboard/impacto',                  [DashboardController, 'impacto'])
 
   // Usuarios
   router.get('/usuarios',        [UsuariosController, 'index'])

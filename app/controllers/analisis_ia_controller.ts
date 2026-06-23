@@ -1,5 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import AnalisisIa from '#models/analisis_ia'
+import Imagene    from '#models/imagene'
+import Cultivo    from '#models/cultivo'
 import { analisisIaStoreValidator, analisisIaUpdateValidator } from '#validators/validators'
 
 import axios from 'axios'
@@ -16,7 +18,7 @@ export default class AnalisisIaController {
       const idEstado    = request.input('id_estado')
       const idNivelRoya = request.input('id_nivel_roya')
       const ALLOWED = ['idAnalisis', 'resultado', 'porcentajeConfianza', 'fechaRegistro', 'idImagen', 'idEstado', 'idNivelRoya']
-      const orderBy = request.input('order_by', 'idAnalisis')
+      const orderBy  = request.input('order_by', 'idAnalisis')
       const orderDir = request.input('order_dir', 'desc')
       const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'idAnalisis'
 
@@ -25,11 +27,7 @@ export default class AnalisisIaController {
         .preload('estadoAnalisis')
         .preload('nivelRoya')
 
-      if (search) {
-        query.where((q) => {
-          q.whereILike('resultado', `%${search}%`)
-        })
-      }
+      if (search)      query.where((q) => { q.whereILike('resultado', `%${search}%`) })
       if (idImagen)    query.where('idImagen', idImagen)
       if (idEstado)    query.where('idEstado', idEstado)
       if (idNivelRoya) query.where('idNivelRoya', idNivelRoya)
@@ -124,18 +122,10 @@ export default class AnalisisIaController {
       const idImagen = request.input('idImagen')
       const idEstado = request.input('idEstado')
 
-      if (!image) {
-        return response.badRequest({ success: false, message: 'Debes subir una imagen' })
-      }
-      if (!idImagen) {
-        return response.badRequest({ success: false, message: 'idImagen es obligatorio' })
-      }
-      if (!idEstado) {
-        return response.badRequest({ success: false, message: 'idEstado es obligatorio' })
-      }
-      if (!image.tmpPath) {
-        return response.badRequest({ success: false, message: 'No se pudo procesar la imagen' })
-      }
+      if (!image)          return response.badRequest({ success: false, message: 'Debes subir una imagen' })
+      if (!idImagen)       return response.badRequest({ success: false, message: 'idImagen es obligatorio' })
+      if (!idEstado)       return response.badRequest({ success: false, message: 'idEstado es obligatorio' })
+      if (!image.tmpPath)  return response.badRequest({ success: false, message: 'No se pudo procesar la imagen' })
 
       const form = new FormData()
       form.append('file', fs.createReadStream(image.tmpPath), image.clientName)
@@ -157,27 +147,52 @@ export default class AnalisisIaController {
       }
 
       const firstDetection = detections[0]
+      const confianza = firstDetection.confidence as number  // 0.0 – 1.0
 
-      const nivelRoyaMap: Record<string, number> = {
-        'Enfermedad_ROYA': 1,
-        'Hoja_Sana':       2,
-        'arbol_cafe':      3,
+      // cat_niveles_roya: 1=Crítico, 2=Alto, 3=Medio, 4=Bajo
+      // Solo asigna nivel cuando hay roya. Hoja_Sana y arbol_cafe quedan null.
+      let idNivelRoya: number | null = null
+      if (firstDetection.class === 'Enfermedad_ROYA') {
+        if      (confianza >= 0.85) idNivelRoya = 1  // Crítico
+        else if (confianza >= 0.65) idNivelRoya = 2  // Alto
+        else if (confianza >= 0.45) idNivelRoya = 3  // Medio
+        else                        idNivelRoya = 4  // Bajo
       }
-      const idNivelRoya = nivelRoyaMap[firstDetection.class] ?? null
 
       const nuevoAnalisis = await AnalisisIa.create({
         idImagen:            Number(idImagen),
         idEstado:            Number(idEstado),
         resultado:           firstDetection.class,
-        porcentajeConfianza: (firstDetection.confidence * 100).toFixed(2),
-        idNivelRoya, 
+        porcentajeConfianza: (confianza * 100).toFixed(2),
+        idNivelRoya,
       })
 
+      // Sincroniza automáticamente el estado del cultivo en la BD
+      // cat_estados_cultivo: 1 = en roya, 2 = Sano
+      if (firstDetection.class !== 'arbol_cafe') {
+        try {
+          const imagen = await Imagene.query()
+            .where('idImagen', Number(idImagen))
+            .preload('monitoreo')
+            .first()
+
+          if (imagen?.monitoreo?.idCultivo) {
+            const cultivo = await Cultivo.find(imagen.monitoreo.idCultivo)
+            if (cultivo) {
+              cultivo.idEstadoCultivo = firstDetection.class === 'Enfermedad_ROYA' ? 1 : 2
+              await cultivo.save()
+            }
+          }
+        } catch {
+          console.warn('[predict] No se pudo sincronizar estado del cultivo')
+        }
+      }
+
       return response.ok({
-        success:   true,
-        message:   'Análisis realizado correctamente',
+        success:  true,
+        message:  'Análisis realizado correctamente',
         detections,
-        analisis:  nuevoAnalisis,
+        analisis: nuevoAnalisis,
       })
 
     } catch (error: any) {

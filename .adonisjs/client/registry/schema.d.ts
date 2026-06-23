@@ -355,6 +355,102 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['index']>>>
     }
   }
+  'dashboard.monitoreos_por_estado': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/monitoreos-por-estado'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['monitoreosPorEstado']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['monitoreosPorEstado']>>>
+    }
+  }
+  'dashboard.tendencia_roya': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/tendencia-roya'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['tendenciaRoya']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['tendenciaRoya']>>>
+    }
+  }
+  'dashboard.actividad_reciente': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/actividad-reciente'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['actividadReciente']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['actividadReciente']>>>
+    }
+  }
+  'dashboard.monitoreos_recientes': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/monitoreos-recientes'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['monitoreosRecientes']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['monitoreosRecientes']>>>
+    }
+  }
+  'dashboard.top_fincas_roya': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/top-fincas-roya'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['topFincasRoya']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['topFincasRoya']>>>
+    }
+  }
+  'dashboard.proximos_monitoreos': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/proximos-monitoreos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['proximosMonitoreos']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['proximosMonitoreos']>>>
+    }
+  }
+  'dashboard.mapa_fincas': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/mapa-fincas'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['mapaFincas']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['mapaFincas']>>>
+    }
+  }
+  'dashboard.impacto': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/impacto'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['impacto']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['impacto']>>>
+    }
+  }
   'usuarios.index': {
     methods: ["GET","HEAD"]
     pattern: '/usuarios'

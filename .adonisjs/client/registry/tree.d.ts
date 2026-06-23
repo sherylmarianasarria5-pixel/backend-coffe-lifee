@@ -86,6 +86,14 @@ export interface ApiDefinition {
   }
   dashboard: {
     index: typeof routes['dashboard.index']
+    monitoreosPorEstado: typeof routes['dashboard.monitoreos_por_estado']
+    tendenciaRoya: typeof routes['dashboard.tendencia_roya']
+    actividadReciente: typeof routes['dashboard.actividad_reciente']
+    monitoreosRecientes: typeof routes['dashboard.monitoreos_recientes']
+    topFincasRoya: typeof routes['dashboard.top_fincas_roya']
+    proximosMonitoreos: typeof routes['dashboard.proximos_monitoreos']
+    mapaFincas: typeof routes['dashboard.mapa_fincas']
+    impacto: typeof routes['dashboard.impacto']
   }
   usuarios: {
     index: typeof routes['usuarios.index']

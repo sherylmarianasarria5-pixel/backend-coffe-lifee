@@ -33,6 +33,14 @@ export type ScannedRoutes = {
     'insumos.index': { paramsTuple?: []; params?: {} }
     'insumos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'dashboard.index': { paramsTuple?: []; params?: {} }
+    'dashboard.monitoreos_por_estado': { paramsTuple?: []; params?: {} }
+    'dashboard.tendencia_roya': { paramsTuple?: []; params?: {} }
+    'dashboard.actividad_reciente': { paramsTuple?: []; params?: {} }
+    'dashboard.monitoreos_recientes': { paramsTuple?: []; params?: {} }
+    'dashboard.top_fincas_roya': { paramsTuple?: []; params?: {} }
+    'dashboard.proximos_monitoreos': { paramsTuple?: []; params?: {} }
+    'dashboard.mapa_fincas': { paramsTuple?: []; params?: {} }
+    'dashboard.impacto': { paramsTuple?: []; params?: {} }
     'usuarios.index': { paramsTuple?: []; params?: {} }
     'usuarios.store': { paramsTuple?: []; params?: {} }
     'usuarios.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -176,6 +184,14 @@ export type ScannedRoutes = {
     'insumos.index': { paramsTuple?: []; params?: {} }
     'insumos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'dashboard.index': { paramsTuple?: []; params?: {} }
+    'dashboard.monitoreos_por_estado': { paramsTuple?: []; params?: {} }
+    'dashboard.tendencia_roya': { paramsTuple?: []; params?: {} }
+    'dashboard.actividad_reciente': { paramsTuple?: []; params?: {} }
+    'dashboard.monitoreos_recientes': { paramsTuple?: []; params?: {} }
+    'dashboard.top_fincas_roya': { paramsTuple?: []; params?: {} }
+    'dashboard.proximos_monitoreos': { paramsTuple?: []; params?: {} }
+    'dashboard.mapa_fincas': { paramsTuple?: []; params?: {} }
+    'dashboard.impacto': { paramsTuple?: []; params?: {} }
     'usuarios.index': { paramsTuple?: []; params?: {} }
     'usuarios.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.index': { paramsTuple?: []; params?: {} }
@@ -241,6 +257,14 @@ export type ScannedRoutes = {
     'insumos.index': { paramsTuple?: []; params?: {} }
     'insumos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'dashboard.index': { paramsTuple?: []; params?: {} }
+    'dashboard.monitoreos_por_estado': { paramsTuple?: []; params?: {} }
+    'dashboard.tendencia_roya': { paramsTuple?: []; params?: {} }
+    'dashboard.actividad_reciente': { paramsTuple?: []; params?: {} }
+    'dashboard.monitoreos_recientes': { paramsTuple?: []; params?: {} }
+    'dashboard.top_fincas_roya': { paramsTuple?: []; params?: {} }
+    'dashboard.proximos_monitoreos': { paramsTuple?: []; params?: {} }
+    'dashboard.mapa_fincas': { paramsTuple?: []; params?: {} }
+    'dashboard.impacto': { paramsTuple?: []; params?: {} }
     'usuarios.index': { paramsTuple?: []; params?: {} }
     'usuarios.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.index': { paramsTuple?: []; params?: {} }
