@@ -28,6 +28,11 @@ function estadoMonitoreo(analisisList: AnalisisIa[]): 'sin_roya' | 'con_roya' | 
 
 export default class DashboardController {
 
+  /**
+   * @index
+   * @summary Resumen del dashboard con contadores y variación porcentual
+   * @responseBody 200 - {"fincasActivas": {"total": 10, "pctVsSemanaAnterior": 5}, "expertosActivos": {"total": 3, "pctVsSemanaAnterior": 0}, "cafeterosActivos": {"total": 7, "pctVsSemanaAnterior": -2}, "monitoreosEsteMes": {"total": 15, "pctVsMesAnterior": 10}}
+   */
   async index({ response }: HttpContext) {
     try {
       const ahora     = DateTime.now()
@@ -73,6 +78,11 @@ export default class DashboardController {
     }
   }
 
+  /**
+   * @monitoreosPorEstado
+   * @summary Distribución de monitoreos por estado (sin roya, con roya, pendiente)
+   * @responseBody 200 - {"total": 20, "sinRoya": {"cantidad": 10, "porcentaje": 50}, "conRoya": {"cantidad": 5, "porcentaje": 25}, "pendientes": {"cantidad": 5, "porcentaje": 25}}
+   */
   async monitoreosPorEstado({ response }: HttpContext) {
     try {
       const monitoreos = await Monitoreo.query()
@@ -100,6 +110,12 @@ export default class DashboardController {
     }
   }
 
+  /**
+   * @tendenciaRoya
+   * @summary Tendencia de detección de roya por día en un rango de días
+   * @responseBody 200 - {"dias": 7, "datos": [{"fecha": "2026-06-17", "sinRoya": 3, "conRoya": 1, "pendientes": 0}]}
+   * @queryParam dias - Número de días a incluir (máx 30, default 7)
+   */
   async tendenciaRoya({ request, response }: HttpContext) {
     try {
       const dias  = Math.min(Number(request.input('dias', 7)), 30)
@@ -132,6 +148,12 @@ export default class DashboardController {
     }
   }
 
+  /**
+   * @actividadReciente
+   * @summary Actividad reciente del sistema (monitoreos, roya detectada, tratamientos, nuevos usuarios)
+   * @responseBody 200 - {"actividad": [{"tipo": "monitoreo", "icono": "monitoreo", "titulo": "Nuevo monitoreo registrado", "detalle": "Finca Ejemplo - Lote 1", "fecha": "2026-06-23"}]}
+   * @queryParam limit - Cantidad de eventos a devolver (máx 50, default 10)
+   */
   async actividadReciente({ request, response }: HttpContext) {
     try {
       const limit = Math.min(Number(request.input('limit', 10)), 50)
@@ -214,6 +236,12 @@ export default class DashboardController {
     }
   }
 
+  /**
+   * @monitoreosRecientes
+   * @summary Últimos monitoreos registrados con resultado IA, severidad y estado visible
+   * @responseBody 200 - {"monitoreos": [{"idMonitoreo": 1, "finca": "Finca Ejemplo", "lote": "Lote A", "fecha": "2026-06-23", "resultadoIA": "con_roya", "severidad": "Alto", "experto": "Juan Pérez", "estadoVisible": "Pendiente"}]}
+   * @queryParam limit - Cantidad de monitoreos (máx 20, default 5)
+   */
   async monitoreosRecientes({ request, response }: HttpContext) {
     try {
       const limit = Math.min(Number(request.input('limit', 5)), 20)
@@ -261,6 +289,12 @@ export default class DashboardController {
     }
   }
 
+  /**
+   * @topFincasRoya
+   * @summary Ranking de fincas con más detecciones de roya
+   * @responseBody 200 - {"topFincas": [{"id_finca": 1, "finca": "Finca Ejemplo", "totalRoya": 5, "nivelMax": "Crítico"}]}
+   * @queryParam limit - Cantidad de fincas (máx 20, default 5)
+   */
   async topFincasRoya({ request, response }: HttpContext) {
     try {
       const limit = Math.min(Number(request.input('limit', 5)), 20)
@@ -289,6 +323,12 @@ export default class DashboardController {
     }
   }
 
+  /**
+   * @proximosMonitoreos
+   * @summary Próximos monitoreos agendados (asignaciones de expertos)
+   * @responseBody 200 - {"proximosMonitoreos": [{"idAsignacion": 1, "finca": "Finca Ejemplo", "fecha": "2026-06-25", "etiqueta": "2 días", "experto": "Juan Pérez"}]}
+   * @queryParam limit - Cantidad de próximos monitoreos (máx 20, default 5)
+   */
   async proximosMonitoreos({ request, response }: HttpContext) {
     try {
       const limit = Math.min(Number(request.input('limit', 5)), 20)
@@ -321,6 +361,11 @@ export default class DashboardController {
     }
   }
 
+  /**
+   * @mapaFincas
+   * @summary Coordenadas y estado sanitario de todas las fincas activas para mapa
+   * @responseBody 200 - {"fincas": [{"idFinca": 1, "nombre": "Finca Ejemplo", "latitud": 14.5, "longitud": -90.5, "estadoFinca": "con_roya", "totalCultivos": 3}]}
+   */
   async mapaFincas({ response }: HttpContext) {
     try {
       const fincas = await Finca.query()
@@ -353,6 +398,11 @@ export default class DashboardController {
     }
   }
 
+  /**
+   * @impacto
+   * @summary Impacto del sistema: fincas con tratamiento, hectáreas protegidas, reducción de pérdidas, ahorro y productividad
+   * @responseBody 200 - {"fincasConTratamiento": 5, "hectareasProtegidas": 12.5, "reduccionPerdidaPct": null, "ahorroFungicidaPct": null, "incrementoProductividadPct": null}
+   */
   async impacto({ response }: HttpContext) {
     try {
       const result = await db.rawQuery(`
