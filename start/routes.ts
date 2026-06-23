@@ -3,8 +3,8 @@ import { middleware } from '#start/kernel'
 import AutoSwagger from 'adonis-autoswagger'
 import swagger from '#config/swagger'
 
-const AuthController                      = () => import('#controllers/auth_controller')
-const MiPerfilController                  = () => import('#controllers/mi-perfil_controller')
+const AuthController = () => import('#controllers/auth_controller')
+const MiPerfilController = () => import('#controllers/mi-perfil_controller')
 const DashboardController                 = () => import('#controllers/dashboard_controller')
 const UsuariosController                  = () => import('#controllers/usuarios_controller')
 const AdminController                     = () => import('#controllers/admin_controller')
@@ -79,7 +79,7 @@ router.group(() => {
   router.get('/insumos/:id',                   [InsumosController,                 'show'])
 }).use(middleware.jwtAuth())
 
-// ─── Solo ADMIN ───────────────────────────────────────────────────────────────
+// ─── Dashboard endpoints (admin) ──────────────────────────────────────────────
 router.group(() => {
   router.get('/dashboard',                          [DashboardController, 'index'])
   router.get('/dashboard/monitoreos-por-estado',    [DashboardController, 'monitoreosPorEstado'])
