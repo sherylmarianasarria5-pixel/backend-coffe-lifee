@@ -235,7 +235,7 @@ export default class DashboardController {
 
       const [monitoreosRecientes, recomendacionesRecientes, cafeterosRecientes] = await Promise.all([
         cargarMonitoreosCompletos(Monitoreo.query().orderBy('fecha_registro', 'desc').limit(limit)),
-        Recomendacione.query().preload('monitoreo', (q) => q.preload('cultivo', (qc) => qc.preload('finca'))).orderBy('fecha_registro', 'desc').limit(limit),
+        Recomendacione.query().preload('monitoreo', (q: any) => q.preload('cultivo', (qc: any) => qc.preload('finca'))).orderBy('fecha_registro', 'desc').limit(limit),
         Usuario.query().whereHas('rol', (q) => q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero'])).orderBy('fecha_registro', 'desc').limit(limit),
       ])
 
