@@ -4,23 +4,14 @@ import Recomendacione from '#models/recomendacione'
 function serializar(r: Recomendacione) {
   const exp = r.experto
   return {
-    idRecomendacion: r.idRecomendacion,
-    idMonitoreo:     r.idMonitoreo,
-    idTratamiento:   r.idTratamiento,
-    descripcion:     r.descripcion,
-    fechaLimite:     r.fechaLimite,
-    idPrioridad:     r.idPrioridad,
-    fechaRegistro:   r.fechaRegistro,
-    experto: exp ? {
-      idUsuario: exp.idUsuario,
-      nombre:    exp.nombre,
-      apellido:  exp.apellido,
-      correo:    exp.correo,
-      telefono:  exp.telefono,
-    } : null,
-    monitoreo:    r.$preloaded.monitoreo   ? r.monitoreo   : undefined,
-    tipo:         r.$preloaded.tipo        ? r.tipo        : undefined,
-    tratamiento:  r.$preloaded.tratamiento ? r.tratamiento : undefined,
+    id_recomendacion:  r.idRecomendacion,
+    id_monitoreo:      r.idMonitoreo,
+    descripcion:       r.descripcion,
+    id_experto_emisor: r.idExpertoEmisor,
+    experto:           exp ? `${exp.nombre} ${exp.apellido}` : null,
+    prioridad:         (r as any).prioridad?.nombre ?? null,
+    tratamiento:       (r as any).tratamiento?.nombre ?? null,
+    fecha_limite:      r.fechaLimite ? r.fechaLimite.toISODate() : null,
   }
 }
 
@@ -42,10 +33,10 @@ export default class RecomendacionesController {
       const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_recomendacion'
 
       const query = Recomendacione.query()
-        .preload('monitoreo')
         .preload('experto')
         .preload('tipo')
         .preload('tratamiento')
+        .preload('prioridad')
 
       if (search) {
         query.where((q) => {
@@ -125,10 +116,10 @@ export default class RecomendacionesController {
     try {
       const r = await Recomendacione.query()
         .where('id_recomendacion', params.id)
-        .preload('monitoreo')
         .preload('experto')
         .preload('tipo')
         .preload('tratamiento')
+        .preload('prioridad')
         .firstOrFail()
 
       return response.ok(serializar(r))
