@@ -11,7 +11,7 @@ function serializar(r: Recomendacione) {
     experto:           exp ? `${exp.nombre} ${exp.apellido}` : null,
     prioridad:         (r as any).prioridad?.nombre ?? null,
     tratamiento:       (r as any).tratamiento?.nombre ?? null,
-    fecha_limite:      r.fechaLimite ? r.fechaLimite.toISODate() : null,
+    fecha_limite:      r.fechaLimite ? (r.fechaLimite as any).toISODate?.() ?? r.fechaLimite : null,
   }
 }
 
