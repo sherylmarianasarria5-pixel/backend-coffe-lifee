@@ -95,10 +95,10 @@ export default class RecomendacionesController {
         fechaLimite:     data.fecha_limite ?? null,
       })
 
-      await recomendacion.load('monitoreo')
       await recomendacion.load('experto')
       await recomendacion.load('tipo')
       await recomendacion.load('tratamiento')
+      await recomendacion.load('prioridad')
 
       return response.created({
         message: 'Recomendación creada correctamente',
