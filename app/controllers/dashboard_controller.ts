@@ -86,16 +86,30 @@ export default class DashboardController {
   async monitoreosPorEstado({ response }: HttpContext) {
     try {
       const monitoreos = await Monitoreo.query()
-        .preload('imagenes', (q) => q.preload('analisis'))
 
       let sinRoya = 0, conRoya = 0, pendientes = 0
 
       for (const m of monitoreos) {
-        const todosAnalisis = m.imagenes.flatMap((img) => img.analisis)
-        const estado = estadoMonitoreo(todosAnalisis)
-        if (estado === 'sin_roya')      sinRoya++
-        else if (estado === 'con_roya') conRoya++
-        else                            pendientes++
+        const analisis = await db.rawQuery(`
+          SELECT a.resultado
+          FROM analisis_ias a
+          JOIN imagenes i ON i.idImagen = a.idImagen
+          WHERE i.idMonitoreo = ?
+          ORDER BY a.idAnalisis DESC
+          LIMIT 1
+        `, [m.idMonitoreo])
+
+        const rows = analisis[0] as any[]
+
+        if (rows.length === 0) {
+          pendientes++
+        } else {
+          const resultado = rows[0].resultado
+          const roya = esRoya(resultado)
+          if (roya === true)       conRoya++
+          else if (roya === false) sinRoya++
+          else                     pendientes++
+        }
       }
 
       const total = sinRoya + conRoya + pendientes
