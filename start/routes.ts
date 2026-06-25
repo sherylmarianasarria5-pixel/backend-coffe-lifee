@@ -3,8 +3,8 @@ import { middleware } from '#start/kernel'
 import AutoSwagger from 'adonis-autoswagger'
 import swagger from '#config/swagger'
 
-const AuthController = () => import('#controllers/auth_controller')
-const MiPerfilController = () => import('#controllers/mi-perfil_controller')
+const AuthController                      = () => import('#controllers/auth_controller')
+const MiPerfilController                  = () => import('#controllers/mi-perfil_controller')
 const DashboardController                 = () => import('#controllers/dashboard_controller')
 const UsuariosController                  = () => import('#controllers/usuarios_controller')
 const AdminController                     = () => import('#controllers/admin_controller')
@@ -79,17 +79,18 @@ router.group(() => {
   router.get('/insumos/:id',                   [InsumosController,                 'show'])
 }).use(middleware.jwtAuth())
 
-// ─── Dashboard endpoints (admin) ──────────────────────────────────────────────
+// ─── Solo ADMIN ───────────────────────────────────────────────────────────────
 router.group(() => {
-  router.get('/dashboard', [DashboardController, 'index'])
-  router.get('/dashboard/monitoreos-por-estado', [DashboardController, 'monitoreosPorEstado'])
-  router.get('/dashboard/tendencia-roya', [DashboardController, 'tendenciaRoya'])
-  router.get('/dashboard/actividad-reciente', [DashboardController, 'actividadReciente'])
-  router.get('/dashboard/monitoreos-recientes', [DashboardController, 'monitoreosRecientes'])
-  router.get('/dashboard/top-fincas-roya', [DashboardController, 'topFincasRoya'])
-  router.get('/dashboard/proximos-monitoreos', [DashboardController, 'proximosMonitoreos'])
-  router.get('/dashboard/mapa-fincas', [DashboardController, 'mapaFincas'])
-  router.get('/dashboard/impacto', [DashboardController, 'impacto'])
+  router.get('/dashboard',                        [DashboardController, 'index'])
+  router.get('/dashboard/monitoreos-por-estado',   [DashboardController, 'monitoreosPorEstado'])
+  router.get('/dashboard/tendencia-roya',          [DashboardController, 'tendenciaRoya'])
+  router.get('/dashboard/actividad-reciente',      [DashboardController, 'actividadReciente'])
+  router.get('/dashboard/monitoreos-recientes',    [DashboardController, 'monitoreosRecientes'])
+  router.get('/dashboard/top-fincas-roya',         [DashboardController, 'topFincasRoya'])
+  router.get('/dashboard/proximos-monitoreos',     [DashboardController, 'proximosMonitoreos'])
+  router.get('/dashboard/mapa-fincas',             [DashboardController, 'mapaFincas'])
+  router.get('/dashboard/impacto',                 [DashboardController, 'impactoSistema'])
+  router.get('/dashboard/debug-monitoreo/:id',     [DashboardController, 'debugMonitoreo'])
 
   // Usuarios
   router.get('/usuarios',        [UsuariosController, 'index'])
