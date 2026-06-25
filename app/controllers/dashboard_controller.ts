@@ -46,15 +46,15 @@ export default class DashboardController {
         monitoresMes, monitoresMesAnt,
       ] = await Promise.all([
         Finca.query().where('activo', true).count('* as total').first(),
-        Finca.query().where('activo', true).where('created_at', '<', hace7dias).count('* as total').first(),
-        Usuario.query().where('activo', true).where('id_rol', 2).count('* as total').first(),
-        Usuario.query().where('activo', true).where('id_rol', 2).where('created_at', '<', hace7dias).count('* as total').first(),
-        Usuario.query().where('activo', true).where('id_rol', 3).count('* as total').first(),
-        Usuario.query().where('activo', true).where('id_rol', 3).where('created_at', '<', hace7dias).count('* as total').first(),
-        Monitoreo.query().where('fecha_monitoreo', '>=', inicioMes).count('* as total').first(),
+        Finca.query().where('activo', true).where('fechaRegistro', '<', hace7dias).count('* as total').first(),
+        Usuario.query().where('activo', true).where('idRol', 2).count('* as total').first(),
+        Usuario.query().where('activo', true).where('idRol', 2).where('fechaRegistro', '<', hace7dias).count('* as total').first(),
+        Usuario.query().where('activo', true).where('idRol', 3).count('* as total').first(),
+        Usuario.query().where('activo', true).where('idRol', 3).where('fechaRegistro', '<', hace7dias).count('* as total').first(),
+        Monitoreo.query().where('fechaMonitoreo', '>=', inicioMes).count('* as total').first(),
         Monitoreo.query()
-          .where('fecha_monitoreo', '>=', ahora.minus({ months: 1 }).startOf('month').toSQL()!)
-          .where('fecha_monitoreo', '<', inicioMes)
+          .where('fechaMonitoreo', '>=', ahora.minus({ months: 1 }).startOf('month').toSQL()!)
+          .where('fechaMonitoreo', '<', inicioMes)
           .count('* as total').first(),
       ])
 
