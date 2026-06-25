@@ -273,10 +273,10 @@ export default class DashboardController {
 
         return {
           idMonitoreo:  m.idMonitoreo,
-          finca:        m.cultivo?.finca?.nombreFinca ?? null,
-          lote:         m.cultivo?.nombreCultivo      ?? null,
-          fecha:        m.fechaMonitoreo,
-          resultadoIA:  estadoRoya,
+          finca: m.cultivo?.finca?.nombreFinca ?? null,
+          lote: m.cultivo?.nombreCultivo      ?? null,
+          fecha: m.fechaMonitoreo,
+          resultadoIA: estadoRoya,
           severidad:    ultimoConRoya?.nivelRoya?.nombreNivel ?? null,
           experto:      m.usuario ? `${m.usuario.nombre} ${m.usuario.apellido}` : null,
           estadoVisible,
