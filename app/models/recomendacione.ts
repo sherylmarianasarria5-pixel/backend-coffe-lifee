@@ -6,6 +6,7 @@ import Monitoreo from '#models/monitoreo'
 import Usuario from '#models/usuario'
 import CatTipoRecomendacion from '#models/cat_tipo_recomendacion'
 import Tratamiento from '#models/tratamiento'
+import CatPrioridade from '#models/cat_prioridade'
 
 export default class Recomendacione extends RecomendacioneSchema {
   @belongsTo(() => Monitoreo, {
@@ -27,4 +28,9 @@ export default class Recomendacione extends RecomendacioneSchema {
     foreignKey: 'idTratamiento',
   })
   declare tratamiento: BelongsTo<typeof Tratamiento>
+
+  @belongsTo(() => CatPrioridade, {
+    foreignKey: 'idPrioridad',
+  })
+  declare prioridad: BelongsTo<typeof CatPrioridade>
 }
