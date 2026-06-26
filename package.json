@@ -9,15 +9,14 @@
     "./registry": "./.adonisjs/client/registry/index.ts"
   },
   "scripts": {
-  "build": "node ace build",
-  "start": "node ace build && node build/ace.js migration:run --force && node build/bin/server.js",
-  "dev": "node ace serve --hmr",
-  "test": "node ace test",
-  "lint": "eslint .",
-  "format": "prettier --write .",
-  "typecheck": "tsc --noEmit"
-},
-
+    "build": "node ace build",
+    "start": "node ace build && node build/ace.js migration:run --force && node build/bin/server.js",
+    "dev": "node ace serve --hmr",
+    "test": "node ace test",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit"
+  },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
     "#exceptions/*": "./app/exceptions/*.js",
@@ -79,7 +78,8 @@
     "jsonwebtoken": "^9.0.3",
     "luxon": "^3.7.2",
     "mysql2": "^3.22.3",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "socket.io": "^4.8.3"
   },
   "hotHook": {
     "boundaries": [

@@ -29,7 +29,9 @@ const IMPORTER = (filePath: string) => {
   return import(filePath)
 }
 
-new Ignitor(APP_ROOT, { importer: IMPORTER })
+const { iniciarSocketIO } = await import('#services/socket_service')
+
+const httpServer = new Ignitor(APP_ROOT, { importer: IMPORTER })
   .tap((app) => {
     app.booting(async () => {
       await import('#start/env')
@@ -38,8 +40,11 @@ new Ignitor(APP_ROOT, { importer: IMPORTER })
     app.listenIf(app.managedByPm2, 'SIGINT', () => app.terminate())
   })
   .httpServer()
-  .start()
-  .catch((error) => {
-    process.exitCode = 1
-    prettyPrintError(error)
-  })
+
+try {
+  const server = await httpServer.start()
+  iniciarSocketIO(server)
+} catch (error) {
+  process.exitCode = 1
+  prettyPrintError(error)
+}

@@ -1,4 +1,5 @@
 import Notificacione from '#models/notificacione'
+import { emitirNotificacion } from '#services/socket_service'
 
 export async function crearNotificacion({
   idUsuario,
@@ -16,7 +17,7 @@ export async function crearNotificacion({
   tablaReferencia?: string | null
 }) {
   try {
-    await Notificacione.create({
+    const notificacion = await Notificacione.create({
       idUsuario,
       tipo,
       titulo,
@@ -25,6 +26,10 @@ export async function crearNotificacion({
       idReferencia,
       tablaReferencia,
     })
+
+    emitirNotificacion(idUsuario, notificacion.toJSON())
+
+    return notificacion
   } catch (error) {
     console.error('Error al crear notificación:', error)
   }
