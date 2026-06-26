@@ -36,4 +36,5 @@ export const controllers = {
   Roles: () => import('#controllers/roles_controller'),
   Tratamientos: () => import('#controllers/tratamientos_controller'),
   Usuarios: () => import('#controllers/usuarios_controller'),
+  Notificaciones: () => import('#controllers/notificaciones_controller'),
 }

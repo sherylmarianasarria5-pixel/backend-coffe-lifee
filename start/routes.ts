@@ -31,6 +31,7 @@ const RecomendacionesController           = () => import('#controllers/recomenda
 const AsignacionesExpertosController      = () => import('#controllers/asignaciones_expertos_controller')
 const CatTiposInsumosController           = () => import('#controllers/cat_tipos_insumos_controller')
 const InsumosController                   = () => import('#controllers/insumos_controller')
+const NotificacionesController            = () => import('#controllers/notificaciones_controller')
 
 
 // ─── Público ──────────────────────────────────────────────────────────────────
@@ -249,6 +250,12 @@ router.group(() => {
   router.get('/imagenes',      [ImagenesController, 'index'])
   router.get('/imagenes/:id',  [ImagenesController, 'show'])
   router.post('/imagenes',     [ImagenesController, 'store'])
+
+  // Notificaciones
+  router.get('/notificaciones',                    [NotificacionesController, 'index'])
+  router.put('/notificaciones/:id/leer',           [NotificacionesController, 'marcarLeida'])
+  router.put('/notificaciones/leer-todas',         [NotificacionesController, 'marcarTodasLeidas'])
+  router.delete('/notificaciones/:id',             [NotificacionesController, 'destroy'])
 }).use(middleware.role(['admin', 'experto', 'cafetero']))
 
 // ─── EXPERTO (flujo propio del rol experto) ───────────────────────────────────

@@ -439,7 +439,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['mapaFincas']>>>
     }
   }
-  'dashboard.impacto': {
+  'dashboard.impacto_sistema': {
     methods: ["GET","HEAD"]
     pattern: '/dashboard/impacto'
     types: {
@@ -447,8 +447,20 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['impacto']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['impacto']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['impactoSistema']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['impactoSistema']>>>
+    }
+  }
+  'dashboard.debug_monitoreo': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/debug-monitoreo/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['debugMonitoreo']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['debugMonitoreo']>>>
     }
   }
   'usuarios.index': {
@@ -1625,6 +1637,54 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/imagenes_controller').default['store']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/imagenes_controller').default['store']>>>
+    }
+  }
+  'notificaciones.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/notificaciones'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/notificaciones_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/notificaciones_controller').default['index']>>>
+    }
+  }
+  'notificaciones.marcar_leida': {
+    methods: ["PUT"]
+    pattern: '/notificaciones/:id/leer'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/notificaciones_controller').default['marcarLeida']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/notificaciones_controller').default['marcarLeida']>>>
+    }
+  }
+  'notificaciones.marcar_todas_leidas': {
+    methods: ["PUT"]
+    pattern: '/notificaciones/leer-todas'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/notificaciones_controller').default['marcarTodasLeidas']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/notificaciones_controller').default['marcarTodasLeidas']>>>
+    }
+  }
+  'notificaciones.destroy': {
+    methods: ["DELETE"]
+    pattern: '/notificaciones/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/notificaciones_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/notificaciones_controller').default['destroy']>>>
     }
   }
   'experto.dashboard': {

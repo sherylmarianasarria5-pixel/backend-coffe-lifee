@@ -40,7 +40,8 @@ export type ScannedRoutes = {
     'dashboard.top_fincas_roya': { paramsTuple?: []; params?: {} }
     'dashboard.proximos_monitoreos': { paramsTuple?: []; params?: {} }
     'dashboard.mapa_fincas': { paramsTuple?: []; params?: {} }
-    'dashboard.impacto': { paramsTuple?: []; params?: {} }
+    'dashboard.impacto_sistema': { paramsTuple?: []; params?: {} }
+    'dashboard.debug_monitoreo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'usuarios.index': { paramsTuple?: []; params?: {} }
     'usuarios.store': { paramsTuple?: []; params?: {} }
     'usuarios.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -139,6 +140,10 @@ export type ScannedRoutes = {
     'imagenes.index': { paramsTuple?: []; params?: {} }
     'imagenes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.store': { paramsTuple?: []; params?: {} }
+    'notificaciones.index': { paramsTuple?: []; params?: {} }
+    'notificaciones.marcar_leida': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'notificaciones.marcar_todas_leidas': { paramsTuple?: []; params?: {} }
+    'notificaciones.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'experto.dashboard': { paramsTuple?: []; params?: {} }
     'experto.fincas': { paramsTuple?: []; params?: {} }
     'experto.cultivos': { paramsTuple?: []; params?: {} }
@@ -191,7 +196,8 @@ export type ScannedRoutes = {
     'dashboard.top_fincas_roya': { paramsTuple?: []; params?: {} }
     'dashboard.proximos_monitoreos': { paramsTuple?: []; params?: {} }
     'dashboard.mapa_fincas': { paramsTuple?: []; params?: {} }
-    'dashboard.impacto': { paramsTuple?: []; params?: {} }
+    'dashboard.impacto_sistema': { paramsTuple?: []; params?: {} }
+    'dashboard.debug_monitoreo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'usuarios.index': { paramsTuple?: []; params?: {} }
     'usuarios.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.index': { paramsTuple?: []; params?: {} }
@@ -218,6 +224,7 @@ export type ScannedRoutes = {
     'aplicaciones_tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.index': { paramsTuple?: []; params?: {} }
     'imagenes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'notificaciones.index': { paramsTuple?: []; params?: {} }
     'experto.dashboard': { paramsTuple?: []; params?: {} }
     'experto.fincas': { paramsTuple?: []; params?: {} }
     'experto.cultivos': { paramsTuple?: []; params?: {} }
@@ -264,7 +271,8 @@ export type ScannedRoutes = {
     'dashboard.top_fincas_roya': { paramsTuple?: []; params?: {} }
     'dashboard.proximos_monitoreos': { paramsTuple?: []; params?: {} }
     'dashboard.mapa_fincas': { paramsTuple?: []; params?: {} }
-    'dashboard.impacto': { paramsTuple?: []; params?: {} }
+    'dashboard.impacto_sistema': { paramsTuple?: []; params?: {} }
+    'dashboard.debug_monitoreo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'usuarios.index': { paramsTuple?: []; params?: {} }
     'usuarios.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.index': { paramsTuple?: []; params?: {} }
@@ -291,6 +299,7 @@ export type ScannedRoutes = {
     'aplicaciones_tratamientos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'imagenes.index': { paramsTuple?: []; params?: {} }
     'imagenes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'notificaciones.index': { paramsTuple?: []; params?: {} }
     'experto.dashboard': { paramsTuple?: []; params?: {} }
     'experto.fincas': { paramsTuple?: []; params?: {} }
     'experto.cultivos': { paramsTuple?: []; params?: {} }
@@ -370,6 +379,8 @@ export type ScannedRoutes = {
     'cafeteros.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'fincas.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cultivos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'notificaciones.marcar_leida': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'notificaciones.marcar_todas_leidas': { paramsTuple?: []; params?: {} }
     'experto.actualizar_monitoreo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'experto.actualizar_recomendacion': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
@@ -397,6 +408,7 @@ export type ScannedRoutes = {
     'fincas.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cultivos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'monitoreos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'notificaciones.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {

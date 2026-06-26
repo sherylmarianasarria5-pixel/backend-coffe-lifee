@@ -222,11 +222,17 @@ const routes = {
     tokens: [{"old":"/dashboard/mapa-fincas","type":0,"val":"dashboard","end":""},{"old":"/dashboard/mapa-fincas","type":0,"val":"mapa-fincas","end":""}],
     types: placeholder as Registry['dashboard.mapa_fincas']['types'],
   },
-  'dashboard.impacto': {
+  'dashboard.impacto_sistema': {
     methods: ["GET","HEAD"],
     pattern: '/dashboard/impacto',
     tokens: [{"old":"/dashboard/impacto","type":0,"val":"dashboard","end":""},{"old":"/dashboard/impacto","type":0,"val":"impacto","end":""}],
-    types: placeholder as Registry['dashboard.impacto']['types'],
+    types: placeholder as Registry['dashboard.impacto_sistema']['types'],
+  },
+  'dashboard.debug_monitoreo': {
+    methods: ["GET","HEAD"],
+    pattern: '/dashboard/debug-monitoreo/:id',
+    tokens: [{"old":"/dashboard/debug-monitoreo/:id","type":0,"val":"dashboard","end":""},{"old":"/dashboard/debug-monitoreo/:id","type":0,"val":"debug-monitoreo","end":""},{"old":"/dashboard/debug-monitoreo/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['dashboard.debug_monitoreo']['types'],
   },
   'usuarios.index': {
     methods: ["GET","HEAD"],
@@ -815,6 +821,30 @@ const routes = {
     pattern: '/imagenes',
     tokens: [{"old":"/imagenes","type":0,"val":"imagenes","end":""}],
     types: placeholder as Registry['imagenes.store']['types'],
+  },
+  'notificaciones.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/notificaciones',
+    tokens: [{"old":"/notificaciones","type":0,"val":"notificaciones","end":""}],
+    types: placeholder as Registry['notificaciones.index']['types'],
+  },
+  'notificaciones.marcar_leida': {
+    methods: ["PUT"],
+    pattern: '/notificaciones/:id/leer',
+    tokens: [{"old":"/notificaciones/:id/leer","type":0,"val":"notificaciones","end":""},{"old":"/notificaciones/:id/leer","type":1,"val":"id","end":""},{"old":"/notificaciones/:id/leer","type":0,"val":"leer","end":""}],
+    types: placeholder as Registry['notificaciones.marcar_leida']['types'],
+  },
+  'notificaciones.marcar_todas_leidas': {
+    methods: ["PUT"],
+    pattern: '/notificaciones/leer-todas',
+    tokens: [{"old":"/notificaciones/leer-todas","type":0,"val":"notificaciones","end":""},{"old":"/notificaciones/leer-todas","type":0,"val":"leer-todas","end":""}],
+    types: placeholder as Registry['notificaciones.marcar_todas_leidas']['types'],
+  },
+  'notificaciones.destroy': {
+    methods: ["DELETE"],
+    pattern: '/notificaciones/:id',
+    tokens: [{"old":"/notificaciones/:id","type":0,"val":"notificaciones","end":""},{"old":"/notificaciones/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['notificaciones.destroy']['types'],
   },
   'experto.dashboard': {
     methods: ["GET","HEAD"],

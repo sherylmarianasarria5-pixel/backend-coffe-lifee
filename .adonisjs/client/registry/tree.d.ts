@@ -93,7 +93,8 @@ export interface ApiDefinition {
     topFincasRoya: typeof routes['dashboard.top_fincas_roya']
     proximosMonitoreos: typeof routes['dashboard.proximos_monitoreos']
     mapaFincas: typeof routes['dashboard.mapa_fincas']
-    impacto: typeof routes['dashboard.impacto']
+    impactoSistema: typeof routes['dashboard.impacto_sistema']
+    debugMonitoreo: typeof routes['dashboard.debug_monitoreo']
   }
   usuarios: {
     index: typeof routes['usuarios.index']
@@ -188,6 +189,12 @@ export interface ApiDefinition {
     update: typeof routes['cultivos.update']
     destroy: typeof routes['cultivos.destroy']
     uploadPhoto: typeof routes['cultivos.upload_photo']
+  }
+  notificaciones: {
+    index: typeof routes['notificaciones.index']
+    marcarLeida: typeof routes['notificaciones.marcar_leida']
+    marcarTodasLeidas: typeof routes['notificaciones.marcar_todas_leidas']
+    destroy: typeof routes['notificaciones.destroy']
   }
   experto: {
     dashboard: typeof routes['experto.dashboard']

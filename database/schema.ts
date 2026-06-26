@@ -29,12 +29,10 @@ export class AnalisisIaSchema extends BaseModel {
 }
 
 export class AplicacionesTratamientoSchema extends BaseModel {
-  static $columns = ['fechaActualizacion', 'fechaAplicacion', 'fechaRegistro', 'idAplicacion', 'idTratamiento', 'idUsuario', 'observacion'] as const
+  static $columns = ['fechaAplicacion', 'fechaRegistro', 'idAplicacion', 'idTratamiento', 'idUsuario', 'observacion'] as const
   $columns = AplicacionesTratamientoSchema.$columns
-  @column.dateTime()
-  declare fechaActualizacion: DateTime
   @column.date()
-  declare fechaAplicacion: DateTime | null
+  declare fechaAplicacion: DateTime
   @column.dateTime()
   declare fechaRegistro: DateTime
   @column({ isPrimary: true })
@@ -208,7 +206,7 @@ export class CatTiposTratamientoSchema extends BaseModel {
 }
 
 export class CultivoSchema extends BaseModel {
-  static $columns = ['createdAt', 'fotoUrl', 'idCultivo', 'idEstado', 'idFinca', 'nombreCultivo', 'tipoCultivo', 'updatedAt'] as const
+  static $columns = ['createdAt', 'fotoUrl', 'idCultivo', 'idEstado', 'idFinca', 'nombreCultivo', 'numeroArboles', 'tipoCultivo', 'updatedAt', 'variedadCafe'] as const
   $columns = CultivoSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
@@ -223,9 +221,13 @@ export class CultivoSchema extends BaseModel {
   @column()
   declare nombreCultivo: string
   @column()
+  declare numeroArboles: number | null
+  @column()
   declare tipoCultivo: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+  @column()
+  declare variedadCafe: string | null
 }
 
 export class FincaSchema extends BaseModel {
@@ -310,6 +312,29 @@ export class MonitoreoSchema extends BaseModel {
   declare observaciones: string | null
 }
 
+export class NotificacioneSchema extends BaseModel {
+  static $columns = ['fechaRegistro', 'idNotificacion', 'idReferencia', 'idUsuario', 'leida', 'mensaje', 'tablaReferencia', 'tipo', 'titulo'] as const
+  $columns = NotificacioneSchema.$columns
+  @column.dateTime()
+  declare fechaRegistro: DateTime | null
+  @column({ isPrimary: true })
+  declare idNotificacion: number
+  @column()
+  declare idReferencia: number | null
+  @column()
+  declare idUsuario: number
+  @column()
+  declare leida: boolean | null
+  @column()
+  declare mensaje: string
+  @column()
+  declare tablaReferencia: string | null
+  @column()
+  declare tipo: string
+  @column()
+  declare titulo: string
+}
+
 export class RecomendacioneSchema extends BaseModel {
   static $columns = ['descripcion', 'fechaActualizacion', 'fechaLimite', 'fechaRegistro', 'idExpertoEmisor', 'idMonitoreo', 'idPrioridad', 'idRecomendacion', 'idTipo', 'idTratamiento'] as const
   $columns = RecomendacioneSchema.$columns
@@ -331,7 +356,7 @@ export class RecomendacioneSchema extends BaseModel {
   declare idRecomendacion: number
   @column()
   declare idTipo: number | null
-  @column({ columnName: 'id_tratamiento' })
+  @column()
   declare idTratamiento: number | null
 }
 
@@ -378,12 +403,14 @@ export class UserSchema extends BaseModel {
 }
 
 export class UsuarioSchema extends BaseModel {
-  static $columns = ['activo', 'apellido', 'correo', 'fechaActualizacion', 'fechaRegistro', 'fotoPerfil', 'idRol', 'idUsuario', 'nombre', 'observaciones', 'passwordHash', 'resetToken', 'resetTokenExpires', 'telefono'] as const
+  static $columns = ['activo', 'apellido', 'cedula', 'correo', 'fechaActualizacion', 'fechaRegistro', 'fotoPerfil', 'genero', 'idRol', 'idUsuario', 'nombre', 'observaciones', 'passwordHash', 'resetToken', 'resetTokenExpires', 'telefono'] as const
   $columns = UsuarioSchema.$columns
   @column()
   declare activo: boolean | null
   @column()
   declare apellido: string
+  @column()
+  declare cedula: string | null
   @column()
   declare correo: string
   @column.dateTime()
@@ -392,6 +419,8 @@ export class UsuarioSchema extends BaseModel {
   declare fechaRegistro: DateTime
   @column()
   declare fotoPerfil: string | null
+  @column()
+  declare genero: string | null
   @column()
   declare idRol: number | null
   @column({ isPrimary: true })
