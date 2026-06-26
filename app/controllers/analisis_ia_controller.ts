@@ -188,6 +188,51 @@ export default class AnalisisIaController {
         }
       }
 
+      // ── Notificar si se detectó roya ──
+      if (firstDetection.class === 'Enfermedad_ROYA') {
+        try {
+          const { crearNotificacion } = await import('#services/notificacion_service')
+          const imagenData = await Imagene.query()
+            .where('idImagen', Number(idImagen))
+            .preload('monitoreo', (q) => q.preload('cultivo', (q2: any) => q2.preload('finca')))
+            .first()
+
+          const finca   = (imagenData as any)?.monitoreo?.cultivo?.finca
+          const cultivo = (imagenData as any)?.monitoreo?.cultivo
+
+          if (finca?.idFinca) {
+            const { default: AsignacionExperto } = await import('#models/asignacion_experto')
+            const asignaciones = await AsignacionExperto.query()
+              .where('id_finca', finca.idFinca)
+
+            for (const asig of asignaciones) {
+              await crearNotificacion({
+                idUsuario:       asig.idExperto,
+                tipo:            'roya_detectada',
+                titulo:          '⚠️ Roya detectada',
+                mensaje:         `Se detectó roya en ${finca.nombreFinca}${cultivo ? ' - ' + cultivo.nombreCultivo : ''} con ${(confianza * 100).toFixed(0)}% de confianza.`,
+                idReferencia:    nuevoAnalisis.idAnalisis,
+                tablaReferencia: 'analisis_ias',
+              })
+            }
+
+            if (finca.idUsuario) {
+              await crearNotificacion({
+                idUsuario:       finca.idUsuario,
+                tipo:            'roya_detectada',
+                titulo:          '⚠️ Roya detectada en tu finca',
+                mensaje:         `Se detectó roya en ${finca.nombreFinca}${cultivo ? ' - ' + cultivo.nombreCultivo : ''}. Un experto revisará pronto.`,
+                idReferencia:    nuevoAnalisis.idAnalisis,
+                tablaReferencia: 'analisis_ias',
+              })
+            }
+          }
+        } catch (e) {
+          console.error('Error al notificar roya:', e)
+        }
+      }
+      // ──────────────────────────────────
+
       return response.ok({
         success:  true,
         message:  'Análisis realizado correctamente',

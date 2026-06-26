@@ -204,6 +204,33 @@ export default class MonitoreosController {
         observaciones:  data.observaciones ?? null,
       })
 
+      // ── Notificar al admin sobre nuevo monitoreo ──
+      try {
+        const { crearNotificacion } = await import('#services/notificacion_service')
+        const { default: Usuario }  = await import('#models/usuario')
+        const { default: Cultivo }  = await import('#models/cultivo')
+
+        const cultivo = await Cultivo.query()
+          .where('id_cultivo', monitoreo.idCultivo!)
+          .preload('finca')
+          .first()
+
+        const admins = await Usuario.query().where('id_rol', 2).where('activo', true)
+        for (const admin of admins) {
+          await crearNotificacion({
+            idUsuario:       admin.idUsuario,
+            tipo:            'monitoreo_nuevo',
+            titulo:          'Nuevo monitoreo registrado',
+            mensaje:         `Se registró un nuevo monitoreo en ${(cultivo as any)?.finca?.nombreFinca ?? 'una finca'} - ${cultivo?.nombreCultivo ?? ''}.`,
+            idReferencia:    monitoreo.idMonitoreo,
+            tablaReferencia: 'monitoreos',
+          })
+        }
+      } catch (e) {
+        console.error('Error al notificar nuevo monitoreo:', e)
+      }
+      // ─────────────────────────────────────────────
+
       return response.created({
         message: 'Monitoreo creado correctamente',
         data: {

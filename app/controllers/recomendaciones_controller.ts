@@ -100,6 +100,35 @@ export default class RecomendacionesController {
       await recomendacion.load('tratamiento')
       await recomendacion.load('prioridad')
 
+      // ── Notificar al caficultor dueño de la finca ──
+      try {
+        const { default: Monitoreo } = await import('#models/monitoreo')
+        const { default: Finca }     = await import('#models/finca')
+        const { crearNotificacion }  = await import('#services/notificacion_service')
+
+        const monitoreo = await Monitoreo.query()
+          .where('id_monitoreo', data.id_monitoreo)
+          .preload('cultivo')
+          .first()
+
+        if (monitoreo?.cultivo?.idFinca) {
+          const finca = await Finca.find(monitoreo.cultivo.idFinca)
+          if (finca?.idUsuario) {
+            await crearNotificacion({
+              idUsuario:       finca.idUsuario,
+              tipo:            'recomendacion_nueva',
+              titulo:          'Nueva recomendación del experto',
+              mensaje:         `El experto ha enviado una recomendación para tu finca: "${recomendacion.descripcion}"`,
+              idReferencia:    recomendacion.idRecomendacion,
+              tablaReferencia: 'recomendaciones',
+            })
+          }
+        }
+      } catch (e) {
+        console.error('Error al notificar recomendación:', e)
+      }
+      // ───────────────────────────────────────────────
+
       return response.created({
         message: 'Recomendación creada correctamente',
         data: serializar(recomendacion),
