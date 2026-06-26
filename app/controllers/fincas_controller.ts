@@ -33,9 +33,33 @@ export default class FincasController {
       const orderDir = request.input('order_dir', 'desc')
       const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_finca'
       query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+      query.preload('usuario')
 
-      const fincas = await query.paginate(page, limit)
-      return response.ok(fincas)
+      const paginado = await query.paginate(page, limit)
+      const json = paginado.toJSON()
+      json.data = paginado.all().map((f: any) => ({
+        idFinca:           f.idFinca,
+        nombreFinca:       f.nombreFinca,
+        municipio:         f.municipio,
+        departamento:      f.departamento,
+        latitud:           f.latitud,
+        longitud:          f.longitud,
+        altitudMsnm:       f.altitudMsnm,
+        areaHectareas:     f.areaHectareas,
+        fotoUrl:           f.fotoUrl,
+        activo:            f.activo,
+        fechaRegistro:     f.fechaRegistro,
+        fechaActualizacion: f.fechaActualizacion,
+        idUsuario:         f.idUsuario,
+        usuario: f.usuario ? {
+          idUsuario: f.usuario.idUsuario,
+          nombre:    f.usuario.nombre,
+          apellido:  f.usuario.apellido,
+          correo:    f.usuario.correo,
+          rol:       f.usuario.idRol === 3 ? 'cafetero' : f.usuario.idRol === 2 ? 'experto' : 'admin',
+        } : null,
+      }))
+      return response.ok(json)
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener fincas', error: error.message })
     }
