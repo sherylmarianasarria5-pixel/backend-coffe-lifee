@@ -56,6 +56,21 @@ export default class InsumosController {
         return response.badRequest({ message: 'El nombre es obligatorio' })
       }
 
+      const existe = await Insumo.query()
+        .whereILike('nombre', data.nombre.trim())
+        .first()
+
+      if (existe) {
+        return response.conflict({
+          message: `Ya existe un insumo con el nombre "${data.nombre}". Usa uno diferente o edita el existente.`,
+          data: {
+            idInsumo:    existe.idInsumo,
+            nombre:      existe.nombre,
+            descripcion: existe.descripcion,
+          }
+        })
+      }
+
       const insumo = await Insumo.create({
         idTipoInsumo: data.id_tipo_insumo ?? null,
         nombre:       data.nombre,

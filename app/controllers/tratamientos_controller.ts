@@ -64,6 +64,21 @@ export default class TratamientosController {
         return response.badRequest({ message: 'El nombre es obligatorio' })
       }
 
+      const existe = await Tratamiento.query()
+        .whereILike('nombre', data.nombre.trim())
+        .first()
+
+      if (existe) {
+        return response.conflict({
+          message: `Ya existe un tratamiento con el nombre "${data.nombre}". Usa uno diferente o edita el existente.`,
+          data: {
+            idTratamiento: existe.idTratamiento,
+            nombre:        existe.nombre,
+            descripcion:   existe.descripcion,
+          }
+        })
+      }
+
       const tratamiento = await Tratamiento.create({
         idTipoTratamiento: data.id_tipo_tratamiento ?? null,
         idInsumo:          data.id_insumo          ?? null,
