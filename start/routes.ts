@@ -91,7 +91,6 @@ router.group(() => {
   router.get('/dashboard/proximos-monitoreos',     [DashboardController, 'proximosMonitoreos'])
   router.get('/dashboard/mapa-fincas',             [DashboardController, 'mapaFincas'])
   router.get('/dashboard/impacto',                 [DashboardController, 'impactoSistema'])
-  router.get('/dashboard/debug-monitoreo/:id',     [DashboardController, 'debugMonitoreo'])
 
   // Usuarios
   router.get('/usuarios',        [UsuariosController, 'index'])

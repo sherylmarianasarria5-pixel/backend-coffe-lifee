@@ -469,37 +469,4 @@ export default class DashboardController {
     }
   }
 
-  /**
-   * @debugMonitoreo
-   * @summary [TEMPORAL] Endpoint de diagnóstico: muestra crudo lo que Lucid carga para un monitoreo
-   * @description Borrar este método y su ruta una vez resuelto el problema de clasificación.
-   */
-  async debugMonitoreo({ params, response }: HttpContext) {
-    try {
-      const id = Number(params.id)
-      const m: any = await cargarMonitoreosCompletos(Monitoreo.query().where('id_monitoreo', id)).then((r: any) => r[0])
-
-      if (!m) return response.notFound({ message: `No existe monitoreo con id ${id}` })
-
-      return response.ok({
-        idMonitoreo: m.idMonitoreo,
-        tieneImagenesArray: Array.isArray(m.imagenes),
-        cantidadImagenes: m.imagenes?.length ?? 'undefined',
-        imagenesRaw: m.imagenes?.map((img: any) => ({
-          idImagen: img.idImagen,
-          tieneAnalisisArray: Array.isArray(img.analisis),
-          cantidadAnalisis: img.analisis?.length ?? 'undefined',
-          analisisRaw: img.analisis?.map((a: any) => ({
-            idAnalisis: a.idAnalisis,
-            resultado: a.resultado,
-            idNivelRoya: a.idNivelRoya,
-            nivelRoyaCargado: a.nivelRoya ? a.nivelRoya.nombreNivel : null,
-          })),
-        })),
-        estadoCalculado: estadoRoya(m),
-      })
-    } catch (error: any) {
-      return response.internalServerError({ message: 'Error en debug', error: error.message, stack: error.stack })
-    }
-  }
 }
