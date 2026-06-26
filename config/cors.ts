@@ -1,49 +1,28 @@
 import app from '@adonisjs/core/services/app'
+import env from '#start/env'
 import { defineConfig } from '@adonisjs/cors'
 
-/**
- * Configuration options to tweak the CORS policy. The following
- * options are documented on the official documentation website.
- *
- * https://docs.adonisjs.com/guides/security/cors
- */
+const corsOriginRaw = env.get('CORS_ORIGIN')
+
+let originConfig: boolean | string[]
+if (app.inDev) {
+  originConfig = true
+} else if (corsOriginRaw) {
+  originConfig = corsOriginRaw.split(',').map((o) => o.trim())
+} else {
+  console.warn(
+    '[CORS] CORS_ORIGIN no está configurada. En producción se recomienda definirla como una lista separada por comas. Ej: https://app.com,https://admin.com'
+  )
+  originConfig = true
+}
+
 const corsConfig = defineConfig({
-  /**
-   * Enable or disable CORS handling globally.
-   */
   enabled: true,
-
-  /**
-   * In development, allow every origin to simplify local front/backend setup.
-   * In production, keep an explicit allowlist (empty by default, so no
-   * cross-origin browser access is allowed until configured).
-   */
-  origin: app.inDev ? true : [],
-
-  /**
-   * HTTP methods accepted for cross-origin requests.
-   */
+  origin: originConfig,
   methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
-
-  /**
-   * Reflect request headers by default. Use a string array to restrict
-   * allowed headers.
-   */
   headers: true,
-
-  /**
-   * Response headers exposed to the browser.
-   */
   exposeHeaders: [],
-
-  /**
-   * Allow cookies/authorization headers on cross-origin requests.
-   */
   credentials: true,
-
-  /**
-   * Cache CORS preflight response for N seconds.
-   */
   maxAge: 90,
 })
 
