@@ -77,7 +77,7 @@ export default class FincasController {
     try {
       const finca = await Finca.query()
         .where('id_finca', params.id)
-        .preload('usuario')
+        .preload('usuario', (query) => query.preload('rol'))
         .preload('cultivos')
         .firstOrFail()
       return response.ok(finca)
