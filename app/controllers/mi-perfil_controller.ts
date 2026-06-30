@@ -45,7 +45,7 @@ export default class MiPerfilController {
       const id = this.getIdFromToken(request)
       if (!id) return response.unauthorized({ message: 'Token inválido' })
       const usuario = await Usuario.findOrFail(id)
-      const data: any = request.only(['nombre', 'apellido', 'telefono', 'observaciones'])
+      const data: any = request.only(['nombre', 'apellido', 'telefono', 'observaciones', 'cedula', 'genero'])
       const foto = request.file('foto_perfil', { extnames: ['jpg', 'jpeg', 'png', 'webp'], size: '5mb' })
       if (foto) {
         if (!foto.isValid) return response.badRequest({ message: 'Archivo inválido', errors: foto.errors })

@@ -1,19 +1,18 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'usuarios'
+  protected tableName = 'aplicaciones_tratamientos'
 
   async up() {
     this.schema.alterTable(this.tableName, (table) => {
-      table.string('reset_token').nullable()
-      table.timestamp('reset_token_expires').nullable()
+      table.integer('id_insumo').unsigned().nullable()
+        .references('id_insumo').inTable('insumos').onDelete('SET NULL')
     })
   }
 
   async down() {
     this.schema.alterTable(this.tableName, (table) => {
-      table.dropColumn('reset_token')
-      table.dropColumn('reset_token_expires')
+      table.dropColumn('id_insumo')
     })
   }
 }

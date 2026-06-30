@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import CatEstadosCultivo from '#models/cat_estado_cultivo'
 import { catalogoStoreValidator, catalogoUpdateValidator } from '#validators/validators'
 
+
 export default class CatEstadosCultivosController {
 
   /**
@@ -11,9 +12,20 @@ export default class CatEstadosCultivosController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page    = Number(request.input('page', 1))
-      const limit   = Number(request.input('limit', 20))
-      const estados = await CatEstadosCultivo.query().paginate(page, limit)
+      const page     = Number(request.input('page', 1))
+      const limit    = Number(request.input('limit', 20))
+      const search   = request.input('search', '')
+      const query = CatEstadosCultivo.query()
+      if (search) {
+        query.whereILike('nombre_estado', `%${search}%`)
+      }
+      const ALLOWED = ['id_estado', 'nombre_estado', 'descripcion', 'created_at', 'updated_at']
+      const orderBy = request.input('order_by', 'id_estado')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_estado'
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+
+      const estados = await query.paginate(page, limit)
       return response.ok(estados)
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener estados de cultivo', error: error.message })

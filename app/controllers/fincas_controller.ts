@@ -1,6 +1,9 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Finca from '#models/finca'
+import app from '@adonisjs/core/services/app'
+import { subirImagen } from '#services/cloudinary_service'
 import { fincaStoreValidator, fincaUpdateValidator } from '#validators/validators'
+
 
 export default class FincasController {
   private toDecimalString(value: number | undefined) {
@@ -17,21 +20,46 @@ export default class FincasController {
       const page      = Number(request.input('page', 1))
       const limit     = Number(request.input('limit', 10))
       const search    = request.input('search', '')
-      const idUsuario = request.input('id_usuario')
-
-      const query = Finca.query().preload('usuario')
-
-      if (search) { 
-        query.where((q) => {
-          q.whereILike('nombre_finca',  `%${search}%`)
-           .orWhereILike('municipio',    `%${search}%`)
-           .orWhereILike('departamento', `%${search}%`)
-        })
+      const payload = (request as any).usuarioJwt
+      const query = Finca.query()
+      if (payload.rol?.nombreRol !== 'admin') {
+        query.where('id_usuario', payload.id)
       }
-      if (idUsuario) query.where('id_usuario', idUsuario)
+      if (search) {
+        query.whereILike('nombre_finca', `%${search}%`)
+      }
+      const ALLOWED = ['id_finca', 'nombre_finca', 'municipio', 'departamento', 'area_hectareas', 'altitud_msnm', 'latitud', 'longitud', 'id_usuario', 'activo', 'fecha_registro', 'fecha_actualizacion']
+      const orderBy = request.input('order_by', 'id_finca')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_finca'
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+      query.preload('usuario')
 
-      const fincas = await query.paginate(page, limit)
-      return response.ok(fincas)
+      const paginado = await query.paginate(page, limit)
+      const json = paginado.toJSON()
+      json.data = paginado.all().map((f: any) => ({
+        idFinca:           f.idFinca,
+        nombreFinca:       f.nombreFinca,
+        municipio:         f.municipio,
+        departamento:      f.departamento,
+        latitud:           f.latitud,
+        longitud:          f.longitud,
+        altitudMsnm:       f.altitudMsnm,
+        areaHectareas:     f.areaHectareas,
+        fotoUrl:           f.fotoUrl,
+        activo:            f.activo,
+        fechaRegistro:     f.fechaRegistro,
+        fechaActualizacion: f.fechaActualizacion,
+        idUsuario:         f.idUsuario,
+        usuario: f.usuario ? {
+          idUsuario: f.usuario.idUsuario,
+          nombre:    f.usuario.nombre,
+          apellido:  f.usuario.apellido,
+          correo:    f.usuario.correo,
+          rol:       f.usuario.idRol === 3 ? 'cafetero' : f.usuario.idRol === 2 ? 'experto' : 'admin',
+        } : null,
+      }))
+      return response.ok(json)
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al obtener fincas', error: error.message })
     }
@@ -117,6 +145,43 @@ export default class FincasController {
         return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
       }
       return response.internalServerError({ message: 'Error al actualizar finca', error: error.message })
+    }
+  }
+
+  /**
+   * @uploadPhoto
+   * @summary Subir foto de la finca
+   * @responseBody 200 - {"message": "Foto subida correctamente", "data": {"fotoUrl": "https://..."}}
+   * @responseBody 404 - {"message": "Finca no encontrada"}
+   */
+  async uploadPhoto({ params, request, response }: HttpContext) {
+    try {
+      const finca = await Finca.findOrFail(params.id)
+
+      const archivo = request.file('imagen', {
+        size: '10mb',
+        extnames: ['jpg', 'jpeg', 'png', 'webp'],
+      })
+
+      if (!archivo) {
+        return response.badRequest({ message: 'Debes enviar un archivo con el campo "imagen"' })
+      }
+      if (!archivo.isValid) {
+        return response.badRequest({ message: 'Archivo inválido', errors: archivo.errors })
+      }
+
+      await archivo.move(app.tmpPath('uploads'))
+      const urlImagen = await subirImagen(archivo.filePath!)
+
+      finca.fotoUrl = urlImagen
+      await finca.save()
+
+      return response.ok({ message: 'Foto subida correctamente', data: { fotoUrl: urlImagen } })
+    } catch (error: any) {
+      if (error.code === 'E_ROW_NOT_FOUND') {
+        return response.notFound({ message: 'Finca no encontrada' })
+      }
+      return response.internalServerError({ message: 'Error al subir foto', error: error.message })
     }
   }
 

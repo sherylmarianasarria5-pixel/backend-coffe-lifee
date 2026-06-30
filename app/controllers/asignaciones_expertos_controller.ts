@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import AsignacionExperto from '#models/asignacion_experto'
 import Usuario from '#models/usuario'
 
+
 function serializar(a: AsignacionExperto) {
   const exp = a.experto
   return {
@@ -65,14 +66,30 @@ export default class AsignacionesExpertosController {
    * }
    * @responseBody 500 - {"message": "Error al obtener asignaciones", "error": "string"}
    */
-  async index({ response }: HttpContext) {
+  async index({ request, response }: HttpContext) {
     try {
-      const asignaciones = await AsignacionExperto.query()
+      const page      = Number(request.input('page', 1))
+      const limit     = Number(request.input('limit', 10))
+      const idExperto = request.input('id_experto')
+      const idFinca   = request.input('id_finca')
+      const ALLOWED = ['id_asignacion', 'fecha_asignada', 'fecha_registro', 'fecha_actualizacion', 'id_experto', 'id_finca']
+      const orderBy = request.input('order_by', 'id_asignacion')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_asignacion'
+
+      const query = AsignacionExperto.query()
         .preload('experto')
         .preload('finca')
-        .orderBy('fecha_asignada', 'desc')
 
-      return response.ok({ data: asignaciones.map(serializar) })
+      if (idExperto) query.where('id_experto', idExperto)
+      if (idFinca)   query.where('id_finca', idFinca)
+
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+
+      const paginado = await query.paginate(page, limit)
+      const json = paginado.toJSON()
+      json.data = paginado.all().map(serializar)
+      return response.ok(json)
     } catch (error: any) {
       return response.internalServerError({ 
         message: 'Error al obtener asignaciones', 

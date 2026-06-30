@@ -295,6 +295,54 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/categorias_controller').default['show']>>>
     }
   }
+  'cat_tipos_insumos.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/cat_tipos_insumos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['index']>>>
+    }
+  }
+  'cat_tipos_insumos.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/cat_tipos_insumos/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['show']>>>
+    }
+  }
+  'insumos.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/insumos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['index']>>>
+    }
+  }
+  'insumos.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/insumos/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['show']>>>
+    }
+  }
   'dashboard.index': {
     methods: ["GET","HEAD"]
     pattern: '/dashboard'
@@ -305,6 +353,114 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['index']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['index']>>>
+    }
+  }
+  'dashboard.monitoreos_por_estado': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/monitoreos-por-estado'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['monitoreosPorEstado']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['monitoreosPorEstado']>>>
+    }
+  }
+  'dashboard.tendencia_roya': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/tendencia-roya'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['tendenciaRoya']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['tendenciaRoya']>>>
+    }
+  }
+  'dashboard.actividad_reciente': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/actividad-reciente'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['actividadReciente']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['actividadReciente']>>>
+    }
+  }
+  'dashboard.monitoreos_recientes': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/monitoreos-recientes'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['monitoreosRecientes']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['monitoreosRecientes']>>>
+    }
+  }
+  'dashboard.top_fincas_roya': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/top-fincas-roya'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['topFincasRoya']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['topFincasRoya']>>>
+    }
+  }
+  'dashboard.proximos_monitoreos': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/proximos-monitoreos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['proximosMonitoreos']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['proximosMonitoreos']>>>
+    }
+  }
+  'dashboard.mapa_fincas': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/mapa-fincas'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['mapaFincas']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['mapaFincas']>>>
+    }
+  }
+  'dashboard.impacto_sistema': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/impacto'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['impactoSistema']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['impactoSistema']>>>
+    }
+  }
+  'dashboard.debug_monitoreo': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard/debug-monitoreo/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['debugMonitoreo']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['debugMonitoreo']>>>
     }
   }
   'usuarios.index': {
@@ -859,18 +1015,6 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cafeteros_controller').default['show']>>>
     }
   }
-  'monitoreos.store': {
-    methods: ["POST"]
-    pattern: '/monitoreos'
-    types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/validators').monitoreoStoreValidator)>>
-      paramsTuple: []
-      params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/validators').monitoreoStoreValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
-    }
-  }
   'monitoreos.update': {
     methods: ["PUT"]
     pattern: '/monitoreos/:id'
@@ -881,30 +1025,6 @@ export interface Registry {
       query: ExtractQuery<InferInput<(typeof import('#validators/validators').monitoreoUpdateValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['update']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
-    }
-  }
-  'monitoreos.destroy': {
-    methods: ["DELETE"]
-    pattern: '/monitoreos/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['destroy']>>>
-    }
-  }
-  'analisis_ia.store': {
-    methods: ["POST"]
-    pattern: '/analisis_ia'
-    types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/validators').analisisIaStoreValidator)>>
-      paramsTuple: []
-      params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/validators').analisisIaStoreValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'analisis_ia.update': {
@@ -929,6 +1049,18 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['destroy']>>>
+    }
+  }
+  'analisis_ia.predict': {
+    methods: ["POST"]
+    pattern: '/analisis_ia/predict'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['predict']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['predict']>>>
     }
   }
   'recomendaciones.store': {
@@ -1039,42 +1171,6 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/aplicaciones_tratamientos_controller').default['destroy']>>>
     }
   }
-  'recomendacion_tratamientos.store': {
-    methods: ["POST"]
-    pattern: '/recomendacion_tratamientos'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['store']>>>
-    }
-  }
-  'recomendacion_tratamientos.update': {
-    methods: ["PUT"]
-    pattern: '/recomendacion_tratamientos/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['update']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['update']>>>
-    }
-  }
-  'recomendacion_tratamientos.destroy': {
-    methods: ["DELETE"]
-    pattern: '/recomendacion_tratamientos/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['destroy']>>>
-    }
-  }
   'imagenes.update': {
     methods: ["PUT"]
     pattern: '/imagenes/:id'
@@ -1097,6 +1193,78 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/imagenes_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/imagenes_controller').default['destroy']>>>
+    }
+  }
+  'insumos.store': {
+    methods: ["POST"]
+    pattern: '/insumos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['store']>>>
+    }
+  }
+  'insumos.update': {
+    methods: ["PUT"]
+    pattern: '/insumos/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['update']>>>
+    }
+  }
+  'insumos.destroy': {
+    methods: ["DELETE"]
+    pattern: '/insumos/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/insumos_controller').default['destroy']>>>
+    }
+  }
+  'cat_tipos_insumos.store': {
+    methods: ["POST"]
+    pattern: '/cat_tipos_insumos'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/validators').catalogoStoreValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/validators').catalogoStoreValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'cat_tipos_insumos.update': {
+    methods: ["PUT"]
+    pattern: '/cat_tipos_insumos/:id'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/validators').catalogoUpdateValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/validators').catalogoUpdateValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'cat_tipos_insumos.destroy': {
+    methods: ["DELETE"]
+    pattern: '/cat_tipos_insumos/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cat_tipos_insumos_controller').default['destroy']>>>
     }
   }
   'cafeteros.store': {
@@ -1195,6 +1363,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/fincas_controller').default['destroy']>>>
     }
   }
+  'fincas.upload_photo': {
+    methods: ["POST"]
+    pattern: '/fincas/:id/foto'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/fincas_controller').default['uploadPhoto']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/fincas_controller').default['uploadPhoto']>>>
+    }
+  }
   'cultivos.index': {
     methods: ["GET","HEAD"]
     pattern: '/cultivos'
@@ -1255,6 +1435,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cultivos_controller').default['destroy']>>>
     }
   }
+  'cultivos.upload_photo': {
+    methods: ["POST"]
+    pattern: '/cultivos/:id/foto'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cultivos_controller').default['uploadPhoto']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cultivos_controller').default['uploadPhoto']>>>
+    }
+  }
   'monitoreos.index': {
     methods: ["GET","HEAD"]
     pattern: '/monitoreos'
@@ -1279,6 +1471,30 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['show']>>>
     }
   }
+  'monitoreos.store': {
+    methods: ["POST"]
+    pattern: '/monitoreos'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/validators').monitoreoStoreValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/validators').monitoreoStoreValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'monitoreos.destroy': {
+    methods: ["DELETE"]
+    pattern: '/monitoreos/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/monitoreos_controller').default['destroy']>>>
+    }
+  }
   'analisis_ia.index': {
     methods: ["GET","HEAD"]
     pattern: '/analisis_ia'
@@ -1301,6 +1517,18 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['show']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['show']>>>
+    }
+  }
+  'analisis_ia.store': {
+    methods: ["POST"]
+    pattern: '/analisis_ia'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/validators').analisisIaStoreValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/validators').analisisIaStoreValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/analisis_ia_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'recomendaciones.index': {
@@ -1375,30 +1603,6 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/aplicaciones_tratamientos_controller').default['show']>>>
     }
   }
-  'recomendacion_tratamientos.index': {
-    methods: ["GET","HEAD"]
-    pattern: '/recomendacion_tratamientos'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['index']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['index']>>>
-    }
-  }
-  'recomendacion_tratamientos.show': {
-    methods: ["GET","HEAD"]
-    pattern: '/recomendacion_tratamientos/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['show']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recomendacion_tratamientos_controller').default['show']>>>
-    }
-  }
   'imagenes.index': {
     methods: ["GET","HEAD"]
     pattern: '/imagenes'
@@ -1433,6 +1637,54 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/imagenes_controller').default['store']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/imagenes_controller').default['store']>>>
+    }
+  }
+  'notificaciones.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/notificaciones'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/notificaciones_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/notificaciones_controller').default['index']>>>
+    }
+  }
+  'notificaciones.marcar_leida': {
+    methods: ["PUT"]
+    pattern: '/notificaciones/:id/leer'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/notificaciones_controller').default['marcarLeida']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/notificaciones_controller').default['marcarLeida']>>>
+    }
+  }
+  'notificaciones.marcar_todas_leidas': {
+    methods: ["PUT"]
+    pattern: '/notificaciones/leer-todas'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/notificaciones_controller').default['marcarTodasLeidas']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/notificaciones_controller').default['marcarTodasLeidas']>>>
+    }
+  }
+  'notificaciones.destroy': {
+    methods: ["DELETE"]
+    pattern: '/notificaciones/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/notificaciones_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/notificaciones_controller').default['destroy']>>>
     }
   }
   'experto.dashboard': {
@@ -1481,6 +1733,18 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['monitoreos']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['monitoreos']>>>
+    }
+  }
+  'experto.analisis_ia': {
+    methods: ["GET","HEAD"]
+    pattern: '/experto/analisis_ia'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['analisis_ia']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['analisis_ia']>>>
     }
   }
   'experto.crear_monitoreo': {
@@ -1577,18 +1841,6 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['crearAplicacionTratamiento']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['crearAplicacionTratamiento']>>>
-    }
-  }
-  'experto.crear_recomendacion_tratamiento': {
-    methods: ["POST"]
-    pattern: '/experto/recomendacion_tratamientos'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['crearRecomendacionTratamiento']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/experto_controller').default['crearRecomendacionTratamiento']>>>
     }
   }
   'caficultor.dashboard': {

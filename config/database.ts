@@ -14,6 +14,12 @@ const databaseConfig = defineConfig({
         password: env.get('DB_PASSWORD'),
         database: env.get('DB_DATABASE'),
       },
+      pool: {
+        min: 2,
+        max: 10,
+        acquireTimeoutMillis: 60000,
+        idleTimeoutMillis: 30000,
+      },
     },
   },
 })

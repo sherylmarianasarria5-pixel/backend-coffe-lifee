@@ -50,6 +50,7 @@ export default class AuthController {
           apellido: usuario.apellido,
           correo: usuario.correo,
           fotoPerfil: usuario.fotoPerfil,
+          genero: usuario.genero,
           rol: usuario.rol.nombreRol,
         },
       })
@@ -71,8 +72,8 @@ export default class AuthController {
    */
   async register({ request, response }: HttpContext) {
     try {
-      const { nombre, apellido, correo, password, telefono, idRol } = request.only([
-        'nombre', 'apellido', 'correo', 'password', 'telefono', 'idRol',
+      const { nombre, apellido, correo, password, telefono, idRol, genero } = request.only([
+        'nombre', 'apellido', 'correo', 'password', 'telefono', 'idRol', 'genero',
       ])
 
       if (!nombre) return response.badRequest({ message: 'El nombre es obligatorio' })
@@ -90,6 +91,7 @@ export default class AuthController {
         apellido,
         correo,
         telefono: telefono ?? null,
+        genero: genero ?? null,
         passwordHash: password,
         activo: true,
       })

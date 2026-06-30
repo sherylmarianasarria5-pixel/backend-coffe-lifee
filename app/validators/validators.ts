@@ -83,6 +83,7 @@ export const cultivoStoreValidator = vine.compile(
     nombre_cultivo: vine.string().trim().minLength(2).maxLength(255),
     tipo_cultivo: vine.string().trim().minLength(2).maxLength(255),
     id_estado_cultivo: vine.number().optional(),
+    numero_arboles: vine.number().optional(),
   })
 )
 
@@ -91,6 +92,7 @@ export const cultivoUpdateValidator = vine.compile(
     nombre_cultivo: vine.string().trim().minLength(2).optional(),
     tipo_cultivo: vine.string().trim().optional(),
     id_estado_cultivo: vine.number().optional(),
+    numero_arboles: vine.number().optional(),
   })
 )
 

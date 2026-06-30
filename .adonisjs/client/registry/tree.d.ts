@@ -70,8 +70,31 @@ export interface ApiDefinition {
     update: typeof routes['categorias.update']
     destroy: typeof routes['categorias.destroy']
   }
+  catTiposInsumos: {
+    index: typeof routes['cat_tipos_insumos.index']
+    show: typeof routes['cat_tipos_insumos.show']
+    store: typeof routes['cat_tipos_insumos.store']
+    update: typeof routes['cat_tipos_insumos.update']
+    destroy: typeof routes['cat_tipos_insumos.destroy']
+  }
+  insumos: {
+    index: typeof routes['insumos.index']
+    show: typeof routes['insumos.show']
+    store: typeof routes['insumos.store']
+    update: typeof routes['insumos.update']
+    destroy: typeof routes['insumos.destroy']
+  }
   dashboard: {
     index: typeof routes['dashboard.index']
+    monitoreosPorEstado: typeof routes['dashboard.monitoreos_por_estado']
+    tendenciaRoya: typeof routes['dashboard.tendencia_roya']
+    actividadReciente: typeof routes['dashboard.actividad_reciente']
+    monitoreosRecientes: typeof routes['dashboard.monitoreos_recientes']
+    topFincasRoya: typeof routes['dashboard.top_fincas_roya']
+    proximosMonitoreos: typeof routes['dashboard.proximos_monitoreos']
+    mapaFincas: typeof routes['dashboard.mapa_fincas']
+    impactoSistema: typeof routes['dashboard.impacto_sistema']
+    debugMonitoreo: typeof routes['dashboard.debug_monitoreo']
   }
   usuarios: {
     index: typeof routes['usuarios.index']
@@ -109,18 +132,19 @@ export interface ApiDefinition {
     destroy: typeof routes['cafeteros.destroy']
   }
   monitoreos: {
-    store: typeof routes['monitoreos.store']
     update: typeof routes['monitoreos.update']
-    destroy: typeof routes['monitoreos.destroy']
     index: typeof routes['monitoreos.index']
     show: typeof routes['monitoreos.show']
+    store: typeof routes['monitoreos.store']
+    destroy: typeof routes['monitoreos.destroy']
   }
   analisisIa: {
-    store: typeof routes['analisis_ia.store']
     update: typeof routes['analisis_ia.update']
     destroy: typeof routes['analisis_ia.destroy']
+    predict: typeof routes['analisis_ia.predict']
     index: typeof routes['analisis_ia.index']
     show: typeof routes['analisis_ia.show']
+    store: typeof routes['analisis_ia.store']
   }
   recomendaciones: {
     store: typeof routes['recomendaciones.store']
@@ -143,13 +167,6 @@ export interface ApiDefinition {
     index: typeof routes['aplicaciones_tratamientos.index']
     show: typeof routes['aplicaciones_tratamientos.show']
   }
-  recomendacionTratamientos: {
-    store: typeof routes['recomendacion_tratamientos.store']
-    update: typeof routes['recomendacion_tratamientos.update']
-    destroy: typeof routes['recomendacion_tratamientos.destroy']
-    index: typeof routes['recomendacion_tratamientos.index']
-    show: typeof routes['recomendacion_tratamientos.show']
-  }
   imagenes: {
     update: typeof routes['imagenes.update']
     destroy: typeof routes['imagenes.destroy']
@@ -163,6 +180,7 @@ export interface ApiDefinition {
     show: typeof routes['fincas.show']
     update: typeof routes['fincas.update']
     destroy: typeof routes['fincas.destroy']
+    uploadPhoto: typeof routes['fincas.upload_photo']
   }
   cultivos: {
     index: typeof routes['cultivos.index']
@@ -170,12 +188,20 @@ export interface ApiDefinition {
     show: typeof routes['cultivos.show']
     update: typeof routes['cultivos.update']
     destroy: typeof routes['cultivos.destroy']
+    uploadPhoto: typeof routes['cultivos.upload_photo']
+  }
+  notificaciones: {
+    index: typeof routes['notificaciones.index']
+    marcarLeida: typeof routes['notificaciones.marcar_leida']
+    marcarTodasLeidas: typeof routes['notificaciones.marcar_todas_leidas']
+    destroy: typeof routes['notificaciones.destroy']
   }
   experto: {
     dashboard: typeof routes['experto.dashboard']
     fincas: typeof routes['experto.fincas']
     cultivos: typeof routes['experto.cultivos']
     monitoreos: typeof routes['experto.monitoreos']
+    analisisIa: typeof routes['experto.analisis_ia']
     crearMonitoreo: typeof routes['experto.crear_monitoreo']
     actualizarMonitoreo: typeof routes['experto.actualizar_monitoreo']
     recomendaciones: typeof routes['experto.recomendaciones']
@@ -184,7 +210,6 @@ export interface ApiDefinition {
     tratamientos: typeof routes['experto.tratamientos']
     aplicacionesTratamiento: typeof routes['experto.aplicaciones_tratamiento']
     crearAplicacionTratamiento: typeof routes['experto.crear_aplicacion_tratamiento']
-    crearRecomendacionTratamiento: typeof routes['experto.crear_recomendacion_tratamiento']
   }
   caficultor: {
     dashboard: typeof routes['caficultor.dashboard']

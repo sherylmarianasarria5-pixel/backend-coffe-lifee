@@ -2,10 +2,11 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Monitoreo from '#models/monitoreo'
 import Usuario from '#models/usuario'
 import { monitoreoStoreValidator, monitoreoUpdateValidator } from '#validators/validators'
+
 import { DateTime } from 'luxon'
 
 function serializar(m: Monitoreo) {
-  const exp = m.experto
+  const exp = m.usuario
   const imagenes = m.imagenes ? m.imagenes.map((img: any) => ({
     idImagen: img.idImagen,
     rutaImagen: img.rutaImagen,
@@ -36,7 +37,7 @@ function serializar(m: Monitoreo) {
       tipo: r.tipo ? { nombre: r.tipo.nombreTipo || r.tipo.nombre } : null,
       tratamientos: r.tratamientos ? r.tratamientos.map(() => ({})) : [],
     })) : [],
-    experto: exp ? {
+    usuario: exp ? {
       idUsuario: exp.idUsuario,
       nombre:    exp.nombre,
       apellido:  exp.apellido,
@@ -78,12 +79,17 @@ export default class MonitoreosController {
     try {
       const page      = Number(request.input('page', 1))
       const limit     = Number(request.input('limit', 10))
+      const search    = request.input('search', '')
       const idCultivo = request.input('id_cultivo')
       const idExperto = request.input('id_experto')
+      const ALLOWED = ['id_monitoreo', 'fecha_monitoreo', 'observaciones', 'fecha_registro', 'fecha_actualizacion', 'id_cultivo', 'id_usuario']
+      const orderBy = request.input('order_by', 'id_monitoreo')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_monitoreo'
 
       const query = Monitoreo.query()
         .preload('cultivo')
-        .preload('experto')
+        .preload('usuario')
         .preload('imagenes', (q) => {
           q.preload('analisis', (a) => {
             a.preload('estadoAnalisis')
@@ -92,12 +98,18 @@ export default class MonitoreosController {
         })
         .preload('recomendaciones', (r) => {
           r.preload('tipo')
-          r.preload('tratamientos')
+           r.preload('tratamiento')
         })
-        .orderBy('fecha_monitoreo', 'desc')
 
+      if (search) {
+        query.where((q) => {
+          q.whereILike('observaciones', `%${search}%`)
+        })
+      }
       if (idCultivo) query.where('id_cultivo', idCultivo)
-      if (idExperto) query.where('id_experto', idExperto)
+      if (idExperto) query.where('id_usuario', idExperto)
+
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
 
       const paginado = await query.paginate(page, limit)
       const json = paginado.toJSON()
@@ -145,36 +157,79 @@ export default class MonitoreosController {
   async store({ request, response }: HttpContext) {
     try {
       const jwt       = (request as any).usuarioJwt
-      const idExperto = jwt?.id as number | undefined
+      const idUsuario = jwt?.id as number | undefined
 
-      if (!idExperto) {
+      if (!idUsuario) {
         return response.unauthorized({ 
           message: 'Token inválido: no se encontró el id del usuario' 
         })
       }
 
-      const experto = await Usuario.query()
-        .where('id_usuario', idExperto)
-        .whereHas('rol', (q: any) =>
-          q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['experto'])
-        )
-        .preload('rol')
+      const usuario = await Usuario.query()
+        .where('id_usuario', idUsuario)
         .first()
 
-      if (!experto) {
+      if (!usuario) {
         return response.forbidden({ 
-          message: 'Solo los expertos pueden registrar monitoreos' 
+          message: 'Usuario no encontrado' 
         })
       }
 
       const data = await request.validateUsing(monitoreoStoreValidator)
+      const fechaMonitoreo = DateTime.fromISO(data.fecha_monitoreo)
+
+      // ── Regla: 1 monitoreo por día por cultivo ──
+      const existente = await Monitoreo.query()
+        .where('id_cultivo', data.id_cultivo)
+        .where('fecha_monitoreo', fechaMonitoreo.toSQLDate()!)
+        .first()
+
+      if (existente) {
+        return response.conflict({
+          message: 'Ya existe un monitoreo para este cultivo en esta fecha. Si necesitas corregir algo, edita el monitoreo existente en lugar de crear uno nuevo.',
+          data: {
+            idMonitoreo:    existente.idMonitoreo,
+            idCultivo:      existente.idCultivo,
+            fechaMonitoreo: existente.fechaMonitoreo,
+            observaciones:  existente.observaciones,
+          },
+        })
+      }
+      // ───────────────────────────────────────────────────────────────
 
       const monitoreo = await Monitoreo.create({
         idCultivo:      data.id_cultivo,
-        idExperto:      idExperto,
-        fechaMonitoreo: DateTime.fromISO(data.fecha_monitoreo),
+        idUsuario:      idUsuario,
+        fechaMonitoreo: fechaMonitoreo,
         observaciones:  data.observaciones ?? null,
       })
+
+      // ── Notificar al admin sobre nuevo monitoreo ──
+      try {
+        const { crearNotificacion } = await import('#services/notificacion_service')
+        const { default: Usuario }  = await import('#models/usuario')
+        const { default: Cultivo }  = await import('#models/cultivo')
+
+        const cultivo = await Cultivo.query()
+          .where('id_cultivo', monitoreo.idCultivo!)
+          .preload('finca')
+          .first()
+
+        const admins = await Usuario.query().where('id_rol', 2).where('activo', true)
+        for (const admin of admins) {
+          await crearNotificacion({
+            idUsuario:       admin.idUsuario,
+            tipo:            'monitoreo_nuevo',
+            titulo:          'Nuevo monitoreo registrado',
+            mensaje:         `Se registró un nuevo monitoreo en ${(cultivo as any)?.finca?.nombreFinca ?? 'una finca'} - ${cultivo?.nombreCultivo ?? ''}.`,
+            idReferencia:    monitoreo.idMonitoreo,
+            tablaReferencia: 'monitoreos',
+          })
+        }
+      } catch (e) {
+        console.error('Error al notificar nuevo monitoreo:', e)
+      }
+      // ─────────────────────────────────────────────
 
       return response.created({
         message: 'Monitoreo creado correctamente',
@@ -183,12 +238,12 @@ export default class MonitoreosController {
           idCultivo:      monitoreo.idCultivo,
           fechaMonitoreo: monitoreo.fechaMonitoreo,
           observaciones:  monitoreo.observaciones,
-          experto: {
-            idUsuario: experto.idUsuario,
-            nombre:    experto.nombre,
-            apellido:  experto.apellido,
-            correo:    experto.correo,
-            telefono:  experto.telefono,
+          usuario: {
+            idUsuario: usuario.idUsuario,
+            nombre:    usuario.nombre,
+            apellido:  usuario.apellido,
+            correo:    usuario.correo,
+            telefono:  usuario.telefono,
           }
         },
       })
@@ -232,7 +287,7 @@ export default class MonitoreosController {
       const monitoreo = await Monitoreo.query()
         .where('id_monitoreo', params.id)
         .preload('cultivo')
-        .preload('experto')
+        .preload('usuario')
         .preload('imagenes')
         .preload('analisisIas')
         .firstOrFail()
@@ -246,7 +301,7 @@ export default class MonitoreosController {
   /**
    * @update
    * @summary Actualizar un monitoreo
-   * @description Actualiza la fecha o las observaciones de un monitoreo existente
+   * @description Actualiza solo las observaciones de un monitoreo. La fecha del monitoreo es inmutable.
    * @paramPath id - ID del monitoreo - @type(number) @required
    * @requestBody {
    *   "fecha_monitoreo": "2026-05-27",
@@ -263,8 +318,7 @@ export default class MonitoreosController {
       const data      = await request.validateUsing(monitoreoUpdateValidator)
 
       const payload: Record<string, any> = {}
-      if (data.observaciones   !== undefined) payload.observaciones  = data.observaciones
-      if (data.fecha_monitoreo !== undefined) payload.fechaMonitoreo = DateTime.fromISO(data.fecha_monitoreo)
+      if (data.observaciones !== undefined) payload.observaciones = data.observaciones
 
       monitoreo.merge(payload)
       await monitoreo.save()
@@ -296,9 +350,27 @@ export default class MonitoreosController {
    * @responseBody 404 - {"message": "Monitoreo no encontrado"}
    * @responseBody 500 - {"message": "Error al eliminar monitoreo", "error": "string"}
    */
-  async destroy({ params, response }: HttpContext) {
+  async destroy({ params, request, response }: HttpContext) {
     try {
       const monitoreo = await Monitoreo.findOrFail(params.id)
+
+      const jwt = (request as any).usuarioJwt
+      const idUsuarioJwt = jwt?.id
+      const nombreRol: string = (
+        jwt?.rol?.nombreRol ??
+        jwt?.rol?.nombre_rol ??
+        ''
+      ).toLowerCase().trim()
+
+      const esAdmin = nombreRol === 'admin'
+      const esDueño = monitoreo.idUsuario === idUsuarioJwt
+
+      if (!esAdmin && !esDueño) {
+        return response.forbidden({ 
+          message: 'No tienes permiso para eliminar este monitoreo' 
+        })
+      }
+
       await monitoreo.delete()
       return response.ok({ message: 'Monitoreo eliminado correctamente' })
     } catch (error: any) {

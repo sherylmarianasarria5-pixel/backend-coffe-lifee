@@ -150,11 +150,89 @@ const routes = {
     tokens: [{"old":"/categorias/:id","type":0,"val":"categorias","end":""},{"old":"/categorias/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['categorias.show']['types'],
   },
+  'cat_tipos_insumos.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/cat_tipos_insumos',
+    tokens: [{"old":"/cat_tipos_insumos","type":0,"val":"cat_tipos_insumos","end":""}],
+    types: placeholder as Registry['cat_tipos_insumos.index']['types'],
+  },
+  'cat_tipos_insumos.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/cat_tipos_insumos/:id',
+    tokens: [{"old":"/cat_tipos_insumos/:id","type":0,"val":"cat_tipos_insumos","end":""},{"old":"/cat_tipos_insumos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['cat_tipos_insumos.show']['types'],
+  },
+  'insumos.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/insumos',
+    tokens: [{"old":"/insumos","type":0,"val":"insumos","end":""}],
+    types: placeholder as Registry['insumos.index']['types'],
+  },
+  'insumos.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/insumos/:id',
+    tokens: [{"old":"/insumos/:id","type":0,"val":"insumos","end":""},{"old":"/insumos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['insumos.show']['types'],
+  },
   'dashboard.index': {
     methods: ["GET","HEAD"],
     pattern: '/dashboard',
     tokens: [{"old":"/dashboard","type":0,"val":"dashboard","end":""}],
     types: placeholder as Registry['dashboard.index']['types'],
+  },
+  'dashboard.monitoreos_por_estado': {
+    methods: ["GET","HEAD"],
+    pattern: '/dashboard/monitoreos-por-estado',
+    tokens: [{"old":"/dashboard/monitoreos-por-estado","type":0,"val":"dashboard","end":""},{"old":"/dashboard/monitoreos-por-estado","type":0,"val":"monitoreos-por-estado","end":""}],
+    types: placeholder as Registry['dashboard.monitoreos_por_estado']['types'],
+  },
+  'dashboard.tendencia_roya': {
+    methods: ["GET","HEAD"],
+    pattern: '/dashboard/tendencia-roya',
+    tokens: [{"old":"/dashboard/tendencia-roya","type":0,"val":"dashboard","end":""},{"old":"/dashboard/tendencia-roya","type":0,"val":"tendencia-roya","end":""}],
+    types: placeholder as Registry['dashboard.tendencia_roya']['types'],
+  },
+  'dashboard.actividad_reciente': {
+    methods: ["GET","HEAD"],
+    pattern: '/dashboard/actividad-reciente',
+    tokens: [{"old":"/dashboard/actividad-reciente","type":0,"val":"dashboard","end":""},{"old":"/dashboard/actividad-reciente","type":0,"val":"actividad-reciente","end":""}],
+    types: placeholder as Registry['dashboard.actividad_reciente']['types'],
+  },
+  'dashboard.monitoreos_recientes': {
+    methods: ["GET","HEAD"],
+    pattern: '/dashboard/monitoreos-recientes',
+    tokens: [{"old":"/dashboard/monitoreos-recientes","type":0,"val":"dashboard","end":""},{"old":"/dashboard/monitoreos-recientes","type":0,"val":"monitoreos-recientes","end":""}],
+    types: placeholder as Registry['dashboard.monitoreos_recientes']['types'],
+  },
+  'dashboard.top_fincas_roya': {
+    methods: ["GET","HEAD"],
+    pattern: '/dashboard/top-fincas-roya',
+    tokens: [{"old":"/dashboard/top-fincas-roya","type":0,"val":"dashboard","end":""},{"old":"/dashboard/top-fincas-roya","type":0,"val":"top-fincas-roya","end":""}],
+    types: placeholder as Registry['dashboard.top_fincas_roya']['types'],
+  },
+  'dashboard.proximos_monitoreos': {
+    methods: ["GET","HEAD"],
+    pattern: '/dashboard/proximos-monitoreos',
+    tokens: [{"old":"/dashboard/proximos-monitoreos","type":0,"val":"dashboard","end":""},{"old":"/dashboard/proximos-monitoreos","type":0,"val":"proximos-monitoreos","end":""}],
+    types: placeholder as Registry['dashboard.proximos_monitoreos']['types'],
+  },
+  'dashboard.mapa_fincas': {
+    methods: ["GET","HEAD"],
+    pattern: '/dashboard/mapa-fincas',
+    tokens: [{"old":"/dashboard/mapa-fincas","type":0,"val":"dashboard","end":""},{"old":"/dashboard/mapa-fincas","type":0,"val":"mapa-fincas","end":""}],
+    types: placeholder as Registry['dashboard.mapa_fincas']['types'],
+  },
+  'dashboard.impacto_sistema': {
+    methods: ["GET","HEAD"],
+    pattern: '/dashboard/impacto',
+    tokens: [{"old":"/dashboard/impacto","type":0,"val":"dashboard","end":""},{"old":"/dashboard/impacto","type":0,"val":"impacto","end":""}],
+    types: placeholder as Registry['dashboard.impacto_sistema']['types'],
+  },
+  'dashboard.debug_monitoreo': {
+    methods: ["GET","HEAD"],
+    pattern: '/dashboard/debug-monitoreo/:id',
+    tokens: [{"old":"/dashboard/debug-monitoreo/:id","type":0,"val":"dashboard","end":""},{"old":"/dashboard/debug-monitoreo/:id","type":0,"val":"debug-monitoreo","end":""},{"old":"/dashboard/debug-monitoreo/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['dashboard.debug_monitoreo']['types'],
   },
   'usuarios.index': {
     methods: ["GET","HEAD"],
@@ -432,29 +510,11 @@ const routes = {
     tokens: [{"old":"/cafeteros/:id","type":0,"val":"cafeteros","end":""},{"old":"/cafeteros/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['cafeteros.show']['types'],
   },
-  'monitoreos.store': {
-    methods: ["POST"],
-    pattern: '/monitoreos',
-    tokens: [{"old":"/monitoreos","type":0,"val":"monitoreos","end":""}],
-    types: placeholder as Registry['monitoreos.store']['types'],
-  },
   'monitoreos.update': {
     methods: ["PUT"],
     pattern: '/monitoreos/:id',
     tokens: [{"old":"/monitoreos/:id","type":0,"val":"monitoreos","end":""},{"old":"/monitoreos/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['monitoreos.update']['types'],
-  },
-  'monitoreos.destroy': {
-    methods: ["DELETE"],
-    pattern: '/monitoreos/:id',
-    tokens: [{"old":"/monitoreos/:id","type":0,"val":"monitoreos","end":""},{"old":"/monitoreos/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['monitoreos.destroy']['types'],
-  },
-  'analisis_ia.store': {
-    methods: ["POST"],
-    pattern: '/analisis_ia',
-    tokens: [{"old":"/analisis_ia","type":0,"val":"analisis_ia","end":""}],
-    types: placeholder as Registry['analisis_ia.store']['types'],
   },
   'analisis_ia.update': {
     methods: ["PUT"],
@@ -467,6 +527,12 @@ const routes = {
     pattern: '/analisis_ia/:id',
     tokens: [{"old":"/analisis_ia/:id","type":0,"val":"analisis_ia","end":""},{"old":"/analisis_ia/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['analisis_ia.destroy']['types'],
+  },
+  'analisis_ia.predict': {
+    methods: ["POST"],
+    pattern: '/analisis_ia/predict',
+    tokens: [{"old":"/analisis_ia/predict","type":0,"val":"analisis_ia","end":""},{"old":"/analisis_ia/predict","type":0,"val":"predict","end":""}],
+    types: placeholder as Registry['analisis_ia.predict']['types'],
   },
   'recomendaciones.store': {
     methods: ["POST"],
@@ -522,24 +588,6 @@ const routes = {
     tokens: [{"old":"/aplicaciones_tratamientos/:id","type":0,"val":"aplicaciones_tratamientos","end":""},{"old":"/aplicaciones_tratamientos/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['aplicaciones_tratamientos.destroy']['types'],
   },
-  'recomendacion_tratamientos.store': {
-    methods: ["POST"],
-    pattern: '/recomendacion_tratamientos',
-    tokens: [{"old":"/recomendacion_tratamientos","type":0,"val":"recomendacion_tratamientos","end":""}],
-    types: placeholder as Registry['recomendacion_tratamientos.store']['types'],
-  },
-  'recomendacion_tratamientos.update': {
-    methods: ["PUT"],
-    pattern: '/recomendacion_tratamientos/:id',
-    tokens: [{"old":"/recomendacion_tratamientos/:id","type":0,"val":"recomendacion_tratamientos","end":""},{"old":"/recomendacion_tratamientos/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['recomendacion_tratamientos.update']['types'],
-  },
-  'recomendacion_tratamientos.destroy': {
-    methods: ["DELETE"],
-    pattern: '/recomendacion_tratamientos/:id',
-    tokens: [{"old":"/recomendacion_tratamientos/:id","type":0,"val":"recomendacion_tratamientos","end":""},{"old":"/recomendacion_tratamientos/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['recomendacion_tratamientos.destroy']['types'],
-  },
   'imagenes.update': {
     methods: ["PUT"],
     pattern: '/imagenes/:id',
@@ -551,6 +599,42 @@ const routes = {
     pattern: '/imagenes/:id',
     tokens: [{"old":"/imagenes/:id","type":0,"val":"imagenes","end":""},{"old":"/imagenes/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['imagenes.destroy']['types'],
+  },
+  'insumos.store': {
+    methods: ["POST"],
+    pattern: '/insumos',
+    tokens: [{"old":"/insumos","type":0,"val":"insumos","end":""}],
+    types: placeholder as Registry['insumos.store']['types'],
+  },
+  'insumos.update': {
+    methods: ["PUT"],
+    pattern: '/insumos/:id',
+    tokens: [{"old":"/insumos/:id","type":0,"val":"insumos","end":""},{"old":"/insumos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['insumos.update']['types'],
+  },
+  'insumos.destroy': {
+    methods: ["DELETE"],
+    pattern: '/insumos/:id',
+    tokens: [{"old":"/insumos/:id","type":0,"val":"insumos","end":""},{"old":"/insumos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['insumos.destroy']['types'],
+  },
+  'cat_tipos_insumos.store': {
+    methods: ["POST"],
+    pattern: '/cat_tipos_insumos',
+    tokens: [{"old":"/cat_tipos_insumos","type":0,"val":"cat_tipos_insumos","end":""}],
+    types: placeholder as Registry['cat_tipos_insumos.store']['types'],
+  },
+  'cat_tipos_insumos.update': {
+    methods: ["PUT"],
+    pattern: '/cat_tipos_insumos/:id',
+    tokens: [{"old":"/cat_tipos_insumos/:id","type":0,"val":"cat_tipos_insumos","end":""},{"old":"/cat_tipos_insumos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['cat_tipos_insumos.update']['types'],
+  },
+  'cat_tipos_insumos.destroy': {
+    methods: ["DELETE"],
+    pattern: '/cat_tipos_insumos/:id',
+    tokens: [{"old":"/cat_tipos_insumos/:id","type":0,"val":"cat_tipos_insumos","end":""},{"old":"/cat_tipos_insumos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['cat_tipos_insumos.destroy']['types'],
   },
   'cafeteros.store': {
     methods: ["POST"],
@@ -600,6 +684,12 @@ const routes = {
     tokens: [{"old":"/fincas/:id","type":0,"val":"fincas","end":""},{"old":"/fincas/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['fincas.destroy']['types'],
   },
+  'fincas.upload_photo': {
+    methods: ["POST"],
+    pattern: '/fincas/:id/foto',
+    tokens: [{"old":"/fincas/:id/foto","type":0,"val":"fincas","end":""},{"old":"/fincas/:id/foto","type":1,"val":"id","end":""},{"old":"/fincas/:id/foto","type":0,"val":"foto","end":""}],
+    types: placeholder as Registry['fincas.upload_photo']['types'],
+  },
   'cultivos.index': {
     methods: ["GET","HEAD"],
     pattern: '/cultivos',
@@ -630,6 +720,12 @@ const routes = {
     tokens: [{"old":"/cultivos/:id","type":0,"val":"cultivos","end":""},{"old":"/cultivos/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['cultivos.destroy']['types'],
   },
+  'cultivos.upload_photo': {
+    methods: ["POST"],
+    pattern: '/cultivos/:id/foto',
+    tokens: [{"old":"/cultivos/:id/foto","type":0,"val":"cultivos","end":""},{"old":"/cultivos/:id/foto","type":1,"val":"id","end":""},{"old":"/cultivos/:id/foto","type":0,"val":"foto","end":""}],
+    types: placeholder as Registry['cultivos.upload_photo']['types'],
+  },
   'monitoreos.index': {
     methods: ["GET","HEAD"],
     pattern: '/monitoreos',
@@ -642,6 +738,18 @@ const routes = {
     tokens: [{"old":"/monitoreos/:id","type":0,"val":"monitoreos","end":""},{"old":"/monitoreos/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['monitoreos.show']['types'],
   },
+  'monitoreos.store': {
+    methods: ["POST"],
+    pattern: '/monitoreos',
+    tokens: [{"old":"/monitoreos","type":0,"val":"monitoreos","end":""}],
+    types: placeholder as Registry['monitoreos.store']['types'],
+  },
+  'monitoreos.destroy': {
+    methods: ["DELETE"],
+    pattern: '/monitoreos/:id',
+    tokens: [{"old":"/monitoreos/:id","type":0,"val":"monitoreos","end":""},{"old":"/monitoreos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['monitoreos.destroy']['types'],
+  },
   'analisis_ia.index': {
     methods: ["GET","HEAD"],
     pattern: '/analisis_ia',
@@ -653,6 +761,12 @@ const routes = {
     pattern: '/analisis_ia/:id',
     tokens: [{"old":"/analisis_ia/:id","type":0,"val":"analisis_ia","end":""},{"old":"/analisis_ia/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['analisis_ia.show']['types'],
+  },
+  'analisis_ia.store': {
+    methods: ["POST"],
+    pattern: '/analisis_ia',
+    tokens: [{"old":"/analisis_ia","type":0,"val":"analisis_ia","end":""}],
+    types: placeholder as Registry['analisis_ia.store']['types'],
   },
   'recomendaciones.index': {
     methods: ["GET","HEAD"],
@@ -690,18 +804,6 @@ const routes = {
     tokens: [{"old":"/aplicaciones_tratamientos/:id","type":0,"val":"aplicaciones_tratamientos","end":""},{"old":"/aplicaciones_tratamientos/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['aplicaciones_tratamientos.show']['types'],
   },
-  'recomendacion_tratamientos.index': {
-    methods: ["GET","HEAD"],
-    pattern: '/recomendacion_tratamientos',
-    tokens: [{"old":"/recomendacion_tratamientos","type":0,"val":"recomendacion_tratamientos","end":""}],
-    types: placeholder as Registry['recomendacion_tratamientos.index']['types'],
-  },
-  'recomendacion_tratamientos.show': {
-    methods: ["GET","HEAD"],
-    pattern: '/recomendacion_tratamientos/:id',
-    tokens: [{"old":"/recomendacion_tratamientos/:id","type":0,"val":"recomendacion_tratamientos","end":""},{"old":"/recomendacion_tratamientos/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['recomendacion_tratamientos.show']['types'],
-  },
   'imagenes.index': {
     methods: ["GET","HEAD"],
     pattern: '/imagenes',
@@ -719,6 +821,30 @@ const routes = {
     pattern: '/imagenes',
     tokens: [{"old":"/imagenes","type":0,"val":"imagenes","end":""}],
     types: placeholder as Registry['imagenes.store']['types'],
+  },
+  'notificaciones.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/notificaciones',
+    tokens: [{"old":"/notificaciones","type":0,"val":"notificaciones","end":""}],
+    types: placeholder as Registry['notificaciones.index']['types'],
+  },
+  'notificaciones.marcar_leida': {
+    methods: ["PUT"],
+    pattern: '/notificaciones/:id/leer',
+    tokens: [{"old":"/notificaciones/:id/leer","type":0,"val":"notificaciones","end":""},{"old":"/notificaciones/:id/leer","type":1,"val":"id","end":""},{"old":"/notificaciones/:id/leer","type":0,"val":"leer","end":""}],
+    types: placeholder as Registry['notificaciones.marcar_leida']['types'],
+  },
+  'notificaciones.marcar_todas_leidas': {
+    methods: ["PUT"],
+    pattern: '/notificaciones/leer-todas',
+    tokens: [{"old":"/notificaciones/leer-todas","type":0,"val":"notificaciones","end":""},{"old":"/notificaciones/leer-todas","type":0,"val":"leer-todas","end":""}],
+    types: placeholder as Registry['notificaciones.marcar_todas_leidas']['types'],
+  },
+  'notificaciones.destroy': {
+    methods: ["DELETE"],
+    pattern: '/notificaciones/:id',
+    tokens: [{"old":"/notificaciones/:id","type":0,"val":"notificaciones","end":""},{"old":"/notificaciones/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['notificaciones.destroy']['types'],
   },
   'experto.dashboard': {
     methods: ["GET","HEAD"],
@@ -743,6 +869,12 @@ const routes = {
     pattern: '/experto/monitoreos',
     tokens: [{"old":"/experto/monitoreos","type":0,"val":"experto","end":""},{"old":"/experto/monitoreos","type":0,"val":"monitoreos","end":""}],
     types: placeholder as Registry['experto.monitoreos']['types'],
+  },
+  'experto.analisis_ia': {
+    methods: ["GET","HEAD"],
+    pattern: '/experto/analisis_ia',
+    tokens: [{"old":"/experto/analisis_ia","type":0,"val":"experto","end":""},{"old":"/experto/analisis_ia","type":0,"val":"analisis_ia","end":""}],
+    types: placeholder as Registry['experto.analisis_ia']['types'],
   },
   'experto.crear_monitoreo': {
     methods: ["POST"],
@@ -791,12 +923,6 @@ const routes = {
     pattern: '/experto/aplicaciones_tratamiento',
     tokens: [{"old":"/experto/aplicaciones_tratamiento","type":0,"val":"experto","end":""},{"old":"/experto/aplicaciones_tratamiento","type":0,"val":"aplicaciones_tratamiento","end":""}],
     types: placeholder as Registry['experto.crear_aplicacion_tratamiento']['types'],
-  },
-  'experto.crear_recomendacion_tratamiento': {
-    methods: ["POST"],
-    pattern: '/experto/recomendacion_tratamientos',
-    tokens: [{"old":"/experto/recomendacion_tratamientos","type":0,"val":"experto","end":""},{"old":"/experto/recomendacion_tratamientos","type":0,"val":"recomendacion_tratamientos","end":""}],
-    types: placeholder as Registry['experto.crear_recomendacion_tratamiento']['types'],
   },
   'caficultor.dashboard': {
     methods: ["GET","HEAD"],

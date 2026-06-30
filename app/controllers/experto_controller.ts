@@ -2,11 +2,12 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Finca from '#models/finca'
 import Cultivo from '#models/cultivo'
 import Monitoreo from '#models/monitoreo'
+import AnalisisIa from '#models/analisis_ia'
 import Recomendacione from '#models/recomendacione'
 import AsignacionExperto from '#models/asignacion_experto'
 import AplicacionesTratamiento from '#models/aplicaciones_tratamiento'
-import RecomendacionTratamiento from '#models/recomendacion_tratamiento'
 import Tratamiento from '#models/tratamiento'
+
 
 export default class ExpertoController {
   // ─── Obtiene el id del usuario desde el JWT ────────────────────────────────
@@ -87,12 +88,29 @@ export default class ExpertoController {
    */
   async fincas({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
+    const search = request.input('search', '')
+    const ALLOWED = ['id_finca', 'nombre_finca', 'municipio', 'departamento', 'area_hectareas', 'altitud_msnm', 'latitud', 'longitud']
+    const orderBy = request.input('order_by', 'id_finca')
+    const orderDir = request.input('order_dir', 'desc')
+    const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_finca'
     const idFincas = await this.fincasAsignadas(idUsuario)
-    if (!idFincas.length) return response.ok([])
+    if (!idFincas.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
-    const fincas = await Finca.query().whereIn('id_finca', idFincas)
+    const query = Finca.query().whereIn('id_finca', idFincas)
 
-    return response.ok(fincas)
+    if (search) {
+      query.where((q) => {
+        q.whereILike('nombre_finca', `%${search}%`)
+         .orWhereILike('municipio', `%${search}%`)
+         .orWhereILike('departamento', `%${search}%`)
+      })
+    }
+
+    query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+    const fincas = await query.paginate(page, limit)
+    return response.ok(fincas.toJSON())
   }
 
   /**
@@ -104,15 +122,28 @@ export default class ExpertoController {
    */
   async cultivos({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
+    const search = request.input('search', '')
+    const idEstadoCultivo = request.input('id_estado_cultivo')
+    const ALLOWED = ['id_cultivo', 'nombre_cultivo', 'tipo_cultivo', 'created_at', 'updated_at', 'id_finca', 'id_estado']
+    const orderBy = request.input('order_by', 'id_cultivo')
+    const orderDir = request.input('order_dir', 'desc')
+    const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_cultivo'
     const idFincas = await this.fincasAsignadas(idUsuario)
-    if (!idFincas.length) return response.ok([])
+    if (!idFincas.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
-    const cultivos = await Cultivo.query()
+    const query = Cultivo.query()
       .whereIn('id_finca', idFincas)
       .preload('finca')
       .preload('estadoCultivo')
 
-    return response.ok(cultivos)
+    if (search)          query.whereILike('nombre_cultivo', `%${search}%`)
+    if (idEstadoCultivo) query.where('id_estado', idEstadoCultivo)
+
+    query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+    const cultivos = await query.paginate(page, limit)
+    return response.ok(cultivos.toJSON())
   }
 
   /**
@@ -124,15 +155,59 @@ export default class ExpertoController {
    */
   async monitoreos({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
+    const search = request.input('search', '')
+    const ALLOWED = ['id_monitoreo', 'fecha_monitoreo', 'observaciones', 'fecha_registro', 'fecha_actualizacion', 'id_cultivo', 'id_experto']
+    const orderBy = request.input('order_by', 'id_monitoreo')
+    const orderDir = request.input('order_dir', 'desc')
+    const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_monitoreo'
     const idCultivos = await this.cultivosDeExperto(idUsuario)
-    if (!idCultivos.length) return response.ok([])
+    if (!idCultivos.length) return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
 
-    const monitoreos = await Monitoreo.query()
+    const query = Monitoreo.query()
       .whereIn('id_cultivo', idCultivos)
       .preload('cultivo')
-      .orderBy('fecha_monitoreo', 'desc')
 
-    return response.ok(monitoreos)
+    if (search) {
+      query.where((q) => {
+        q.whereILike('observaciones', `%${search}%`)
+      })
+    }
+
+    query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+    const monitoreos = await query.paginate(page, limit)
+    return response.ok(monitoreos.toJSON())
+  }
+
+  /**
+   * @analisis_ia
+   * @summary Listar análisis de IA de mis fincas asignadas
+   * @description Retorna los análisis de IA de monitoreos en cultivos de las fincas asignadas al experto
+   * @responseBody 200 - [{ "idAnalisis": 1, "resultado": "Roya detectada", "porcentajeConfianza": "60.00" }]
+   * @responseBody 401 - { "message": "Token no proporcionado" }
+   */
+  async analisis_ia({ request, response }: HttpContext) {
+    const idUsuario = this.getIdUsuario(request)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
+
+    const idMonitoreos = await this.monitoreosDeExperto(idUsuario)
+    if (!idMonitoreos.length) {
+      return response.ok({ data: [], meta: { total: 0, perPage: limit, page, lastPage: 1 } })
+    }
+
+    const query = AnalisisIa.query()
+      .whereHas('imagen', (q) => {
+        q.whereIn('idMonitoreo', idMonitoreos)
+      })
+      .preload('imagen')
+      .preload('estadoAnalisis')
+      .preload('nivelRoya')
+
+    query.orderBy('idAnalisis', 'desc')
+    const analisis = await query.paginate(page, limit)
+    return response.ok(analisis.toJSON())
   }
 
   /**
@@ -155,7 +230,7 @@ export default class ExpertoController {
 
     const monitoreo = await Monitoreo.create({
       idCultivo: idCultivo,
-      idExperto: idUsuario,
+      idUsuario: idUsuario,
       observaciones: body.observaciones ?? null,
       fechaMonitoreo: body.fecha_monitoreo ?? body.fechaMonitoreo,
     })
@@ -199,14 +274,28 @@ export default class ExpertoController {
    */
   async recomendaciones({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
+    const search = request.input('search', '')
+    const ALLOWED = ['id_recomendacion', 'descripcion', 'fecha_limite', 'fecha_registro', 'fecha_actualizacion', 'id_monitoreo', 'id_experto_emisor', 'id_prioridad', 'id_tipo']
+    const orderBy = request.input('order_by', 'id_recomendacion')
+    const orderDir = request.input('order_dir', 'desc')
+    const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_recomendacion'
 
-    const recomendaciones = await Recomendacione.query()
+    const query = Recomendacione.query()
       .where('id_experto_emisor', idUsuario)
       .preload('monitoreo')
       .preload('tipo')
-      .orderBy('fecha_registro', 'desc')
 
-    return response.ok(recomendaciones)
+    if (search) {
+      query.where((q) => {
+        q.whereILike('descripcion', `%${search}%`)
+      })
+    }
+
+    query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+    const recomendaciones = await query.paginate(page, limit)
+    return response.ok(recomendaciones.toJSON())
   }
 
   /**
@@ -233,6 +322,7 @@ export default class ExpertoController {
       descripcion: body.descripcion,
       idTipo: body.id_tipo ?? body.idTipo ?? null,
       idPrioridad: body.id_prioridad ?? body.idPrioridad ?? null,
+      idTratamiento: body.id_tratamiento ?? body.idTratamiento ?? null,
       fechaLimite: body.fecha_limite ?? body.fechaLimite ?? null,
     })
 
@@ -269,26 +359,42 @@ export default class ExpertoController {
    * @aplicaciones_tratamiento
    * @summary Listar mis aplicaciones de tratamiento registradas
    * @description Retorna las aplicaciones de tratamiento registradas por este experto
-   * @responseBody 200 - [{ "idAplicacion": 1, "dosis": "50ml", "frecuencia": "semanal" }]
+   * @responseBody 200 - [{ "idAplicacion": 1, "fechaAplicacion": "2026-06-18", "observacion": "Aplicado" }]
    * @responseBody 401 - { "message": "Token no proporcionado" }
    */
   async aplicaciones_tratamiento({ request, response }: HttpContext) {
     const idUsuario = this.getIdUsuario(request)
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
+    const search = request.input('search', '')
+    const idTratamiento = request.input('id_tratamiento')
+    const ALLOWED = ['id_aplicacion', 'observacion', 'fecha_aplicacion', 'fecha_registro', 'fecha_actualizacion', 'id_tratamiento', 'id_usuario']
+    const orderBy = request.input('order_by', 'id_aplicacion')
+    const orderDir = request.input('order_dir', 'desc')
+    const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_aplicacion'
 
-    const aplicaciones = await AplicacionesTratamiento.query()
+    const query = AplicacionesTratamiento.query()
       .where('id_usuario', idUsuario)
       .preload('tratamiento')
-      .orderBy('fecha_registro', 'desc')
 
-    return response.ok(aplicaciones)
+    if (search) {
+      query.where((q) => {
+        q.whereILike('observacion', `%${search}%`)
+      })
+    }
+    if (idTratamiento) query.where('id_tratamiento', idTratamiento)
+
+    query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+    const aplicaciones = await query.paginate(page, limit)
+    return response.ok(aplicaciones.toJSON())
   }
 
   /**
    * @crearAplicacionTratamiento
    * @summary Registrar una aplicación de tratamiento
    * @description El experto registra una aplicación de tratamiento que realizó
-   * @requestBody { "id_tratamiento": 1, "dosis": "50ml", "frecuencia": "semanal", "observaciones": "Aplicado en zona norte" }
-   * @responseBody 201 - { "idAplicacion": 8, "dosis": "50ml" }
+   * @requestBody { "id_tratamiento": 1, "fecha_aplicacion": "2026-06-18", "observacion": "Aplicado en zona norte" }
+   * @responseBody 201 - { "idAplicacion": 8 }
    * @responseBody 401 - { "message": "Token no proporcionado" }
    */
   async crearAplicacionTratamiento({ request, response }: HttpContext) {
@@ -298,54 +404,11 @@ export default class ExpertoController {
     const aplicacion = await AplicacionesTratamiento.create({
       idUsuario: idUsuario,
       idTratamiento: body.id_tratamiento ?? body.idTratamiento,
-      dosis: body.dosis,
-      frecuencia: body.frecuencia ?? null,
-      observaciones: body.observaciones ?? null,
+      fechaAplicacion: body.fecha_aplicacion ?? body.fechaAplicacion,
+      observacion: body.observacion ?? null,
     })
 
     return response.created(aplicacion)
-  }
-
-  /**
-   * @crearRecomendacionTratamiento
-   * @summary Vincular una aplicación de tratamiento a una recomendación
-   * @description Asocia una aplicación registrada con una recomendación emitida por el experto
-   * @requestBody { "id_aplicacion": 8, "id_recomendacion": 5, "dosis_ajustada": "60ml", "notas": "Se ajustó por lluvia" }
-   * @responseBody 201 - { "idRecTratamiento": 3 }
-   * @responseBody 403 - { "message": "La aplicación no te pertenece" }
-   */
-  async crearRecomendacionTratamiento({ request, response }: HttpContext) {
-    const idUsuario = this.getIdUsuario(request)
-    const body = request.body()
-    const idAplicacion = body.id_aplicacion ?? body.idAplicacion
-    const idRecomendacion = body.id_recomendacion ?? body.idRecomendacion
-
-    const aplicacion = await AplicacionesTratamiento.query()
-      .where('id_aplicacion', idAplicacion)
-      .where('id_usuario', idUsuario)
-      .first()
-
-    if (!aplicacion) {
-      return response.forbidden({ message: 'La aplicación no te pertenece' })
-    }
-
-    const recomendacion = await Recomendacione.query()
-      .where('id_recomendacion', idRecomendacion)
-      .where('id_experto_emisor', idUsuario)
-      .first()
-
-    if (!recomendacion) {
-      return response.forbidden({ message: 'La recomendación no te pertenece' })
-    }
-
-    const vinculo = await RecomendacionTratamiento.create({
-      idAplicacion: idAplicacion,
-      idRecomendacion: idRecomendacion,
-      dosisAjustada: body.dosis_ajustada ?? body.dosisAjustada ?? null,
-      notas: body.notas ?? null,
-    })
-
-    return response.created(vinculo)
   }
 
   /**
@@ -355,11 +418,29 @@ export default class ExpertoController {
    * @responseBody 200 - [{ "idTratamiento": 1, "nombre": "Fungicida X", "descripcion": "..." }]
    * @responseBody 401 - { "message": "Token no proporcionado" }
    */
-  async tratamientos({ response }: HttpContext) {
-    const tratamientos = await Tratamiento.query()
-      .preload('tipoTratamiento')
-      .orderBy('nombre', 'asc')
+  async tratamientos({ request, response }: HttpContext) {
+    const page = Number(request.input('page', 1))
+    const limit = Number(request.input('limit', 10))
+    const search = request.input('search', '')
+    const idTipo = request.input('id_tipo')
+    const ALLOWED = ['id_tratamiento', 'nombre', 'fecha_registro', 'fecha_actualizacion']
+    const orderBy = request.input('order_by', 'id_tratamiento')
+    const orderDir = request.input('order_dir', 'desc')
+    const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_tratamiento'
 
-    return response.ok(tratamientos)
+    const query = Tratamiento.query()
+      .preload('tipoTratamiento')
+
+    if (search) {
+      query.where((q) => {
+        q.whereILike('nombre', `%${search}%`)
+         .orWhereILike('descripcion', `%${search}%`)
+      })
+    }
+    if (idTipo) query.where('id_tipo_tratamiento', idTipo)
+
+    query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
+    const tratamientos = await query.paginate(page, limit)
+    return response.ok(tratamientos.toJSON())
   }
 }

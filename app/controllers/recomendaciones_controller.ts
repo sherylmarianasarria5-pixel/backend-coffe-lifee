@@ -4,73 +4,52 @@ import Recomendacione from '#models/recomendacione'
 function serializar(r: Recomendacione) {
   const exp = r.experto
   return {
-    idRecomendacion: r.idRecomendacion,
-    idMonitoreo:     r.idMonitoreo,
-    descripcion:     r.descripcion,
-    fechaLimite:     r.fechaLimite,
-    idPrioridad:     r.idPrioridad,
-    fechaRegistro:   r.fechaRegistro,
-    experto: exp ? {
-      idUsuario: exp.idUsuario,
-      nombre:    exp.nombre,
-      apellido:  exp.apellido,
-      correo:    exp.correo,
-      telefono:  exp.telefono,
-    } : null,
-    monitoreo:    r.$preloaded.monitoreo    ? r.monitoreo    : undefined,
-    tipo:         r.$preloaded.tipo         ? r.tipo         : undefined,
-    tratamientos: r.$preloaded.tratamientos ? r.tratamientos : undefined,
+    id_recomendacion:  r.idRecomendacion,
+    id_monitoreo:      r.idMonitoreo,
+    descripcion:       r.descripcion,
+    id_experto_emisor: r.idExpertoEmisor,
+    experto:           exp ? `${exp.nombre} ${exp.apellido}` : null,
+    prioridad:         (r as any).prioridad?.nombre ?? null,
+    tratamiento:       (r as any).tratamiento?.nombre ?? null,
+    fecha_limite:      r.fechaLimite ? (r.fechaLimite as any).toISODate?.() ?? r.fechaLimite : null,
   }
 }
 
 export default class RecomendacionesController {
 
-  /**
-   * @index
-   * @summary Listar todas las recomendaciones
-   * @description Retorna lista paginada de recomendaciones con datos completos del experto emisor
-   * @paramQuery page - Número de página - @type(number)
-   * @paramQuery limit - Cantidad por página - @type(number)
-   * @paramQuery id_monitoreo - Filtrar por monitoreo - @type(number)
-   * @paramQuery id_experto_emisor - Filtrar por experto - @type(number)
-   * @paramQuery id_prioridad - Filtrar por prioridad - @type(number)
-   * @responseBody 200 - {
-   *   "data": [{
-   *     "idRecomendacion": 1,
-   *     "idMonitoreo": 2,
-   *     "descripcion": "Aplicar fungicida",
-   *     "fechaLimite": "2026-06-01",
-   *     "idPrioridad": 1,
-   *     "fechaRegistro": "2026-05-26T00:00:00.000Z",
-   *     "experto": {
-   *       "idUsuario": 5,
-   *       "nombre": "Juan",
-   *       "apellido": "Pérez",
-   *       "correo": "juan@gmail.com",
-   *       "telefono": "3001234567"
-   *     }
-   *   }]
-   * }
-   * @responseBody 500 - {"message": "Error al obtener recomendaciones", "error": "string"}
-   */
   async index({ request, response }: HttpContext) {
     try {
       const page        = Number(request.input('page', 1))
       const limit       = Number(request.input('limit', 10))
+      const search      = request.input('search', '')
       const idMonitoreo = request.input('id_monitoreo')
       const idExperto   = request.input('id_experto_emisor')
       const idPrioridad = request.input('id_prioridad')
+      const idTipo      = request.input('id_tipo')
+      const idTratamiento = request.input('id_tratamiento')
+      const ALLOWED = ['id_recomendacion', 'descripcion', 'fecha_limite', 'fecha_registro', 'fecha_actualizacion', 'id_monitoreo', 'id_experto_emisor', 'id_prioridad', 'id_tipo', 'id_tratamiento']
+      const orderBy = request.input('order_by', 'id_recomendacion')
+      const orderDir = request.input('order_dir', 'desc')
+      const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_recomendacion'
 
       const query = Recomendacione.query()
-        .preload('monitoreo')
         .preload('experto')
         .preload('tipo')
-        .preload('tratamientos')
-        .orderBy('fecha_registro', 'desc')
+        .preload('tratamiento')
+        .preload('prioridad')
 
-      if (idMonitoreo) query.where('id_monitoreo', idMonitoreo)
-      if (idExperto)   query.where('id_experto_emisor', idExperto)
-      if (idPrioridad) query.where('id_prioridad', idPrioridad)
+      if (search) {
+        query.where((q) => {
+          q.whereILike('descripcion', `%${search}%`)
+        })
+      }
+      if (idMonitoreo)   query.where('id_monitoreo', idMonitoreo)
+      if (idExperto)     query.where('id_experto_emisor', idExperto)
+      if (idPrioridad)   query.where('id_prioridad', idPrioridad)
+      if (idTipo)        query.where('id_tipo', idTipo)
+      if (idTratamiento) query.where('id_tratamiento', idTratamiento)
+
+      query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
 
       const paginado = await query.paginate(page, limit)
       const json = paginado.toJSON()
@@ -78,62 +57,32 @@ export default class RecomendacionesController {
 
       return response.ok(json)
     } catch (error: any) {
-      return response.internalServerError({ 
-        message: 'Error al obtener recomendaciones', 
-        error: error.message 
+      return response.internalServerError({
+        message: 'Error al obtener recomendaciones',
+        error: error.message
       })
     }
   }
 
-  /**
-   * @store
-   * @summary Crear una nueva recomendación
-   * @description El experto emisor se toma automáticamente del token JWT
-   * @requestBody {
-   *   "id_monitoreo": 2,
-   *   "id_tipo": 1,
-   *   "id_prioridad": 1,
-   *   "descripcion": "Aplicar fungicida en el lote norte",
-   *   "fecha_limite": "2026-06-01"
-   * }
-   * @responseBody 201 - {
-   *   "message": "Recomendación creada correctamente",
-   *   "data": {
-   *     "idRecomendacion": 1,
-   *     "idMonitoreo": 2,
-   *     "descripcion": "Aplicar fungicida en el lote norte",
-   *     "fechaLimite": "2026-06-01",
-   *     "experto": {
-   *       "idUsuario": 5,
-   *       "nombre": "Juan",
-   *       "apellido": "Pérez",
-   *       "correo": "juan@gmail.com",
-   *       "telefono": "3001234567"
-   *     }
-   *   }
-   * }
-   * @responseBody 400 - {"message": "El id_monitoreo es obligatorio"}
-   * @responseBody 400 - {"message": "La descripcion es obligatoria"}
-   * @responseBody 500 - {"message": "Error al crear recomendación", "error": "string"}
-   */
   async store({ request, response }: HttpContext) {
     try {
       const jwt          = (request as any).usuarioJwt
       const idExpertoJwt = jwt?.id as number | undefined
 
       const data = request.only([
-        'id_monitoreo', 
-        'id_tipo', 
-        'id_prioridad', 
-        'descripcion', 
+        'id_monitoreo',
+        'id_tipo',
+        'id_prioridad',
+        'id_tratamiento',
+        'descripcion',
         'fecha_limite'
       ])
 
-      if (!data.id_monitoreo) return response.badRequest({ 
-        message: 'El id_monitoreo es obligatorio' 
+      if (!data.id_monitoreo) return response.badRequest({
+        message: 'El id_monitoreo es obligatorio'
       })
-      if (!data.descripcion) return response.badRequest({ 
-        message: 'La descripcion es obligatoria' 
+      if (!data.descripcion) return response.badRequest({
+        message: 'La descripcion es obligatoria'
       })
 
       const recomendacion = await Recomendacione.create({
@@ -141,55 +90,65 @@ export default class RecomendacionesController {
         idExpertoEmisor: idExpertoJwt      ?? null,
         idTipo:          data.id_tipo      ?? null,
         idPrioridad:     data.id_prioridad ?? null,
+        idTratamiento:   data.id_tratamiento ?? null,
         descripcion:     data.descripcion,
         fechaLimite:     data.fecha_limite ?? null,
       })
 
-      await recomendacion.load('monitoreo')
       await recomendacion.load('experto')
       await recomendacion.load('tipo')
+      await recomendacion.load('tratamiento')
+      await recomendacion.load('prioridad')
+
+      // ── Notificar al caficultor dueño de la finca ──
+      try {
+        const { default: Monitoreo } = await import('#models/monitoreo')
+        const { default: Finca }     = await import('#models/finca')
+        const { crearNotificacion }  = await import('#services/notificacion_service')
+
+        const monitoreo = await Monitoreo.query()
+          .where('id_monitoreo', data.id_monitoreo)
+          .preload('cultivo')
+          .first()
+
+        if (monitoreo?.cultivo?.idFinca) {
+          const finca = await Finca.find(monitoreo.cultivo.idFinca)
+          if (finca?.idUsuario) {
+            await crearNotificacion({
+              idUsuario:       finca.idUsuario,
+              tipo:            'recomendacion_nueva',
+              titulo:          'Nueva recomendación del experto',
+              mensaje:         `El experto ha enviado una recomendación para tu finca: "${recomendacion.descripcion}"`,
+              idReferencia:    recomendacion.idRecomendacion,
+              tablaReferencia: 'recomendaciones',
+            })
+          }
+        }
+      } catch (e) {
+        console.error('Error al notificar recomendación:', e)
+      }
+      // ───────────────────────────────────────────────
 
       return response.created({
         message: 'Recomendación creada correctamente',
         data: serializar(recomendacion),
       })
     } catch (error: any) {
-      return response.internalServerError({ 
-        message: 'Error al crear recomendación', 
-        error: error.message 
+      return response.internalServerError({
+        message: 'Error al crear recomendación',
+        error: error.message
       })
     }
   }
 
-  /**
-   * @show
-   * @summary Obtener una recomendación por ID
-   * @description Retorna los datos completos de una recomendación incluyendo experto, monitoreo y tratamientos
-   * @paramPath id - ID de la recomendación - @type(number) @required
-   * @responseBody 200 - {
-   *   "idRecomendacion": 1,
-   *   "idMonitoreo": 2,
-   *   "descripcion": "Aplicar fungicida",
-   *   "fechaLimite": "2026-06-01",
-   *   "experto": {
-   *     "idUsuario": 5,
-   *     "nombre": "Juan",
-   *     "apellido": "Pérez",
-   *     "correo": "juan@gmail.com",
-   *     "telefono": "3001234567"
-   *   }
-   * }
-   * @responseBody 404 - {"message": "Recomendación no encontrada"}
-   * @responseBody 500 - {"message": "Error al obtener recomendación", "error": "string"}
-   */
   async show({ params, response }: HttpContext) {
     try {
       const r = await Recomendacione.query()
         .where('id_recomendacion', params.id)
-        .preload('monitoreo')
         .preload('experto')
         .preload('tipo')
-        .preload('tratamientos')
+        .preload('tratamiento')
+        .preload('prioridad')
         .firstOrFail()
 
       return response.ok(serializar(r))
@@ -198,40 +157,16 @@ export default class RecomendacionesController {
     }
   }
 
-  /**
-   * @update
-   * @summary Actualizar una recomendación
-   * @description Actualiza los datos de una recomendación existente
-   * @paramPath id - ID de la recomendación - @type(number) @required
-   * @requestBody {
-   *   "descripcion": "Aplicar fungicida actualizado",
-   *   "id_prioridad": 2,
-   *   "fecha_limite": "2026-06-15"
-   * }
-   * @responseBody 200 - {
-   *   "message": "Recomendación actualizada correctamente",
-   *   "data": {
-   *     "idRecomendacion": 1,
-   *     "descripcion": "Aplicar fungicida actualizado",
-   *     "experto": {
-   *       "idUsuario": 5,
-   *       "nombre": "Juan",
-   *       "apellido": "Pérez"
-   *     }
-   *   }
-   * }
-   * @responseBody 404 - {"message": "Recomendación no encontrada"}
-   * @responseBody 500 - {"message": "Error al actualizar recomendación", "error": "string"}
-   */
   async update({ params, request, response }: HttpContext) {
     try {
       const r    = await Recomendacione.findOrFail(params.id)
       const data = request.only([
-        'id_monitoreo', 
-        'id_experto_emisor', 
-        'id_tipo', 
-        'id_prioridad', 
-        'descripcion', 
+        'id_monitoreo',
+        'id_experto_emisor',
+        'id_tipo',
+        'id_prioridad',
+        'id_tratamiento',
+        'descripcion',
         'fecha_limite'
       ])
 
@@ -240,6 +175,7 @@ export default class RecomendacionesController {
       if (data.id_experto_emisor !== undefined) payload.idExpertoEmisor = data.id_experto_emisor
       if (data.id_tipo           !== undefined) payload.idTipo          = data.id_tipo
       if (data.id_prioridad      !== undefined) payload.idPrioridad     = data.id_prioridad
+      if (data.id_tratamiento    !== undefined) payload.idTratamiento   = data.id_tratamiento
       if (data.descripcion       !== undefined) payload.descripcion     = data.descripcion
       if (data.fecha_limite      !== undefined) payload.fechaLimite     = data.fecha_limite
 
@@ -247,36 +183,27 @@ export default class RecomendacionesController {
       await r.save()
       await r.load('experto')
 
-      return response.ok({ 
-        message: 'Recomendación actualizada correctamente', 
-        data: serializar(r) 
+      return response.ok({
+        message: 'Recomendación actualizada correctamente',
+        data: serializar(r)
       })
     } catch (error: any) {
-      return response.internalServerError({ 
-        message: 'Error al actualizar recomendación', 
-        error: error.message 
+      return response.internalServerError({
+        message: 'Error al actualizar recomendación',
+        error: error.message
       })
     }
   }
 
-  /**
-   * @destroy
-   * @summary Eliminar una recomendación
-   * @description Elimina permanentemente una recomendación
-   * @paramPath id - ID de la recomendación - @type(number) @required
-   * @responseBody 200 - {"message": "Recomendación eliminada correctamente"}
-   * @responseBody 404 - {"message": "Recomendación no encontrada"}
-   * @responseBody 500 - {"message": "Error al eliminar recomendación", "error": "string"}
-   */
   async destroy({ params, response }: HttpContext) {
     try {
       const r = await Recomendacione.findOrFail(params.id)
       await r.delete()
       return response.ok({ message: 'Recomendación eliminada correctamente' })
     } catch (error: any) {
-      return response.internalServerError({ 
-        message: 'Error al eliminar recomendación', 
-        error: error.message 
+      return response.internalServerError({
+        message: 'Error al eliminar recomendación',
+        error: error.message
       })
     }
   }

@@ -1,8 +1,8 @@
-// app/models/tratamiento.ts
 import { DateTime } from 'luxon'
 import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import CatTipoTratamiento from '#models/cat_tipo_tratamiento'
+import Insumo from '#models/insumo'
 
 export default class Tratamiento extends BaseModel {
   public static table = 'tratamientos'
@@ -14,11 +14,23 @@ export default class Tratamiento extends BaseModel {
   @column({ columnName: 'id_tipo_tratamiento' })
   declare idTipoTratamiento: number | null
 
+  @column({ columnName: 'id_insumo' })
+  declare idInsumo: number | null
+
   @column()
   declare nombre: string
 
   @column()
   declare descripcion: string | null
+
+  @column()
+  declare dosis: string | null
+
+  @column()
+  declare frecuencia: string | null
+
+  @column()
+  declare observaciones: string | null
 
   @column.dateTime({ autoCreate: true, columnName: 'fecha_registro' })
   declare fechaRegistro: DateTime
@@ -30,4 +42,9 @@ export default class Tratamiento extends BaseModel {
     foreignKey: 'idTipoTratamiento',
   })
   declare tipoTratamiento: BelongsTo<typeof CatTipoTratamiento>
+
+  @belongsTo(() => Insumo, {
+    foreignKey: 'idInsumo',
+  })
+  declare insumo: BelongsTo<typeof Insumo>
 }
