@@ -1,8 +1,9 @@
 import { FincaSchema } from '#database/schema'
-import { column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
-import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import { column, belongsTo, hasMany, hasOne } from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasMany, HasOne } from '@adonisjs/lucid/types/relations'
 import Usuario from '#models/usuario'
 import Cultivo from '#models/cultivo'
+import AsignacionExperto from '#models/asignacion_experto'
 
 export default class Finca extends FincaSchema {
   @column()
@@ -20,4 +21,9 @@ export default class Finca extends FincaSchema {
     foreignKey: 'idFinca',
   })
   declare cultivos: HasMany<typeof Cultivo>
+
+  @hasOne(() => AsignacionExperto, {
+    foreignKey: 'idFinca',
+  })
+  declare asignacionExperto: HasOne<typeof AsignacionExperto>
 }

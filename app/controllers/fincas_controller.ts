@@ -34,6 +34,9 @@ export default class FincasController {
       const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_finca'
       query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
       query.preload('usuario')
+      query.preload('asignacionExperto', (q) => {
+        q.preload('experto')
+      })
 
       const paginado = await query.paginate(page, limit)
       const json = paginado.toJSON()
@@ -57,6 +60,11 @@ export default class FincasController {
           apellido:  f.usuario.apellido,
           correo:    f.usuario.correo,
           rol:       f.usuario.idRol === 3 ? 'cafetero' : f.usuario.idRol === 2 ? 'experto' : 'admin',
+        } : null,
+        expertoAsignado: f.asignacionExperto?.experto ? {
+          idUsuario: f.asignacionExperto.experto.idUsuario,
+          nombre:    f.asignacionExperto.experto.nombre,
+          apellido:  f.asignacionExperto.experto.apellido,
         } : null,
       }))
       return response.ok(json)
@@ -107,6 +115,9 @@ export default class FincasController {
         .where('id_finca', params.id)
         .preload('usuario', (query) => query.preload('rol'))
         .preload('cultivos')
+        .preload('asignacionExperto', (q) => {
+          q.preload('experto')
+        })
         .firstOrFail()
       return response.ok(finca)
     } catch {
