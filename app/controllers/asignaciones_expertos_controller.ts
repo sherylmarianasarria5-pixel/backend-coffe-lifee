@@ -11,8 +11,7 @@ function serializar(a: AsignacionExperto) {
     idFinca:       a.idFinca,
     fechaAsignada: a.fechaAsignada,
     fechaRegistro: a.fechaRegistro,
-    experto: exp ? {
-      idUsuario: exp.idUsuario,
+    experto: exp ? {idUsuario: exp.idUsuario,
       nombre:    exp.nombre,
       apellido:  exp.apellido,
       correo:    exp.correo,
@@ -124,24 +123,19 @@ export default class AsignacionesExpertosController {
    * @responseBody 404 - {"message": "Asignación no encontrada"}
    * @responseBody 500 - {"message": "Error al obtener asignación", "error": "string"}
    */
-
-  async store({ request, response }: HttpContext) {
+  async show({ params, response }: HttpContext) {
     try {
-      const { idExperto, idFinca, fechaAsignada } = request.only([
-        'idExperto', 
-        'idFinca', 
-        'fechaAsignada'
-      ])
+      const a = await AsignacionExperto.query()
+        .where('id_asignacion', params.id)
+        .preload('experto')
+        .preload('finca')
+        .firstOrFail()
 
-      // 🔍 LOG TEMPORAL — para rastrear quién está reasignando expertos
-      const payload = (request as any).usuarioJwt
-      console.log('[AUDITORIA asignaciones_expertos.store]', {
-        fecha: new Date().toISOString(),
-        ip: request.ip(),
-        userAgent: request.header('user-agent'),
-        usuarioQueHaceLaPeticion: payload ? { id: payload.id, rol: payload.rol?.nombreRol } : 'sin-token',
-        body: { idExperto, idFinca, fechaAsignada },
-      })
+      return response.ok({ data: serializar(a) })
+    } catch {
+      return response.notFound({ message: 'Asignación no encontrada' })
+    }
+  }
 
   /**
    * @store
@@ -178,6 +172,16 @@ export default class AsignacionesExpertosController {
         'idFinca', 
         'fechaAsignada'
       ])
+
+      // 🔍 LOG TEMPORAL — para rastrear quién está reasignando expertos
+      const payload = (request as any).usuarioJwt
+      console.log('[AUDITORIA asignaciones_expertos.store]', {
+        fecha: new Date().toISOString(),
+        ip: request.ip(),
+        userAgent: request.header('user-agent'),
+        usuarioQueHaceLaPeticion: payload ? { id: payload.id, rol: payload.rol?.nombreRol } : 'sin-token',
+        body: { idExperto, idFinca, fechaAsignada },
+      })
 
       if (!idExperto)     return response.badRequest({ message: 'El campo idExperto es obligatorio' })
       if (!idFinca)       return response.badRequest({ message: 'El campo idFinca es obligatorio' })
