@@ -124,19 +124,24 @@ export default class AsignacionesExpertosController {
    * @responseBody 404 - {"message": "Asignación no encontrada"}
    * @responseBody 500 - {"message": "Error al obtener asignación", "error": "string"}
    */
-  async show({ params, response }: HttpContext) {
-    try {
-      const a = await AsignacionExperto.query()
-        .where('id_asignacion', params.id)
-        .preload('experto')
-        .preload('finca')
-        .firstOrFail()
 
-      return response.ok({ data: serializar(a) })
-    } catch {
-      return response.notFound({ message: 'Asignación no encontrada' })
-    }
-  }
+  async store({ request, response }: HttpContext) {
+    try {
+      const { idExperto, idFinca, fechaAsignada } = request.only([
+        'idExperto', 
+        'idFinca', 
+        'fechaAsignada'
+      ])
+
+      // 🔍 LOG TEMPORAL — para rastrear quién está reasignando expertos
+      const payload = (request as any).usuarioJwt
+      console.log('[AUDITORIA asignaciones_expertos.store]', {
+        fecha: new Date().toISOString(),
+        ip: request.ip(),
+        userAgent: request.header('user-agent'),
+        usuarioQueHaceLaPeticion: payload ? { id: payload.id, rol: payload.rol?.nombreRol } : 'sin-token',
+        body: { idExperto, idFinca, fechaAsignada },
+      })
 
   /**
    * @store
