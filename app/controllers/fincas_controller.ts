@@ -35,6 +35,8 @@ export default class FincasController {
       query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
       query.preload('usuario')
       query.preload('asignacionExperto', (q) => {
+        q.orderBy('fecha_asignada', 'desc')
+         .orderBy('id_asignacion', 'desc')
         q.preload('experto')
       })
 
@@ -116,6 +118,8 @@ export default class FincasController {
         .preload('usuario', (query) => query.preload('rol'))
         .preload('cultivos')
         .preload('asignacionExperto', (q) => {
+          q.orderBy('fecha_asignada', 'desc')
+           .orderBy('id_asignacion', 'desc')
           q.preload('experto')
         })
         .firstOrFail()
