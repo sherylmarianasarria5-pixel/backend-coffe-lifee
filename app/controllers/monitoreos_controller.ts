@@ -191,17 +191,20 @@ export default class MonitoreosController {
         observaciones:  data.observaciones ?? null,
       })
 
-      // ── Notificar al admin sobre nuevo monitoreo ──
+      // ── Notificar al admin y al experto asignado sobre nuevo monitoreo ──
       try {
-        const { crearNotificacion }  = await import('#services/notificacion_service')
-        const { emitirEventoFinca }  = await import('#start/socket')
-        const { default: Usuario }   = await import('#models/usuario')
-        const { default: Cultivo }   = await import('#models/cultivo')
+        const { crearNotificacion }      = await import('#services/notificacion_service')
+        const { emitirEventoFinca }      = await import('#start/socket')
+        const { default: Usuario }       = await import('#models/usuario')
+        const { default: Cultivo }       = await import('#models/cultivo')
+        const { default: AsignacionExperto } = await import('#models/asignacion_experto')
 
         const cultivo = await Cultivo.query()
           .where('id_cultivo', monitoreo.idCultivo!)
           .preload('finca')
           .first()
+
+        const nombreFinca = (cultivo as any)?.finca?.nombreFinca ?? 'una finca'
 
         const admins = await Usuario.query().where('id_rol', 2).where('activo', true)
         for (const admin of admins) {
@@ -209,10 +212,29 @@ export default class MonitoreosController {
             idUsuario:       admin.idUsuario,
             tipo:            'monitoreo_nuevo',
             titulo:          'Nuevo monitoreo registrado',
-            mensaje:         `Se registró un nuevo monitoreo en ${(cultivo as any)?.finca?.nombreFinca ?? 'una finca'} - ${cultivo?.nombreCultivo ?? ''}.`,
+            mensaje:         `Se registró un nuevo monitoreo en ${nombreFinca} - ${cultivo?.nombreCultivo ?? ''}.`,
             idReferencia:    monitoreo.idMonitoreo,
             tablaReferencia: 'monitoreos',
           })
+        }
+
+        // ── Notificar al experto asignado a esta finca (si tiene uno) ──
+        if (cultivo?.idFinca) {
+          const asignacion = await AsignacionExperto.query()
+            .where('id_finca', cultivo.idFinca)
+            .first()
+
+          if (asignacion?.idExperto) {
+            // crearNotificacion ya guarda en BD y emite por WebSocket internamente
+            await crearNotificacion({
+              idUsuario:       asignacion.idExperto,
+              tipo:            'monitoreo_nuevo',
+              titulo:          'Nuevo monitoreo en tu finca asignada',
+              mensaje:         `Se registró un nuevo monitoreo en ${nombreFinca} - ${cultivo?.nombreCultivo ?? ''}.`,
+              idReferencia:    monitoreo.idMonitoreo,
+              tablaReferencia: 'monitoreos',
+            })
+          }
         }
 
         // Evento en tiempo real para quien esté viendo el dashboard de esta finca
