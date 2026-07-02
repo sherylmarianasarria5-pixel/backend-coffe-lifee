@@ -168,6 +168,10 @@ export default class ExpertoController {
     const query = Monitoreo.query()
       .whereIn('id_cultivo', idCultivos)
       .preload('cultivo')
+      .preload('imagenes', (q) => {
+        q.preload('analisis')
+      })
+      .preload('recomendaciones')
 
     if (search) {
       query.where((q) => {
