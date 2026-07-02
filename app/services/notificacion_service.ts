@@ -1,5 +1,5 @@
 import Notificacione from '#models/notificacione'
-import { emitirNotificacion } from '#services/socket_service'
+import { emitirNotificacion } from '#start/socket'
 
 export async function crearNotificacion({
   idUsuario,

@@ -212,7 +212,7 @@ export default class AsignacionesExpertosController {
       // ── Notificar al experto sobre la nueva asignación ──
       try {
         const { crearNotificacion } = await import('#services/notificacion_service')
-        const { emitirEventoFinca } = await import('#services/socket_service')
+        const { emitirEventoFinca } = await import('#start/socket')
 
         await crearNotificacion({
           idUsuario:       idExperto,

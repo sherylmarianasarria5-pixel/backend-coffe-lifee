@@ -105,7 +105,7 @@ export default class RecomendacionesController {
         const { default: Monitoreo } = await import('#models/monitoreo')
         const { default: Finca }     = await import('#models/finca')
         const { crearNotificacion }  = await import('#services/notificacion_service')
-        const { emitirEventoFinca }  = await import('#services/socket_service')
+        const { emitirEventoFinca }  = await import('#start/socket')
 
         const monitoreo = await Monitoreo.query()
           .where('id_monitoreo', data.id_monitoreo)

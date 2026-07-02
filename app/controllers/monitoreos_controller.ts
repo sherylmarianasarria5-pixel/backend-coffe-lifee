@@ -194,7 +194,7 @@ export default class MonitoreosController {
       // ── Notificar al admin sobre nuevo monitoreo ──
       try {
         const { crearNotificacion }  = await import('#services/notificacion_service')
-        const { emitirEventoFinca }  = await import('#services/socket_service')
+        const { emitirEventoFinca }  = await import('#start/socket')
         const { default: Usuario }   = await import('#models/usuario')
         const { default: Cultivo }   = await import('#models/cultivo')
 

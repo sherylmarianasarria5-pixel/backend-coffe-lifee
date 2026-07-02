@@ -1,9 +1,11 @@
+import app from '@adonisjs/core/services/app'
+import server from '@adonisjs/core/services/server'
 import { Server as SocketServer } from 'socket.io'
 
 let io: SocketServer | null = null
 
-export function iniciarSocketIO(server: any) {
-  io = new SocketServer(server, {
+app.ready(() => {
+  io = new SocketServer(server.getNodeServer(), {
     cors: {
       origin: '*',
       methods: ['GET', 'POST'],
@@ -18,8 +20,6 @@ export function iniciarSocketIO(server: any) {
       console.log(`[Socket.IO] Socket ${socket.id} unido a sala usuario:${idUsuario}`)
     })
 
-    // Únete a la sala de una finca para recibir eventos en tiempo real
-    // (monitoreo:created, finca:asignacion_actualizada, etc.)
     socket.on('unirse_finca', (idFinca: number) => {
       socket.join(`finca:${idFinca}`)
       console.log(`[Socket.IO] Socket ${socket.id} unido a sala finca:${idFinca}`)
@@ -35,7 +35,7 @@ export function iniciarSocketIO(server: any) {
   })
 
   console.log('[Socket.IO] Servicio iniciado')
-}
+})
 
 export function emitirNotificacion(idUsuario: number, data: any) {
   if (!io) {
@@ -45,9 +45,6 @@ export function emitirNotificacion(idUsuario: number, data: any) {
   io.to(`usuario:${idUsuario}`).emit('notificacion', data)
 }
 
-// Emite un evento a todos los clientes suscritos a una finca (sala `finca:{id}`).
-// Úsalo para eventos de dashboard en tiempo real: 'monitoreo:created',
-// 'recomendacion:created', 'analisis:completado', 'finca:asignacion_actualizada', etc.
 export function emitirEventoFinca(idFinca: number, evento: string, data: any) {
   if (!io) {
     console.warn('[Socket.IO] No se puede emitir, io no está inicializado')
