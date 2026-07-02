@@ -18,6 +18,17 @@ export function iniciarSocketIO(server: any) {
       console.log(`[Socket.IO] Socket ${socket.id} unido a sala usuario:${idUsuario}`)
     })
 
+    // Únete a la sala de una finca para recibir eventos en tiempo real
+    // (monitoreo:created, finca:asignacion_actualizada, etc.)
+    socket.on('unirse_finca', (idFinca: number) => {
+      socket.join(`finca:${idFinca}`)
+      console.log(`[Socket.IO] Socket ${socket.id} unido a sala finca:${idFinca}`)
+    })
+
+    socket.on('salir_finca', (idFinca: number) => {
+      socket.leave(`finca:${idFinca}`)
+    })
+
     socket.on('disconnect', () => {
       console.log(`[Socket.IO] Cliente desconectado: ${socket.id}`)
     })
@@ -32,4 +43,15 @@ export function emitirNotificacion(idUsuario: number, data: any) {
     return
   }
   io.to(`usuario:${idUsuario}`).emit('notificacion', data)
+}
+
+// Emite un evento a todos los clientes suscritos a una finca (sala `finca:{id}`).
+// Úsalo para eventos de dashboard en tiempo real: 'monitoreo:created',
+// 'recomendacion:created', 'analisis:completado', 'finca:asignacion_actualizada', etc.
+export function emitirEventoFinca(idFinca: number, evento: string, data: any) {
+  if (!io) {
+    console.warn('[Socket.IO] No se puede emitir, io no está inicializado')
+    return
+  }
+  io.to(`finca:${idFinca}`).emit(evento, data)
 }

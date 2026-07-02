@@ -7,28 +7,15 @@ import { DateTime } from 'luxon'
 
 function serializar(m: Monitoreo) {
   const exp = m.usuario
-  const imagenes = m.imagenes ? m.imagenes.map((img: any) => ({
-    idImagen: img.idImagen,
-    rutaImagen: img.rutaImagen,
-    analisis: img.analisis ? img.analisis.map((a: any) => ({
-      idAnalisis: a.idAnalisis,
-      resultado: a.resultado,
-      porcentajeConfianza: a.porcentajeConfianza,
-      estadoAnalisis: a.estadoAnalisis ? { nombreEstado: a.estadoAnalisis.nombreEstado } : null,
-      nivelRoya: a.nivelRoya ? { nombreNivel: a.nivelRoya.nombreNivel } : null,
-    })) : [],
-  })) : []
+  const imagenes = m.imagenes? m.imagenes.map((img: any) => ({idImagen: img.idImagen, rutaImagen: img.rutaImagen, analisis: img.analisis ? img.analisis.map((a: any) => ({ idAnalisis: a.idAnalisis, resultado: a.resultado, porcentajeConfianza: a.porcentajeConfianza, estadoAnalisis: a.estadoAnalisis ? { nombreEstado: a.estadoAnalisis.nombreEstado } : null, nivelRoya: a.nivelRoya ? { nombreNivel: a.nivelRoya.nombreNivel } : null, })) : [], })) : []
   return {
-    idMonitoreo:    m.idMonitoreo,
-    idCultivo:      m.idCultivo,
+    idMonitoreo: m.idMonitoreo,
+    idCultivo: m.idCultivo,
     fechaMonitoreo: m.fechaMonitoreo,
-    observaciones:  m.observaciones,
-    fechaRegistro:  m.fechaRegistro,
+    observaciones: m.observaciones,
+    fechaRegistro: m.fechaRegistro,
     fechaActualizacion: m.fechaActualizacion,
-    cultivo: m.cultivo ? {
-      idCultivo: m.cultivo.idCultivo,
-      idFinca: m.cultivo.idFinca,
-      nombreCultivo: m.cultivo.nombreCultivo,
+    cultivo: m.cultivo ? { idCultivo: m.cultivo.idCultivo, idFinca: m.cultivo.idFinca, nombreCultivo: m.cultivo.nombreCultivo,
     } : null,
     imagenes,
     recomendaciones: m.recomendaciones ? m.recomendaciones.map((r: any) => ({
@@ -206,9 +193,10 @@ export default class MonitoreosController {
 
       // ── Notificar al admin sobre nuevo monitoreo ──
       try {
-        const { crearNotificacion } = await import('#services/notificacion_service')
-        const { default: Usuario }  = await import('#models/usuario')
-        const { default: Cultivo }  = await import('#models/cultivo')
+        const { crearNotificacion }  = await import('#services/notificacion_service')
+        const { emitirEventoFinca }  = await import('#services/socket_service')
+        const { default: Usuario }   = await import('#models/usuario')
+        const { default: Cultivo }   = await import('#models/cultivo')
 
         const cultivo = await Cultivo.query()
           .where('id_cultivo', monitoreo.idCultivo!)
@@ -224,6 +212,17 @@ export default class MonitoreosController {
             mensaje:         `Se registró un nuevo monitoreo en ${(cultivo as any)?.finca?.nombreFinca ?? 'una finca'} - ${cultivo?.nombreCultivo ?? ''}.`,
             idReferencia:    monitoreo.idMonitoreo,
             tablaReferencia: 'monitoreos',
+          })
+        }
+
+        // Evento en tiempo real para quien esté viendo el dashboard de esta finca
+        if (cultivo?.idFinca) {
+          emitirEventoFinca(cultivo.idFinca, 'monitoreo:created', {
+            idMonitoreo:    monitoreo.idMonitoreo,
+            idCultivo:      monitoreo.idCultivo,
+            nombreCultivo:  cultivo.nombreCultivo,
+            fechaMonitoreo: monitoreo.fechaMonitoreo,
+            observaciones:  monitoreo.observaciones,
           })
         }
       } catch (e) {

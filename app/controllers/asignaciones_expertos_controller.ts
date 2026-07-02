@@ -212,6 +212,7 @@ export default class AsignacionesExpertosController {
       // ── Notificar al experto sobre la nueva asignación ──
       try {
         const { crearNotificacion } = await import('#services/notificacion_service')
+        const { emitirEventoFinca } = await import('#services/socket_service')
 
         await crearNotificacion({
           idUsuario:       idExperto,
@@ -220,6 +221,17 @@ export default class AsignacionesExpertosController {
           mensaje:         `Se te asignó la finca "${asignacion.finca?.nombreFinca ?? 'sin nombre'}".`,
           idReferencia:    asignacion.idFinca,
           tablaReferencia: 'fincas',
+        })
+
+        // Evento en tiempo real para quien esté viendo el dashboard de esta finca
+        emitirEventoFinca(asignacion.idFinca!, 'finca:asignacion_actualizada', {
+          idFinca:    asignacion.idFinca,
+          idExperto:  asignacion.idExperto,
+          experto: asignacion.experto ? {
+            idUsuario: asignacion.experto.idUsuario,
+            nombre:    asignacion.experto.nombre,
+            apellido:  asignacion.experto.apellido,
+          } : null,
         })
       } catch (e) {
         console.error('Error al notificar asignación de experto:', e)

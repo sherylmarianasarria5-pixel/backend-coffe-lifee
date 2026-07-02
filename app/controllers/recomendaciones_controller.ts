@@ -105,6 +105,7 @@ export default class RecomendacionesController {
         const { default: Monitoreo } = await import('#models/monitoreo')
         const { default: Finca }     = await import('#models/finca')
         const { crearNotificacion }  = await import('#services/notificacion_service')
+        const { emitirEventoFinca }  = await import('#services/socket_service')
 
         const monitoreo = await Monitoreo.query()
           .where('id_monitoreo', data.id_monitoreo)
@@ -123,6 +124,13 @@ export default class RecomendacionesController {
               tablaReferencia: 'recomendaciones',
             })
           }
+
+          // Evento en tiempo real para quien esté viendo el dashboard de esta finca
+          emitirEventoFinca(monitoreo.cultivo.idFinca, 'recomendacion:created', {
+            idRecomendacion: recomendacion.idRecomendacion,
+            idMonitoreo:     recomendacion.idMonitoreo,
+            descripcion:     recomendacion.descripcion,
+          })
         }
       } catch (e) {
         console.error('Error al notificar recomendación:', e)
