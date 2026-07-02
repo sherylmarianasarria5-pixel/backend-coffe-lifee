@@ -49,6 +49,24 @@ router.post('/recuperar-password',   [AuthController, 'recuperarPassword'])
 router.post('/verificar-token',      [AuthController, 'verificarToken'])
 router.post('/restablecer-password', [AuthController, 'restablecerPassword'])
 
+// 🔍 TEMPORAL — ruta de prueba para validar la conexión WebSocket.
+// Dispara una notificación de prueba al propio usuario autenticado.
+// Quitar cuando ya no se necesite.
+router.post('/test-notificacion', async ({ request, response }) => {
+  const jwt = (request as any).usuarioJwt
+  if (!jwt?.id) return response.unauthorized({ message: 'Token requerido' })
+
+  const { crearNotificacion } = await import('#services/notificacion_service')
+  const notificacion = await crearNotificacion({
+    idUsuario: jwt.id,
+    tipo:      'prueba',
+    titulo:    'Notificación de prueba',
+    mensaje:   `Prueba enviada el ${new Date().toLocaleString('es-CO')}`,
+  })
+
+  return response.ok({ message: 'Notificación de prueba enviada', data: notificacion })
+}).use(middleware.jwtAuth())
+
 // ─── Mi perfil (cualquier usuario autenticado) ────────────────────────────────
 router.group(() => {
   router.get('/mi-perfil',                   [MiPerfilController, 'show'])
