@@ -288,8 +288,16 @@ export default class MonitoreosController {
         .where('id_monitoreo', params.id)
         .preload('cultivo')
         .preload('usuario')
-        .preload('imagenes')
-        .preload('analisisIas')
+        .preload('imagenes', (q) => {
+          q.preload('analisis', (a) => {
+            a.preload('estadoAnalisis')
+            a.preload('nivelRoya')
+          })
+        })
+        .preload('recomendaciones', (r) => {
+          r.preload('tipo')
+           r.preload('tratamiento')
+        })
         .firstOrFail()
 
       return response.ok(serializar(monitoreo))
