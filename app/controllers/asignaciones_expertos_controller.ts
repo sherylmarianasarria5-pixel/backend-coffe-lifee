@@ -209,6 +209,23 @@ export default class AsignacionesExpertosController {
       await asignacion.load('experto')
       await asignacion.load('finca')
 
+      // ── Notificar al experto sobre la nueva asignación ──
+      try {
+        const { crearNotificacion } = await import('#services/notificacion_service')
+
+        await crearNotificacion({
+          idUsuario:       idExperto,
+          tipo:            'finca_asignada',
+          titulo:          'Nueva finca asignada',
+          mensaje:         `Se te asignó la finca "${asignacion.finca?.nombreFinca ?? 'sin nombre'}".`,
+          idReferencia:    asignacion.idFinca,
+          tablaReferencia: 'fincas',
+        })
+      } catch (e) {
+        console.error('Error al notificar asignación de experto:', e)
+      }
+      // ─────────────────────────────────────────────────────
+
       return response.created({
         message: 'Asignación guardada correctamente',
         data: serializar(asignacion),
