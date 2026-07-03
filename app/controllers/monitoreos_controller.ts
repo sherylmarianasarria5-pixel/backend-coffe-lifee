@@ -165,23 +165,24 @@ export default class MonitoreosController {
       const data = await request.validateUsing(monitoreoStoreValidator)
       const fechaMonitoreo = DateTime.fromISO(data.fecha_monitoreo)
 
+      // ⚠️ TEMPORAL - DESACTIVADO PARA PRUEBAS (reactivar antes de producción)
       // ── Regla: 1 monitoreo por día por cultivo ──
-      const existente = await Monitoreo.query()
-        .where('id_cultivo', data.id_cultivo)
-        .where('fecha_monitoreo', fechaMonitoreo.toSQLDate()!)
-        .first()
+      // const existente = await Monitoreo.query()
+      //   .where('id_cultivo', data.id_cultivo)
+      //   .where('fecha_monitoreo', fechaMonitoreo.toSQLDate()!)
+      //   .first()
 
-      if (existente) {
-        return response.conflict({
-          message: 'Ya existe un monitoreo para este cultivo en esta fecha. Si necesitas corregir algo, edita el monitoreo existente en lugar de crear uno nuevo.',
-          data: {
-            idMonitoreo:    existente.idMonitoreo,
-            idCultivo:      existente.idCultivo,
-            fechaMonitoreo: existente.fechaMonitoreo,
-            observaciones:  existente.observaciones,
-          },
-        })
-      }
+      // if (existente) {
+      //   return response.conflict({
+      //     message: 'Ya existe un monitoreo para este cultivo en esta fecha. Si necesitas corregir algo, edita el monitoreo existente en lugar de crear uno nuevo.',
+      //     data: {
+      //       idMonitoreo:    existente.idMonitoreo,
+      //       idCultivo:      existente.idCultivo,
+      //       fechaMonitoreo: existente.fechaMonitoreo,
+      //       observaciones:  existente.observaciones,
+      //     },
+      //   })
+      // }
       // ───────────────────────────────────────────────────────────────
 
       const monitoreo = await Monitoreo.create({
