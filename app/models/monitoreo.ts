@@ -9,7 +9,6 @@ import AnalisisIa from '#models/analisis_ia'
 import Recomendacione from '#models/recomendacione'
 
 export default class Monitoreo extends MonitoreoSchema {
-
   @column()
   declare idUsuario: number | null
 

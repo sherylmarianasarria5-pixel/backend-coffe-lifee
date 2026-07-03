@@ -1,4 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import { DateTime } from 'luxon'
 import Finca from '#models/finca'
 import Cultivo from '#models/cultivo'
 import Monitoreo from '#models/monitoreo'
@@ -232,11 +233,14 @@ export default class ExpertoController {
       return response.forbidden({ message: 'No tienes acceso a ese cultivo' })
     }
 
+    const rawFecha = body.fecha_monitoreo ?? body.fechaMonitoreo
+    const fechaMonitoreo = rawFecha ? DateTime.fromISO(rawFecha) : DateTime.now()
+
     const monitoreo = await Monitoreo.create({
       idCultivo: idCultivo,
       idUsuario: idUsuario,
       observaciones: body.observaciones ?? null,
-      fechaMonitoreo: body.fecha_monitoreo ?? body.fechaMonitoreo,
+      fechaMonitoreo,
     })
 
     return response.created(monitoreo)
@@ -263,7 +267,13 @@ export default class ExpertoController {
     const monitoreo = await Monitoreo.find(params.id)
     if (!monitoreo) return response.notFound({ message: 'Monitoreo no encontrado' })
 
-    monitoreo.merge(request.body())
+    const body = request.body()
+    const payload: Record<string, any> = {}
+    if (body.observaciones !== undefined) payload.observaciones = body.observaciones
+    if (body.fecha_monitoreo) payload.fechaMonitoreo = DateTime.fromISO(body.fecha_monitoreo)
+    else if (body.fechaMonitoreo) payload.fechaMonitoreo = DateTime.fromISO(body.fechaMonitoreo)
+
+    monitoreo.merge(payload)
     await monitoreo.save()
 
     return response.ok(monitoreo)
