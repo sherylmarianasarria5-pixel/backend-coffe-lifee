@@ -298,7 +298,7 @@ export class MonitoreoSchema extends BaseModel {
   $columns = MonitoreoSchema.$columns
   @column.dateTime()
   declare fechaActualizacion: DateTime
-  @column.date()
+  @column.dateTime()
   declare fechaMonitoreo: DateTime
   @column.dateTime()
   declare fechaRegistro: DateTime
