@@ -226,6 +226,43 @@ export default class AnalisisIaController {
                 tablaReferencia: 'analisis_ias',
               })
             }
+
+            // ── Push notification si el nivel es Alto o Medio ──
+            if (idNivelRoya === 2 || idNivelRoya === 3) {
+              try {
+                const { enviarPush } = await import('#services/firebase_service')
+                const { default: FcmToken } = await import('#models/fcm_token')
+
+                const nivelTexto = idNivelRoya === 2 ? 'Alto' : 'Medio'
+                const idsDestino: number[] = []
+
+                if (finca.idUsuario) idsDestino.push(finca.idUsuario)
+                for (const asig of asignaciones) {
+                  if (asig.idExperto) idsDestino.push(asig.idExperto)
+                }
+
+                for (const idUsuarioDestino of idsDestino) {
+                  const fcmToken = await FcmToken.query()
+                    .where('id_usuario', idUsuarioDestino)
+                    .first()
+
+                  if (fcmToken?.token) {
+                    await enviarPush({
+                      token:   fcmToken.token,
+                      titulo:  `⚠️ Roya nivel ${nivelTexto} detectada`,
+                      mensaje: `Se detectó roya nivel ${nivelTexto} en ${finca.nombreFinca}${cultivo ? ' - ' + cultivo.nombreCultivo : ''}.`,
+                      data: {
+                        tipo:       'roya_detectada',
+                        idAnalisis: String(nuevoAnalisis.idAnalisis),
+                      },
+                    })
+                  }
+                }
+              } catch (e) {
+                console.error('Error al enviar push de roya:', e)
+              }
+            }
+            // ──────────────────────────────────
           }
         } catch (e) {
           console.error('Error al notificar roya:', e)
