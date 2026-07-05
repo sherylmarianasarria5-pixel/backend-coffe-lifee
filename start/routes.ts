@@ -67,6 +67,34 @@ router.post('/test-notificacion', async ({ request, response }) => {
   return response.ok({ message: 'Notificación de prueba enviada', data: notificacion })
 }).use(middleware.jwtAuth())
 
+// 🔍 TEMPORAL — ruta de prueba para validar el envío de push FCM.
+// Quitar cuando ya no se necesite.
+router.post('/test-push', async ({ request, response }) => {
+  const jwt = (request as any).usuarioJwt
+  if (!jwt?.id) return response.unauthorized({ message: 'Token requerido' })
+
+  const { default: FcmToken } = await import('#models/fcm_token')
+  const fcmToken = await FcmToken.query().where('id_usuario', jwt.id).first()
+
+  if (!fcmToken?.token) {
+    return response.badRequest({ message: 'Este usuario no tiene token FCM guardado' })
+  }
+
+  const { enviarPush } = await import('#services/firebase_service')
+
+  try {
+    await enviarPush({
+      token:   fcmToken.token,
+      titulo:  'Push de prueba',
+      mensaje: 'Si ves esto, Firebase Admin está funcionando',
+      data:    { tipo: 'prueba' },
+    })
+    return response.ok({ message: 'Push enviado (revisá el celular o los logs)' })
+  } catch (error: any) {
+    return response.internalServerError({ message: 'Error al enviar push', error: error.message })
+  }
+}).use(middleware.jwtAuth())
+
 // ─── Mi perfil (cualquier usuario autenticado) ────────────────────────────────
 router.group(() => {
   router.get('/mi-perfil',                   [MiPerfilController, 'show'])
