@@ -228,12 +228,6 @@ const routes = {
     tokens: [{"old":"/dashboard/impacto","type":0,"val":"dashboard","end":""},{"old":"/dashboard/impacto","type":0,"val":"impacto","end":""}],
     types: placeholder as Registry['dashboard.impacto_sistema']['types'],
   },
-  'dashboard.debug_monitoreo': {
-    methods: ["GET","HEAD"],
-    pattern: '/dashboard/debug-monitoreo/:id',
-    tokens: [{"old":"/dashboard/debug-monitoreo/:id","type":0,"val":"dashboard","end":""},{"old":"/dashboard/debug-monitoreo/:id","type":0,"val":"debug-monitoreo","end":""},{"old":"/dashboard/debug-monitoreo/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['dashboard.debug_monitoreo']['types'],
-  },
   'usuarios.index': {
     methods: ["GET","HEAD"],
     pattern: '/usuarios',

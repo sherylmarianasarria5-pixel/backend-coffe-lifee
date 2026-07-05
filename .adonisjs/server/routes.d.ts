@@ -41,7 +41,6 @@ export type ScannedRoutes = {
     'dashboard.proximos_monitoreos': { paramsTuple?: []; params?: {} }
     'dashboard.mapa_fincas': { paramsTuple?: []; params?: {} }
     'dashboard.impacto_sistema': { paramsTuple?: []; params?: {} }
-    'dashboard.debug_monitoreo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'usuarios.index': { paramsTuple?: []; params?: {} }
     'usuarios.store': { paramsTuple?: []; params?: {} }
     'usuarios.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -197,7 +196,6 @@ export type ScannedRoutes = {
     'dashboard.proximos_monitoreos': { paramsTuple?: []; params?: {} }
     'dashboard.mapa_fincas': { paramsTuple?: []; params?: {} }
     'dashboard.impacto_sistema': { paramsTuple?: []; params?: {} }
-    'dashboard.debug_monitoreo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'usuarios.index': { paramsTuple?: []; params?: {} }
     'usuarios.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.index': { paramsTuple?: []; params?: {} }
@@ -272,7 +270,6 @@ export type ScannedRoutes = {
     'dashboard.proximos_monitoreos': { paramsTuple?: []; params?: {} }
     'dashboard.mapa_fincas': { paramsTuple?: []; params?: {} }
     'dashboard.impacto_sistema': { paramsTuple?: []; params?: {} }
-    'dashboard.debug_monitoreo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'usuarios.index': { paramsTuple?: []; params?: {} }
     'usuarios.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.index': { paramsTuple?: []; params?: {} }

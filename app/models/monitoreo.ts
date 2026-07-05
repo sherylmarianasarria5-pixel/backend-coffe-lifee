@@ -6,6 +6,7 @@ import Cultivo from '#models/cultivo'
 import Usuario from '#models/usuario'
 import Imagene from '#models/imagene'
 import AnalisisIa from '#models/analisis_ia'
+
 import Recomendacione from '#models/recomendacione'
 
 export default class Monitoreo extends MonitoreoSchema {

@@ -94,7 +94,6 @@ export interface ApiDefinition {
     proximosMonitoreos: typeof routes['dashboard.proximos_monitoreos']
     mapaFincas: typeof routes['dashboard.mapa_fincas']
     impactoSistema: typeof routes['dashboard.impacto_sistema']
-    debugMonitoreo: typeof routes['dashboard.debug_monitoreo']
   }
   usuarios: {
     index: typeof routes['usuarios.index']

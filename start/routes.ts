@@ -72,6 +72,7 @@ router.group(() => {
   router.get('/mi-perfil',                   [MiPerfilController, 'show'])
   router.put('/mi-perfil',                   [MiPerfilController, 'update'])
   router.post('/mi-perfil/cambiar-password', [MiPerfilController, 'cambiarPassword'])
+  router.post('/usuarios/fcm-token',         [UsuariosController, 'guardarFcmToken'])
 }).use(middleware.jwtAuth())
 
 // ─── Catálogos de solo lectura (cualquier usuario autenticado) ────────────────

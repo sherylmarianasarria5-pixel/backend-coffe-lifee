@@ -451,18 +451,6 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['impactoSistema']>>>
     }
   }
-  'dashboard.debug_monitoreo': {
-    methods: ["GET","HEAD"]
-    pattern: '/dashboard/debug-monitoreo/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['debugMonitoreo']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['debugMonitoreo']>>>
-    }
-  }
   'usuarios.index': {
     methods: ["GET","HEAD"]
     pattern: '/usuarios'

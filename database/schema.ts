@@ -230,6 +230,21 @@ export class CultivoSchema extends BaseModel {
   declare variedadCafe: string | null
 }
 
+export class FcmTokenSchema extends BaseModel {
+  static $columns = ['fechaActualizacion', 'fechaRegistro', 'idFcmToken', 'idUsuario', 'token'] as const
+  $columns = FcmTokenSchema.$columns
+  @column.dateTime()
+  declare fechaActualizacion: DateTime | null
+  @column.dateTime()
+  declare fechaRegistro: DateTime | null
+  @column({ isPrimary: true })
+  declare idFcmToken: number
+  @column()
+  declare idUsuario: number
+  @column()
+  declare token: string
+}
+
 export class FincaSchema extends BaseModel {
   static $columns = ['activo', 'altitudMsnm', 'areaHectareas', 'departamento', 'fechaActualizacion', 'fechaRegistro', 'fotoUrl', 'idFinca', 'idUsuario', 'latitud', 'longitud', 'municipio', 'nombreFinca'] as const
   $columns = FincaSchema.$columns

@@ -1,5 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Usuario from '#models/usuario'
+import FcmToken from '#models/fcm_token'
 
 
 export default class UsuariosController {
@@ -127,6 +128,34 @@ export default class UsuariosController {
       return response.ok({ message: 'Usuario actualizado correctamente', data: usuario })
     } catch (error: any) {
       return response.internalServerError({ message: 'Error al actualizar usuario', error: error.message })
+    }
+  }
+
+  /**
+   * @guardarFcmToken
+   * @summary Guardar o actualizar token FCM del usuario autenticado
+   * @requestBody {"token": "abc123..."}
+   * @responseBody 200 - {"message": "Token FCM guardado correctamente"}
+   * @responseBody 400 - {"message": "El token es obligatorio"}
+   */
+  async guardarFcmToken({ request, response }: HttpContext) {
+    try {
+      const jwt = (request as any).usuarioJwt
+      const idUsuario = jwt?.id
+
+      if (!idUsuario) return response.unauthorized({ message: 'Token requerido' })
+
+      const { token } = request.only(['token'])
+      if (!token) return response.badRequest({ message: 'El token es obligatorio' })
+
+      const fcmToken = await FcmToken.updateOrCreate(
+        { idUsuario },
+        { idUsuario, token }
+      )
+
+      return response.ok({ message: 'Token FCM guardado correctamente', data: fcmToken })
+    } catch (error: any) {
+      return response.internalServerError({ message: 'Error al guardar token FCM', error: error.message })
     }
   }
 
