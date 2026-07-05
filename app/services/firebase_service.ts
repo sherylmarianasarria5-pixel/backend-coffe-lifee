@@ -1,4 +1,5 @@
-import admin from 'firebase-admin'
+import { initializeApp, cert, getApps } from 'firebase-admin/app'
+import { getMessaging } from 'firebase-admin/messaging'
 import env from '#start/env'
 
 const serviceAccountJson = Buffer.from(
@@ -8,9 +9,9 @@ const serviceAccountJson = Buffer.from(
 
 const serviceAccount = JSON.parse(serviceAccountJson)
 
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+if (!getApps().length) {
+  initializeApp({
+    credential: cert(serviceAccount),
   })
 }
 
@@ -26,7 +27,7 @@ export async function enviarPush({
   data?: Record<string, string>
 }) {
   try {
-    await admin.messaging().send({
+    await getMessaging().send({
       token,
       notification: {
         title: titulo,
