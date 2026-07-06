@@ -351,8 +351,10 @@ export default class CaficultorController {
         archivo.clientName
       )
 
+      const AI_SCANNER_URL = process.env.AI_SCANNER_URL || 'http://127.0.0.1:8000'
+
       const iaResponse = await axios.post(
-        'http://127.0.0.1:8000/predict',
+        `${AI_SCANNER_URL}/predict`,
         form,
         { headers: form.getHeaders() }
       )
@@ -372,6 +374,7 @@ export default class CaficultorController {
 
       // ── 6. Procesar primer resultado ──────────────────────────────────────
       const firstDetection = detections[0]
+      const recomendacionesIa = firstDetection.recommendations || []
 
       let idNivelRoya: number | null = null
       if (firstDetection.class === 'Enfermedad_ROYA') idNivelRoya = 1
@@ -385,6 +388,7 @@ export default class CaficultorController {
         resultado:           firstDetection.class,
         porcentajeConfianza: (firstDetection.confidence * 100).toFixed(2),
         idNivelRoya,
+        recomendaciones:     recomendacionesIa,
       })
 
       await analisis.load('nivelRoya')
@@ -400,6 +404,7 @@ export default class CaficultorController {
           id:                  analisis.idAnalisis,
           resultado:           analisis.resultado,
           porcentajeConfianza: analisis.porcentajeConfianza,
+          recomendaciones:     analisis.recomendaciones,
           nivelRoya:           analisis.nivelRoya,
           estadoAnalisis:      analisis.estadoAnalisis,
         },
