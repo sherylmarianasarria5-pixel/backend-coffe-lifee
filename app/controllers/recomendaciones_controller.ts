@@ -4,14 +4,19 @@ import Recomendacione from '#models/recomendacione'
 function serializar(r: Recomendacione) {
   const exp = r.experto
   return {
-    id_recomendacion:  r.idRecomendacion,
-    id_monitoreo:      r.idMonitoreo,
-    descripcion:       r.descripcion,
-    id_experto_emisor: r.idExpertoEmisor,
-    experto:           exp ? `${exp.nombre} ${exp.apellido}` : null,
-    prioridad:         (r as any).prioridad?.nombre ?? null,
-    tratamiento:       (r as any).tratamiento?.nombre ?? null,
-    fecha_limite:      r.fechaLimite ? (r.fechaLimite as any).toISODate?.() ?? r.fechaLimite : null,
+    idRecomendacion:  r.idRecomendacion,
+    idMonitoreo:      r.idMonitoreo,
+    descripcion:      r.descripcion,
+    idExpertoEmisor:  r.idExpertoEmisor,
+    experto:          exp ? `${exp.nombre} ${exp.apellido}` : null,
+    idTipo:           (r as any).tipo?.idTipo ?? r.idTipo,
+    tipo:             (r as any).tipo?.nombreTipo ?? null,
+    idPrioridad:      r.idPrioridad,
+    prioridad:        (r as any).prioridad?.nombre ?? null,
+    idTratamiento:    r.idTratamiento,
+    tratamiento:      (r as any).tratamiento?.nombre ?? null,
+    fechaLimite:      r.fechaLimite ? (r.fechaLimite as any).toISODate?.() ?? r.fechaLimite : null,
+    fechaRegistro:    r.fechaRegistro ? r.fechaRegistro.toISO() : null,
   }
 }
 

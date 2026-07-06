@@ -46,7 +46,20 @@ function ultimoAnalisis(m: any) {
 function estadoRoya(m: any): 'sin_roya' | 'con_roya' | 'pendiente' {
   const ultimo: any = ultimoAnalisis(m)
   if (!ultimo) return 'pendiente'
-  return ultimo.idNivelRoya ? 'con_roya' : 'sin_roya'
+
+  // 1) FK a cat_niveles_roya asignado => hay roya
+  if (ultimo.idNivelRoya) return 'con_roya'
+
+  // 2) nombre del nivel cargado por relación
+  const nombreNivel = ultimo.nivelRoya?.nombreNivel?.toLowerCase() ?? ''
+  const nivelesConRoya = ['bajo', 'medio', 'alto', 'critico', 'con roya', 'roya']
+  if (nivelesConRoya.some(n => nombreNivel.includes(n))) return 'con_roya'
+
+  // 3) resultado directo de la columna (class devuelto por la IA)
+  const resultado = (ultimo.resultado ?? '').toLowerCase()
+  if (nivelesConRoya.some(n => resultado.includes(n))) return 'con_roya'
+
+  return 'sin_roya'
 }
 
 /** Nombre del nivel de severidad (Crítico/Alto/Medio/Bajo) si lo hay, o null si está sano/pendiente. */

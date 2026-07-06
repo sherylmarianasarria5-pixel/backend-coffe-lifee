@@ -377,9 +377,10 @@ export default class CaficultorController {
       const recomendacionesIa = firstDetection.recommendations || []
 
       let idNivelRoya: number | null = null
-      if (firstDetection.class === 'Enfermedad_ROYA') idNivelRoya = 1
-      if (firstDetection.class === 'Hoja_Sana')       idNivelRoya = 2
-      if (firstDetection.class === 'arbol_cafe')       idNivelRoya = 3
+      const clase = firstDetection.class?.toLowerCase() ?? ''
+      if (clase === 'enfermedad_roya' || clase === 'roya' || clase === 'con roya' || clase === 'critico' || clase === 'alto') idNivelRoya = 1
+      if (clase === 'hoja_sana')       idNivelRoya = 2
+      if (clase === 'arbol_cafe')       idNivelRoya = 3
 
       // ── 7. Guardar análisis en BD ─────────────────────────────────────────
       const analisis = await AnalisisIa.create({

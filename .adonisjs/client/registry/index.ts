@@ -54,6 +54,12 @@ const routes = {
     tokens: [{"old":"/mi-perfil/cambiar-password","type":0,"val":"mi-perfil","end":""},{"old":"/mi-perfil/cambiar-password","type":0,"val":"cambiar-password","end":""}],
     types: placeholder as Registry['mi_perfil.cambiar_password']['types'],
   },
+  'usuarios.guardar_fcm_token': {
+    methods: ["POST"],
+    pattern: '/usuarios/fcm-token',
+    tokens: [{"old":"/usuarios/fcm-token","type":0,"val":"usuarios","end":""},{"old":"/usuarios/fcm-token","type":0,"val":"fcm-token","end":""}],
+    types: placeholder as Registry['usuarios.guardar_fcm_token']['types'],
+  },
   'cat_roles.index': {
     methods: ["GET","HEAD"],
     pattern: '/cat_roles',

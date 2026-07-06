@@ -14,6 +14,14 @@ export interface ApiDefinition {
     update: typeof routes['mi_perfil.update']
     cambiarPassword: typeof routes['mi_perfil.cambiar_password']
   }
+  usuarios: {
+    guardarFcmToken: typeof routes['usuarios.guardar_fcm_token']
+    index: typeof routes['usuarios.index']
+    store: typeof routes['usuarios.store']
+    show: typeof routes['usuarios.show']
+    update: typeof routes['usuarios.update']
+    destroy: typeof routes['usuarios.destroy']
+  }
   catRoles: {
     index: typeof routes['cat_roles.index']
     show: typeof routes['cat_roles.show']
@@ -94,13 +102,6 @@ export interface ApiDefinition {
     proximosMonitoreos: typeof routes['dashboard.proximos_monitoreos']
     mapaFincas: typeof routes['dashboard.mapa_fincas']
     impactoSistema: typeof routes['dashboard.impacto_sistema']
-  }
-  usuarios: {
-    index: typeof routes['usuarios.index']
-    store: typeof routes['usuarios.store']
-    show: typeof routes['usuarios.show']
-    update: typeof routes['usuarios.update']
-    destroy: typeof routes['usuarios.destroy']
   }
   admin: {
     index: typeof routes['admin.index']

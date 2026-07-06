@@ -12,6 +12,7 @@ export type ScannedRoutes = {
     'mi_perfil.show': { paramsTuple?: []; params?: {} }
     'mi_perfil.update': { paramsTuple?: []; params?: {} }
     'mi_perfil.cambiar_password': { paramsTuple?: []; params?: {} }
+    'usuarios.guardar_fcm_token': { paramsTuple?: []; params?: {} }
     'cat_roles.index': { paramsTuple?: []; params?: {} }
     'cat_roles.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cat_tipos_tratamientos.index': { paramsTuple?: []; params?: {} }
@@ -320,6 +321,7 @@ export type ScannedRoutes = {
     'auth.verificar_token': { paramsTuple?: []; params?: {} }
     'auth.restablecer_password': { paramsTuple?: []; params?: {} }
     'mi_perfil.cambiar_password': { paramsTuple?: []; params?: {} }
+    'usuarios.guardar_fcm_token': { paramsTuple?: []; params?: {} }
     'usuarios.store': { paramsTuple?: []; params?: {} }
     'admin.store': { paramsTuple?: []; params?: {} }
     'expertos.store': { paramsTuple?: []; params?: {} }

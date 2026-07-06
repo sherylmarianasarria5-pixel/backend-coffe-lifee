@@ -103,6 +103,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/mi-perfil_controller').default['cambiarPassword']>>>
     }
   }
+  'usuarios.guardar_fcm_token': {
+    methods: ["POST"]
+    pattern: '/usuarios/fcm-token'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/usuarios_controller').default['guardarFcmToken']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/usuarios_controller').default['guardarFcmToken']>>>
+    }
+  }
   'cat_roles.index': {
     methods: ["GET","HEAD"]
     pattern: '/cat_roles'
