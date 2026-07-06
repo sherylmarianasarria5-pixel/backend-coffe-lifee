@@ -8,7 +8,7 @@ import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
 export class AnalisisIaSchema extends BaseModel {
-  static $columns = ['fechaActualizacion', 'fechaRegistro', 'idAnalisis', 'idEstado', 'idImagen', 'idNivelRoya', 'porcentajeConfianza', 'resultado'] as const
+  static $columns = ['fechaActualizacion', 'fechaRegistro', 'idAnalisis', 'idEstado', 'idImagen', 'idNivelRoya', 'porcentajeConfianza', 'recomendaciones', 'resultado'] as const
   $columns = AnalisisIaSchema.$columns
   @column.dateTime()
   declare fechaActualizacion: DateTime | null
@@ -24,6 +24,8 @@ export class AnalisisIaSchema extends BaseModel {
   declare idNivelRoya: number | null
   @column()
   declare porcentajeConfianza: string | null
+  @column()
+  declare recomendaciones: any | null
   @column()
   declare resultado: string | null
 }

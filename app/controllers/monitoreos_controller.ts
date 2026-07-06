@@ -7,7 +7,7 @@ import { DateTime } from 'luxon'
 
 function serializar(m: Monitoreo) {
   const exp = m.usuario
-  const imagenes = m.imagenes? m.imagenes.map((img: any) => ({idImagen: img.idImagen, rutaImagen: img.rutaImagen, analisis: img.analisis ? img.analisis.map((a: any) => ({ idAnalisis: a.idAnalisis, resultado: a.resultado, porcentajeConfianza: a.porcentajeConfianza, estadoAnalisis: a.estadoAnalisis ? { nombreEstado: a.estadoAnalisis.nombreEstado } : null, nivelRoya: a.nivelRoya ? { nombreNivel: a.nivelRoya.nombreNivel } : null, })) : [], })) : []
+  const imagenes = m.imagenes? m.imagenes.map((img: any) => ({idImagen: img.idImagen, rutaImagen: img.rutaImagen,           analisis: img.analisis ? img.analisis.map((a: any) => ({ idAnalisis: a.idAnalisis, resultado: a.resultado, porcentajeConfianza: a.porcentajeConfianza, recomendaciones: a.recomendaciones ?? [], estadoAnalisis: a.estadoAnalisis ? { nombreEstado: a.estadoAnalisis.nombreEstado } : null, nivelRoya: a.nivelRoya ? { nombreNivel: a.nivelRoya.nombreNivel } : null, })) : [], })) : []
   return {
     idMonitoreo: m.idMonitoreo,
     idCultivo: m.idCultivo,

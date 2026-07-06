@@ -130,8 +130,10 @@ export default class AnalisisIaController {
       const form = new FormData()
       form.append('file', fs.createReadStream(image.tmpPath), image.clientName)
 
+      const AI_SCANNER_URL = process.env.AI_SCANNER_URL || 'http://127.0.0.1:8000'
+
       const iaResponse = await axios.post(
-        'http://127.0.0.1:8000/predict',
+        `${AI_SCANNER_URL}/predict`,
         form,
         { headers: form.getHeaders() }
       )
@@ -148,6 +150,7 @@ export default class AnalisisIaController {
 
       const firstDetection = detections[0]
       const confianza = firstDetection.confidence as number  // 0.0 – 1.0
+      const recomendacionesIa = firstDetection.recommendations || []
 
       // cat_niveles_roya: 1=Crítico, 2=Alto, 3=Medio, 4=Bajo
       // Solo asigna nivel cuando hay roya. Hoja_Sana y arbol_cafe quedan null.
@@ -165,6 +168,7 @@ export default class AnalisisIaController {
         resultado:           firstDetection.class,
         porcentajeConfianza: (confianza * 100).toFixed(2),
         idNivelRoya,
+        recomendaciones:     recomendacionesIa,
       })
 
       // Sincroniza automáticamente el estado del cultivo en la BD

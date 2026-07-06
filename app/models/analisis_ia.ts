@@ -26,6 +26,12 @@ export default class AnalisisIa extends BaseModel {
   @column({ columnName: 'idNivelRoya' })
   declare idNivelRoya: number | null
 
+  @column({
+    prepare: (value: any) => (value ? JSON.stringify(value) : null),
+    consume: (value: any) => (typeof value === 'string' ? JSON.parse(value) : value),
+  })
+  declare recomendaciones: any
+
   @column.dateTime({ autoCreate: true, columnName: 'fechaRegistro' })
   declare fechaRegistro: DateTime | null
 

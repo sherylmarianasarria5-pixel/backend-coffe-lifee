@@ -24,3 +24,5 @@ yarn-error.log
 
 # Platform specific
 .DS_Store
+firebase-credenciales.json
+firebase-base64.txt
