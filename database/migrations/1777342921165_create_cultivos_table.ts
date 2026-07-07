@@ -12,11 +12,7 @@ export default class extends BaseSchema {
 
       table.integer('id_finca').unsigned().nullable()
 
-      table
-        .foreign('id_finca')
-        .references('id_finca')
-        .inTable('fincas')
-        .onDelete('SET NULL')
+      table.foreign('id_finca').references('id_finca').inTable('fincas').onDelete('SET NULL')
 
       table.timestamp('created_at').nullable()
       table.timestamp('updated_at').nullable()

@@ -4,7 +4,11 @@ import jwt from 'jsonwebtoken'
 import env from '#start/env'
 import hash from '@adonisjs/core/services/hash'
 import { DateTime } from 'luxon'
-import { loginValidator, recuperarPasswordValidator, restablecerPasswordValidator } from '#validators/validators'
+import {
+  loginValidator,
+  recuperarPasswordValidator,
+  restablecerPasswordValidator,
+} from '#validators/validators'
 
 export default class AuthController {
   /**
@@ -21,7 +25,10 @@ export default class AuthController {
       const usuario = await Usuario.query().where('correo', data.correo).preload('rol').first()
 
       if (!usuario) return response.unauthorized({ message: 'Correo o contraseña incorrectos' })
-      if (!usuario.activo) return response.unauthorized({ message: 'Tu cuenta está desactivada. Contacta al administrador.' })
+      if (!usuario.activo)
+        return response.unauthorized({
+          message: 'Tu cuenta está desactivada. Contacta al administrador.',
+        })
 
       const esValida = await hash.verify(usuario.passwordHash, data.password)
       if (!esValida) return response.unauthorized({ message: 'Correo o contraseña incorrectos' })
@@ -56,9 +63,15 @@ export default class AuthController {
       })
     } catch (error: any) {
       if (error.code === 'E_VALIDATION_ERROR') {
-        return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
+        return response.unprocessableEntity({
+          message: 'Error de validación',
+          errors: error.messages,
+        })
       }
-      return response.internalServerError({ message: 'Error al iniciar sesión', error: error.message })
+      return response.internalServerError({
+        message: 'Error al iniciar sesión',
+        error: error.message,
+      })
     }
   }
 
@@ -73,7 +86,13 @@ export default class AuthController {
   async register({ request, response }: HttpContext) {
     try {
       const { nombre, apellido, correo, password, telefono, idRol, genero } = request.only([
-        'nombre', 'apellido', 'correo', 'password', 'telefono', 'idRol', 'genero',
+        'nombre',
+        'apellido',
+        'correo',
+        'password',
+        'telefono',
+        'idRol',
+        'genero',
       ])
 
       if (!nombre) return response.badRequest({ message: 'El nombre es obligatorio' })
@@ -127,7 +146,10 @@ export default class AuthController {
         },
       })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al registrar usuario', error: error.message })
+      return response.internalServerError({
+        message: 'Error al registrar usuario',
+        error: error.message,
+      })
     }
   }
 
@@ -143,12 +165,15 @@ export default class AuthController {
       const data = await request.validateUsing(recuperarPasswordValidator)
       const usuario = await Usuario.findBy('correo', data.correo)
 
-      if (!usuario) return response.ok({ message: 'Si el correo existe, recibirás un mensaje con instrucciones.' })
+      if (!usuario)
+        return response.ok({
+          message: 'Si el correo existe, recibirás un mensaje con instrucciones.',
+        })
 
       const token = Math.floor(100000 + Math.random() * 900000).toString()
       const expiracion = DateTime.now().plus({ minutes: 15 })
 
-      usuario.resetToken        = token
+      usuario.resetToken = token
       usuario.resetTokenExpires = expiracion
       await usuario.save()
 
@@ -174,13 +199,21 @@ export default class AuthController {
         }
       }
 
-      return response.ok({ message: 'Si el correo existe, recibirás un mensaje con instrucciones.' })
+      return response.ok({
+        message: 'Si el correo existe, recibirás un mensaje con instrucciones.',
+      })
     } catch (error: any) {
       console.error('ERROR RECUPERAR:', error.message, error.stack)
       if (error.code === 'E_VALIDATION_ERROR') {
-        return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
+        return response.unprocessableEntity({
+          message: 'Error de validación',
+          errors: error.messages,
+        })
       }
-      return response.internalServerError({ message: 'Error al procesar solicitud', error: error.message })
+      return response.internalServerError({
+        message: 'Error al procesar solicitud',
+        error: error.message,
+      })
     }
   }
 
@@ -206,7 +239,10 @@ export default class AuthController {
 
       return response.ok({ message: 'Token válido' })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al verificar token', error: error.message })
+      return response.internalServerError({
+        message: 'Error al verificar token',
+        error: error.message,
+      })
     }
   }
 
@@ -228,7 +264,7 @@ export default class AuthController {
         return response.badRequest({ message: 'El token ha expirado. Solicita uno nuevo.' })
       }
 
-      // ✅ Se pasa en texto plano — el hook @beforeSave del modelo hashea automáticamente
+      // Se pasa en texto plano — el hook @beforeSave del modelo hashea automáticamente
       usuario.passwordHash = data.nuevaPassword
       usuario.resetToken = null
       usuario.resetTokenExpires = null
@@ -249,12 +285,20 @@ export default class AuthController {
         // No bloquear si el correo falla
       }
 
-      return response.ok({ message: 'Contraseña restablecida correctamente. Ya puedes iniciar sesión.' })
+      return response.ok({
+        message: 'Contraseña restablecida correctamente. Ya puedes iniciar sesión.',
+      })
     } catch (error: any) {
       if (error.code === 'E_VALIDATION_ERROR') {
-        return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
+        return response.unprocessableEntity({
+          message: 'Error de validación',
+          errors: error.messages,
+        })
       }
-      return response.internalServerError({ message: 'Error al restablecer contraseña', error: error.message })
+      return response.internalServerError({
+        message: 'Error al restablecer contraseña',
+        error: error.message,
+      })
     }
   }
 }

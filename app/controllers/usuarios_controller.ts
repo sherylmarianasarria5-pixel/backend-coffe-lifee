@@ -2,9 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Usuario from '#models/usuario'
 import FcmToken from '#models/fcm_token'
 
-
 export default class UsuariosController {
-
   /**
    * @index
    * @summary Listar todos los usuarios
@@ -12,10 +10,10 @@ export default class UsuariosController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page   = Number(request.input('page', 1))
-      const limit  = Number(request.input('limit', 100))
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 100))
       const search = request.input('search', '')
-      const idRol  = request.input('id_rol')
+      const idRol = request.input('id_rol')
       const activo = request.input('activo')
 
       const query = Usuario.query().preload('rol')
@@ -23,14 +21,24 @@ export default class UsuariosController {
       if (search) {
         query.where((q) => {
           q.whereILike('nombre', `%${search}%`)
-           .orWhereILike('apellido', `%${search}%`)
-           .orWhereILike('correo', `%${search}%`)
+            .orWhereILike('apellido', `%${search}%`)
+            .orWhereILike('correo', `%${search}%`)
         })
       }
-      if (idRol)  query.where('id_rol', idRol)
-      if (activo !== undefined && activo !== '') query.where('activo', activo === 'true' || activo === '1')
+      if (idRol) query.where('id_rol', idRol)
+      if (activo !== undefined && activo !== '')
+        query.where('activo', activo === 'true' || activo === '1')
 
-      const ALLOWED = ['id_usuario', 'nombre', 'apellido', 'correo', 'telefono', 'activo', 'fecha_registro', 'fecha_actualizacion']
+      const ALLOWED = [
+        'id_usuario',
+        'nombre',
+        'apellido',
+        'correo',
+        'telefono',
+        'activo',
+        'fecha_registro',
+        'fecha_actualizacion',
+      ]
       const orderBy = request.input('order_by', 'id_usuario')
       const orderDir = request.input('order_dir', 'desc')
       const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_usuario'
@@ -39,7 +47,10 @@ export default class UsuariosController {
       const usuarios = await query.paginate(page, limit)
       return response.ok(usuarios.toJSON())
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener usuarios', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener usuarios',
+        error: error.message,
+      })
     }
   }
 
@@ -52,29 +63,41 @@ export default class UsuariosController {
    */
   async store({ request, response }: HttpContext) {
     try {
-      const data = request.only(['id_rol', 'nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
+      const data = request.only([
+        'id_rol',
+        'nombre',
+        'apellido',
+        'correo',
+        'telefono',
+        'password',
+        'observaciones',
+        'activo',
+      ])
 
-      if (!data.nombre)   return response.badRequest({ message: 'El nombre es obligatorio' })
-      if (!data.correo)   return response.badRequest({ message: 'El correo es obligatorio' })
+      if (!data.nombre) return response.badRequest({ message: 'El nombre es obligatorio' })
+      if (!data.correo) return response.badRequest({ message: 'El correo es obligatorio' })
       if (!data.password) return response.badRequest({ message: 'La contraseña es obligatoria' })
-      if (!data.id_rol)   return response.badRequest({ message: 'El id_rol es obligatorio' })
+      if (!data.id_rol) return response.badRequest({ message: 'El id_rol es obligatorio' })
 
       const existe = await Usuario.findBy('correo', data.correo)
       if (existe) return response.badRequest({ message: 'El correo ya existe' })
 
       const usuario = await Usuario.create({
-        idRol:         data.id_rol,
-        nombre:        data.nombre,
-        apellido:      data.apellido,
-        correo:        data.correo,
-        telefono:      data.telefono,
-        passwordHash:  data.password,
+        idRol: data.id_rol,
+        nombre: data.nombre,
+        apellido: data.apellido,
+        correo: data.correo,
+        telefono: data.telefono,
+        passwordHash: data.password,
         observaciones: data.observaciones,
-        activo:        data.activo ?? true,
+        activo: data.activo ?? true,
       })
       return response.created({ message: 'Usuario creado correctamente', data: usuario })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al crear usuario', error: error.message })
+      return response.internalServerError({
+        message: 'Error al crear usuario',
+        error: error.message,
+      })
     }
   }
 
@@ -106,7 +129,16 @@ export default class UsuariosController {
   async update({ params, request, response }: HttpContext) {
     try {
       const usuario = await Usuario.findOrFail(params.id)
-      const data = request.only(['id_rol', 'nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
+      const data = request.only([
+        'id_rol',
+        'nombre',
+        'apellido',
+        'correo',
+        'telefono',
+        'password',
+        'observaciones',
+        'activo',
+      ])
 
       if (data.correo && data.correo !== usuario.correo) {
         const existe = await Usuario.findBy('correo', data.correo)
@@ -114,20 +146,23 @@ export default class UsuariosController {
       }
 
       const payload: Record<string, any> = {}
-      if (data.id_rol        !== undefined) payload.idRol         = data.id_rol
-      if (data.nombre        !== undefined) payload.nombre        = data.nombre
-      if (data.apellido      !== undefined) payload.apellido      = data.apellido
-      if (data.correo        !== undefined) payload.correo        = data.correo
-      if (data.telefono      !== undefined) payload.telefono      = data.telefono
+      if (data.id_rol !== undefined) payload.idRol = data.id_rol
+      if (data.nombre !== undefined) payload.nombre = data.nombre
+      if (data.apellido !== undefined) payload.apellido = data.apellido
+      if (data.correo !== undefined) payload.correo = data.correo
+      if (data.telefono !== undefined) payload.telefono = data.telefono
       if (data.observaciones !== undefined) payload.observaciones = data.observaciones
-      if (data.activo        !== undefined) payload.activo        = data.activo
-      if (data.password)                    payload.passwordHash  = data.password
+      if (data.activo !== undefined) payload.activo = data.activo
+      if (data.password) payload.passwordHash = data.password
 
       usuario.merge(payload)
       await usuario.save()
       return response.ok({ message: 'Usuario actualizado correctamente', data: usuario })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al actualizar usuario', error: error.message })
+      return response.internalServerError({
+        message: 'Error al actualizar usuario',
+        error: error.message,
+      })
     }
   }
 
@@ -148,14 +183,14 @@ export default class UsuariosController {
       const { token } = request.only(['token'])
       if (!token) return response.badRequest({ message: 'El token es obligatorio' })
 
-      const fcmToken = await FcmToken.updateOrCreate(
-        { idUsuario },
-        { idUsuario, token }
-      )
+      const fcmToken = await FcmToken.updateOrCreate({ idUsuario }, { idUsuario, token })
 
       return response.ok({ message: 'Token FCM guardado correctamente', data: fcmToken })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al guardar token FCM', error: error.message })
+      return response.internalServerError({
+        message: 'Error al guardar token FCM',
+        error: error.message,
+      })
     }
   }
 
@@ -171,7 +206,10 @@ export default class UsuariosController {
       await usuario.delete()
       return response.ok({ message: 'Usuario eliminado correctamente' })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al eliminar usuario', error: error.message })
+      return response.internalServerError({
+        message: 'Error al eliminar usuario',
+        error: error.message,
+      })
     }
   }
 }

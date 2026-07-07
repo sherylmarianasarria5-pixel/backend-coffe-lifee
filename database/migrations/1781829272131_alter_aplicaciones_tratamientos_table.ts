@@ -5,8 +5,13 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.alterTable(this.tableName, (table) => {
-      table.integer('id_insumo').unsigned().nullable()
-        .references('id_insumo').inTable('insumos').onDelete('SET NULL')
+      table
+        .integer('id_insumo')
+        .unsigned()
+        .nullable()
+        .references('id_insumo')
+        .inTable('insumos')
+        .onDelete('SET NULL')
     })
   }
 

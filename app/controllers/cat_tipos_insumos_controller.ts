@@ -3,12 +3,11 @@ import CatTipoInsumo from '#models/cat_tipo_insumo'
 import { catalogoStoreValidator, catalogoUpdateValidator } from '#validators/validators'
 
 export default class CatTiposInsumosController {
-
   async index({ request, response }: HttpContext) {
     try {
-      const page     = Number(request.input('page', 1))
-      const limit    = Number(request.input('limit', 20))
-      const search   = request.input('search', '')
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 20))
+      const search = request.input('search', '')
       const query = CatTipoInsumo.query()
       if (search) {
         query.whereILike('nombre', `%${search}%`)
@@ -22,7 +21,10 @@ export default class CatTiposInsumosController {
       const tipos = await query.paginate(page, limit)
       return response.ok(tipos)
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener tipos de insumo', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener tipos de insumo',
+        error: error.message,
+      })
     }
   }
 
@@ -33,9 +35,15 @@ export default class CatTiposInsumosController {
       return response.created({ message: 'Tipo de insumo creado correctamente', data: tipo })
     } catch (error: any) {
       if (error.code === 'E_VALIDATION_ERROR') {
-        return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
+        return response.unprocessableEntity({
+          message: 'Error de validación',
+          errors: error.messages,
+        })
       }
-      return response.internalServerError({ message: 'Error al crear tipo de insumo', error: error.message })
+      return response.internalServerError({
+        message: 'Error al crear tipo de insumo',
+        error: error.message,
+      })
     }
   }
 
@@ -57,9 +65,15 @@ export default class CatTiposInsumosController {
       return response.ok({ message: 'Tipo de insumo actualizado correctamente', data: tipo })
     } catch (error: any) {
       if (error.code === 'E_VALIDATION_ERROR') {
-        return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
+        return response.unprocessableEntity({
+          message: 'Error de validación',
+          errors: error.messages,
+        })
       }
-      return response.internalServerError({ message: 'Error al actualizar tipo de insumo', error: error.message })
+      return response.internalServerError({
+        message: 'Error al actualizar tipo de insumo',
+        error: error.message,
+      })
     }
   }
 
@@ -69,7 +83,10 @@ export default class CatTiposInsumosController {
       await tipo.delete()
       return response.ok({ message: 'Tipo de insumo eliminado correctamente' })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al eliminar tipo de insumo', error: error.message })
+      return response.internalServerError({
+        message: 'Error al eliminar tipo de insumo',
+        error: error.message,
+      })
     }
   }
 }

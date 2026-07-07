@@ -2,9 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import CatEstadosAnalisi from '#models/cat_estado_analisis'
 import { catalogoStoreValidator, catalogoUpdateValidator } from '#validators/validators'
 
-
 export default class CatEstadosAnalisisController {
-
   /**
    * @index
    * @summary Listar estados de análisis
@@ -12,9 +10,9 @@ export default class CatEstadosAnalisisController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page     = Number(request.input('page', 1))
-      const limit    = Number(request.input('limit', 20))
-      const search   = request.input('search', '')
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 20))
+      const search = request.input('search', '')
       const query = CatEstadosAnalisi.query()
       if (search) {
         query.whereILike('nombre_estado', `%${search}%`)
@@ -28,7 +26,10 @@ export default class CatEstadosAnalisisController {
       const estados = await query.paginate(page, limit)
       return response.ok(estados)
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener estados de análisis', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener estados de análisis',
+        error: error.message,
+      })
     }
   }
 
@@ -41,14 +42,23 @@ export default class CatEstadosAnalisisController {
    */
   async store({ request, response }: HttpContext) {
     try {
-      const data   = await request.validateUsing(catalogoStoreValidator)
-      const estado = await CatEstadosAnalisi.create({ nombreEstado: data.nombre, descripcion: data.descripcion ?? null })
+      const data = await request.validateUsing(catalogoStoreValidator)
+      const estado = await CatEstadosAnalisi.create({
+        nombreEstado: data.nombre,
+        descripcion: data.descripcion ?? null,
+      })
       return response.created({ message: 'Estado de análisis creado correctamente', data: estado })
     } catch (error: any) {
       if (error.code === 'E_VALIDATION_ERROR') {
-        return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
+        return response.unprocessableEntity({
+          message: 'Error de validación',
+          errors: error.messages,
+        })
       }
-      return response.internalServerError({ message: 'Error al crear estado de análisis', error: error.message })
+      return response.internalServerError({
+        message: 'Error al crear estado de análisis',
+        error: error.message,
+      })
     }
   }
 
@@ -77,16 +87,22 @@ export default class CatEstadosAnalisisController {
   async update({ params, request, response }: HttpContext) {
     try {
       const estado = await CatEstadosAnalisi.findOrFail(params.id)
-      const data   = await request.validateUsing(catalogoUpdateValidator)
-      if (data.nombre      !== undefined) estado.nombreEstado = data.nombre
-      if (data.descripcion !== undefined) estado.descripcion  = data.descripcion ?? null
+      const data = await request.validateUsing(catalogoUpdateValidator)
+      if (data.nombre !== undefined) estado.nombreEstado = data.nombre
+      if (data.descripcion !== undefined) estado.descripcion = data.descripcion ?? null
       await estado.save()
       return response.ok({ message: 'Estado de análisis actualizado correctamente', data: estado })
     } catch (error: any) {
       if (error.code === 'E_VALIDATION_ERROR') {
-        return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
+        return response.unprocessableEntity({
+          message: 'Error de validación',
+          errors: error.messages,
+        })
       }
-      return response.internalServerError({ message: 'Error al actualizar estado de análisis', error: error.message })
+      return response.internalServerError({
+        message: 'Error al actualizar estado de análisis',
+        error: error.message,
+      })
     }
   }
 
@@ -102,7 +118,10 @@ export default class CatEstadosAnalisisController {
       await estado.delete()
       return response.ok({ message: 'Estado de análisis eliminado correctamente' })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al eliminar estado de análisis', error: error.message })
+      return response.internalServerError({
+        message: 'Error al eliminar estado de análisis',
+        error: error.message,
+      })
     }
   }
 }

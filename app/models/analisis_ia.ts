@@ -1,9 +1,9 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
-import Imagene           from '#models/imagene'
+import Imagene from '#models/imagene'
 import CatEstadoAnalisis from '#models/cat_estado_analisis'
-import CatNivelRoya      from '#models/cat_nivel_roya'
+import CatNivelRoya from '#models/cat_nivel_roya'
 
 export default class AnalisisIa extends BaseModel {
   public static table = 'analisis_ias'

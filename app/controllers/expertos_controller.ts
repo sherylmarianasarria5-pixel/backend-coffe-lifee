@@ -2,9 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Usuario from '#models/usuario'
 import CatRol from '#models/cat_rol'
 
-
 export default class ExpertosController {
-
   /**
    * @index
    * @summary Listar todos los expertos
@@ -14,8 +12,8 @@ export default class ExpertosController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page   = Number(request.input('page', 1))
-      const limit  = Number(request.input('limit', 10))
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 10))
       const search = request.input('search', '')
       const activo = request.input('activo')
 
@@ -28,13 +26,23 @@ export default class ExpertosController {
       if (search) {
         query.where((q) => {
           q.whereILike('nombre', `%${search}%`)
-           .orWhereILike('apellido', `%${search}%`)
-           .orWhereILike('correo', `%${search}%`)
+            .orWhereILike('apellido', `%${search}%`)
+            .orWhereILike('correo', `%${search}%`)
         })
       }
-      if (activo !== undefined && activo !== '') query.where('activo', activo === 'true' || activo === '1')
+      if (activo !== undefined && activo !== '')
+        query.where('activo', activo === 'true' || activo === '1')
 
-      const ALLOWED = ['id_usuario', 'nombre', 'apellido', 'correo', 'telefono', 'activo', 'fecha_registro', 'fecha_actualizacion']
+      const ALLOWED = [
+        'id_usuario',
+        'nombre',
+        'apellido',
+        'correo',
+        'telefono',
+        'activo',
+        'fecha_registro',
+        'fecha_actualizacion',
+      ]
       const orderBy = request.input('order_by', 'id_usuario')
       const orderDir = request.input('order_dir', 'desc')
       const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_usuario'
@@ -43,7 +51,10 @@ export default class ExpertosController {
       const usuarios = await query.paginate(page, limit)
       return response.ok(usuarios.toJSON())
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener expertos', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener expertos',
+        error: error.message,
+      })
     }
   }
 
@@ -58,11 +69,19 @@ export default class ExpertosController {
    */
   async store({ request, response }: HttpContext) {
     try {
-      const data = request.only(['nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
+      const data = request.only([
+        'nombre',
+        'apellido',
+        'correo',
+        'telefono',
+        'password',
+        'observaciones',
+        'activo',
+      ])
 
-      if (!data.nombre)   return response.badRequest({ message: 'El nombre es obligatorio' })
+      if (!data.nombre) return response.badRequest({ message: 'El nombre es obligatorio' })
       if (!data.apellido) return response.badRequest({ message: 'El apellido es obligatorio' })
-      if (!data.correo)   return response.badRequest({ message: 'El correo es obligatorio' })
+      if (!data.correo) return response.badRequest({ message: 'El correo es obligatorio' })
       if (!data.password) return response.badRequest({ message: 'La contraseña es obligatoria' })
 
       const existe = await Usuario.findBy('correo', data.correo)
@@ -73,14 +92,14 @@ export default class ExpertosController {
         .firstOrFail()
 
       const usuario = await Usuario.create({
-        nombre:        data.nombre,
-        apellido:      data.apellido,
-        correo:        data.correo,
-        telefono:      data.telefono      ?? null,
-        passwordHash:  data.password,
+        nombre: data.nombre,
+        apellido: data.apellido,
+        correo: data.correo,
+        telefono: data.telefono ?? null,
+        passwordHash: data.password,
         observaciones: data.observaciones ?? null,
-        activo:        data.activo        ?? true,
-        idRol:         rolExperto.idRol,
+        activo: data.activo ?? true,
+        idRol: rolExperto.idRol,
       })
 
       await usuario.load('rol')
@@ -89,15 +108,18 @@ export default class ExpertosController {
         message: 'Experto creado correctamente',
         data: {
           idUsuario: usuario.idUsuario,
-          nombre:    usuario.nombre,
-          apellido:  usuario.apellido,
-          correo:    usuario.correo,
-          telefono:  usuario.telefono,
-          rol:       usuario.rol.nombreRol,
+          nombre: usuario.nombre,
+          apellido: usuario.apellido,
+          correo: usuario.correo,
+          telefono: usuario.telefono,
+          rol: usuario.rol.nombreRol,
         },
       })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al crear experto', error: error.message })
+      return response.internalServerError({
+        message: 'Error al crear experto',
+        error: error.message,
+      })
     }
   }
 
@@ -141,7 +163,15 @@ export default class ExpertosController {
         })
         .firstOrFail()
 
-      const data = request.only(['nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
+      const data = request.only([
+        'nombre',
+        'apellido',
+        'correo',
+        'telefono',
+        'password',
+        'observaciones',
+        'activo',
+      ])
 
       if (data.correo && data.correo !== usuario.correo) {
         const existe = await Usuario.findBy('correo', data.correo)
@@ -149,13 +179,13 @@ export default class ExpertosController {
       }
 
       const payload: Record<string, any> = {}
-      if (data.nombre        !== undefined) payload.nombre        = data.nombre
-      if (data.apellido      !== undefined) payload.apellido      = data.apellido
-      if (data.correo        !== undefined) payload.correo        = data.correo
-      if (data.telefono      !== undefined) payload.telefono      = data.telefono
+      if (data.nombre !== undefined) payload.nombre = data.nombre
+      if (data.apellido !== undefined) payload.apellido = data.apellido
+      if (data.correo !== undefined) payload.correo = data.correo
+      if (data.telefono !== undefined) payload.telefono = data.telefono
       if (data.observaciones !== undefined) payload.observaciones = data.observaciones
-      if (data.activo        !== undefined) payload.activo        = data.activo
-      if (data.password)                    payload.passwordHash  = data.password
+      if (data.activo !== undefined) payload.activo = data.activo
+      if (data.password) payload.passwordHash = data.password
 
       usuario.merge(payload)
       await usuario.save()
@@ -165,15 +195,18 @@ export default class ExpertosController {
         message: 'Experto actualizado correctamente',
         data: {
           idUsuario: usuario.idUsuario,
-          nombre:    usuario.nombre,
-          apellido:  usuario.apellido,
-          correo:    usuario.correo,
-          telefono:  usuario.telefono,
-          rol:       usuario.rol.nombreRol,
-        }
+          nombre: usuario.nombre,
+          apellido: usuario.apellido,
+          correo: usuario.correo,
+          telefono: usuario.telefono,
+          rol: usuario.rol.nombreRol,
+        },
       })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al actualizar experto', error: error.message })
+      return response.internalServerError({
+        message: 'Error al actualizar experto',
+        error: error.message,
+      })
     }
   }
 
@@ -195,7 +228,10 @@ export default class ExpertosController {
       await usuario.delete()
       return response.ok({ message: 'Experto eliminado correctamente' })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al eliminar experto', error: error.message })
+      return response.internalServerError({
+        message: 'Error al eliminar experto',
+        error: error.message,
+      })
     }
   }
 }

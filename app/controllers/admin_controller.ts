@@ -2,9 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Usuario from '#models/usuario'
 import CatRol from '#models/cat_rol'
 
-
 export default class AdminController {
-
   /**
    * @index
    * @summary Listar administradores
@@ -12,27 +10,37 @@ export default class AdminController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page   = Number(request.input('page', 1))
-      const limit  = Number(request.input('limit', 10))
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 10))
       const search = request.input('search', '')
       const activo = request.input('activo')
 
       const query = Usuario.query()
-        .whereHas('rol', (query: any) => {
-          query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['admin'])
+        .whereHas('rol', (q: any) => {
+          q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['admin'])
         })
         .preload('rol')
 
       if (search) {
         query.where((q) => {
           q.whereILike('nombre', `%${search}%`)
-           .orWhereILike('apellido', `%${search}%`)
-           .orWhereILike('correo', `%${search}%`)
+            .orWhereILike('apellido', `%${search}%`)
+            .orWhereILike('correo', `%${search}%`)
         })
       }
-      if (activo !== undefined && activo !== '') query.where('activo', activo === 'true' || activo === '1')
+      if (activo !== undefined && activo !== '')
+        query.where('activo', activo === 'true' || activo === '1')
 
-      const ALLOWED = ['id_usuario', 'nombre', 'apellido', 'correo', 'telefono', 'activo', 'fecha_registro', 'fecha_actualizacion']
+      const ALLOWED = [
+        'id_usuario',
+        'nombre',
+        'apellido',
+        'correo',
+        'telefono',
+        'activo',
+        'fecha_registro',
+        'fecha_actualizacion',
+      ]
       const orderBy = request.input('order_by', 'id_usuario')
       const orderDir = request.input('order_dir', 'desc')
       const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_usuario'
@@ -41,7 +49,10 @@ export default class AdminController {
       const usuarios = await query.paginate(page, limit)
       return response.ok(usuarios.toJSON())
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener administradores', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener administradores',
+        error: error.message,
+      })
     }
   }
 
@@ -54,10 +65,18 @@ export default class AdminController {
    */
   async store({ request, response }: HttpContext) {
     try {
-      const data = request.only(['nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
+      const data = request.only([
+        'nombre',
+        'apellido',
+        'correo',
+        'telefono',
+        'password',
+        'observaciones',
+        'activo',
+      ])
 
-      if (!data.nombre)   return response.badRequest({ message: 'El nombre es obligatorio' })
-      if (!data.correo)   return response.badRequest({ message: 'El correo es obligatorio' })
+      if (!data.nombre) return response.badRequest({ message: 'El nombre es obligatorio' })
+      if (!data.correo) return response.badRequest({ message: 'El correo es obligatorio' })
       if (!data.password) return response.badRequest({ message: 'La contraseña es obligatoria' })
 
       const existe = await Usuario.findBy('correo', data.correo)
@@ -68,19 +87,22 @@ export default class AdminController {
         .firstOrFail()
 
       const usuario = await Usuario.create({
-        nombre:        data.nombre,
-        apellido:      data.apellido,
-        correo:        data.correo,
-        telefono:      data.telefono,
-        passwordHash:  data.password,
+        nombre: data.nombre,
+        apellido: data.apellido,
+        correo: data.correo,
+        telefono: data.telefono,
+        passwordHash: data.password,
         observaciones: data.observaciones,
-        activo:        data.activo ?? true,
-        idRol:         rolAdmin.idRol,
+        activo: data.activo ?? true,
+        idRol: rolAdmin.idRol,
       })
 
       return response.created({ message: 'Administrador creado correctamente', data: usuario })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al crear administrador', error: error.message })
+      return response.internalServerError({
+        message: 'Error al crear administrador',
+        error: error.message,
+      })
     }
   }
 
@@ -95,8 +117,8 @@ export default class AdminController {
     try {
       const usuario = await Usuario.query()
         .where('id_usuario', params.id)
-        .whereHas('rol', (query: any) => {
-          query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['admin'])
+        .whereHas('rol', (q: any) => {
+          q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['admin'])
         })
         .preload('rol')
         .firstOrFail()
@@ -118,12 +140,20 @@ export default class AdminController {
     try {
       const usuario = await Usuario.query()
         .where('id_usuario', params.id)
-        .whereHas('rol', (query: any) => {
-          query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['admin'])
+        .whereHas('rol', (q: any) => {
+          q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['admin'])
         })
         .firstOrFail()
 
-      const data = request.only(['nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
+      const data = request.only([
+        'nombre',
+        'apellido',
+        'correo',
+        'telefono',
+        'password',
+        'observaciones',
+        'activo',
+      ])
 
       if (data.correo && data.correo !== usuario.correo) {
         const existe = await Usuario.findBy('correo', data.correo)
@@ -131,19 +161,22 @@ export default class AdminController {
       }
 
       const payload: Record<string, any> = {}
-      if (data.nombre        !== undefined) payload.nombre        = data.nombre
-      if (data.apellido      !== undefined) payload.apellido      = data.apellido
-      if (data.correo        !== undefined) payload.correo        = data.correo
-      if (data.telefono      !== undefined) payload.telefono      = data.telefono
+      if (data.nombre !== undefined) payload.nombre = data.nombre
+      if (data.apellido !== undefined) payload.apellido = data.apellido
+      if (data.correo !== undefined) payload.correo = data.correo
+      if (data.telefono !== undefined) payload.telefono = data.telefono
       if (data.observaciones !== undefined) payload.observaciones = data.observaciones
-      if (data.activo        !== undefined) payload.activo        = data.activo
-      if (data.password)                    payload.passwordHash  = data.password
+      if (data.activo !== undefined) payload.activo = data.activo
+      if (data.password) payload.passwordHash = data.password
 
       usuario.merge(payload)
       await usuario.save()
       return response.ok({ message: 'Administrador actualizado correctamente', data: usuario })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al actualizar administrador', error: error.message })
+      return response.internalServerError({
+        message: 'Error al actualizar administrador',
+        error: error.message,
+      })
     }
   }
 
@@ -158,14 +191,17 @@ export default class AdminController {
     try {
       const usuario = await Usuario.query()
         .where('id_usuario', params.id)
-        .whereHas('rol', (query: any) => {
-          query.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['admin'])
+        .whereHas('rol', (q: any) => {
+          q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['admin'])
         })
         .firstOrFail()
       await usuario.delete()
       return response.ok({ message: 'Administrador eliminado correctamente' })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al eliminar administrador', error: error.message })
+      return response.internalServerError({
+        message: 'Error al eliminar administrador',
+        error: error.message,
+      })
     }
   }
 }

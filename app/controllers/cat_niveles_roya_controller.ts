@@ -2,9 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import CatNivelesRoya from '#models/cat_nivel_roya'
 import { catalogoStoreValidator, catalogoUpdateValidator } from '#validators/validators'
 
-
 export default class CatNivelesRoyasController {
-
   /**
    * @index
    * @summary Listar niveles de roya
@@ -12,9 +10,9 @@ export default class CatNivelesRoyasController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page     = Number(request.input('page', 1))
-      const limit    = Number(request.input('limit', 20))
-      const search   = request.input('search', '')
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 20))
+      const search = request.input('search', '')
       const query = CatNivelesRoya.query()
       if (search) {
         query.whereILike('nombre_nivel', `%${search}%`)
@@ -28,7 +26,10 @@ export default class CatNivelesRoyasController {
       const niveles = await query.paginate(page, limit)
       return response.ok(niveles)
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener niveles de roya', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener niveles de roya',
+        error: error.message,
+      })
     }
   }
 
@@ -41,14 +42,23 @@ export default class CatNivelesRoyasController {
    */
   async store({ request, response }: HttpContext) {
     try {
-      const data  = await request.validateUsing(catalogoStoreValidator)
-      const nivel = await CatNivelesRoya.create({ nombreNivel: data.nombre, descripcion: data.descripcion ?? null })
+      const data = await request.validateUsing(catalogoStoreValidator)
+      const nivel = await CatNivelesRoya.create({
+        nombreNivel: data.nombre,
+        descripcion: data.descripcion ?? null,
+      })
       return response.created({ message: 'Nivel de roya creado correctamente', data: nivel })
     } catch (error: any) {
       if (error.code === 'E_VALIDATION_ERROR') {
-        return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
+        return response.unprocessableEntity({
+          message: 'Error de validación',
+          errors: error.messages,
+        })
       }
-      return response.internalServerError({ message: 'Error al crear nivel de roya', error: error.message })
+      return response.internalServerError({
+        message: 'Error al crear nivel de roya',
+        error: error.message,
+      })
     }
   }
 
@@ -77,16 +87,22 @@ export default class CatNivelesRoyasController {
   async update({ params, request, response }: HttpContext) {
     try {
       const nivel = await CatNivelesRoya.findOrFail(params.id)
-      const data  = await request.validateUsing(catalogoUpdateValidator)
-      if (data.nombre      !== undefined) nivel.nombreNivel = data.nombre
+      const data = await request.validateUsing(catalogoUpdateValidator)
+      if (data.nombre !== undefined) nivel.nombreNivel = data.nombre
       if (data.descripcion !== undefined) nivel.descripcion = data.descripcion ?? null
       await nivel.save()
       return response.ok({ message: 'Nivel de roya actualizado correctamente', data: nivel })
     } catch (error: any) {
       if (error.code === 'E_VALIDATION_ERROR') {
-        return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
+        return response.unprocessableEntity({
+          message: 'Error de validación',
+          errors: error.messages,
+        })
       }
-      return response.internalServerError({ message: 'Error al actualizar nivel de roya', error: error.message })
+      return response.internalServerError({
+        message: 'Error al actualizar nivel de roya',
+        error: error.message,
+      })
     }
   }
 
@@ -102,7 +118,10 @@ export default class CatNivelesRoyasController {
       await nivel.delete()
       return response.ok({ message: 'Nivel de roya eliminado correctamente' })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al eliminar nivel de roya', error: error.message })
+      return response.internalServerError({
+        message: 'Error al eliminar nivel de roya',
+        error: error.message,
+      })
     }
   }
 }

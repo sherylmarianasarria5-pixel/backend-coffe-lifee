@@ -1,13 +1,12 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import CatPrioridad from '#models/cat_prioridad'
 
-
 export default class CatPrioridadesController {
   async index({ request, response }: HttpContext) {
     try {
-      const page     = Number(request.input('page', 1))
-      const limit    = Number(request.input('limit', 10))
-      const search   = request.input('search', '')
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 10))
+      const search = request.input('search', '')
       const query = CatPrioridad.query()
       if (search) {
         query.whereILike('nombre', `%${search}%`)
@@ -21,7 +20,10 @@ export default class CatPrioridadesController {
       const prioridades = await query.paginate(page, limit)
       return response.ok(prioridades.toJSON())
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener prioridades', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener prioridades',
+        error: error.message,
+      })
     }
   }
 
@@ -39,7 +41,10 @@ export default class CatPrioridadesController {
 
       return response.created({ message: 'Prioridad creada correctamente', data: prioridad })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al crear prioridad', error: error.message })
+      return response.internalServerError({
+        message: 'Error al crear prioridad',
+        error: error.message,
+      })
     }
   }
 
@@ -64,7 +69,10 @@ export default class CatPrioridadesController {
 
       return response.ok({ message: 'Prioridad actualizada correctamente', data: prioridad })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al actualizar prioridad', error: error.message })
+      return response.internalServerError({
+        message: 'Error al actualizar prioridad',
+        error: error.message,
+      })
     }
   }
 
@@ -74,7 +82,10 @@ export default class CatPrioridadesController {
       await prioridad.delete()
       return response.ok({ message: 'Prioridad eliminada correctamente' })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al eliminar prioridad', error: error.message })
+      return response.internalServerError({
+        message: 'Error al eliminar prioridad',
+        error: error.message,
+      })
     }
   }
 }

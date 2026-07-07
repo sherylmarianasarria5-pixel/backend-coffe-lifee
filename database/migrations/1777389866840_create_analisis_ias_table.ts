@@ -14,11 +14,7 @@ export default class extends BaseSchema {
         .inTable('imagenes')
         .onDelete('CASCADE')
 
-      table
-        .integer('idEstado')
-        .unsigned()
-        .references('id_estado')
-        .inTable('cat_estados_analisis')
+      table.integer('idEstado').unsigned().references('id_estado').inTable('cat_estados_analisis')
 
       table.text('resultado')
       table.decimal('porcentajeConfianza', 5, 2)

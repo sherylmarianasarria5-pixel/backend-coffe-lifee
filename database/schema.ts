@@ -8,7 +8,17 @@ import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
 export class AnalisisIaSchema extends BaseModel {
-  static $columns = ['fechaActualizacion', 'fechaRegistro', 'idAnalisis', 'idEstado', 'idImagen', 'idNivelRoya', 'porcentajeConfianza', 'recomendaciones', 'resultado'] as const
+  static $columns = [
+    'fechaActualizacion',
+    'fechaRegistro',
+    'idAnalisis',
+    'idEstado',
+    'idImagen',
+    'idNivelRoya',
+    'porcentajeConfianza',
+    'recomendaciones',
+    'resultado',
+  ] as const
   $columns = AnalisisIaSchema.$columns
   @column.dateTime()
   declare fechaActualizacion: DateTime | null
@@ -31,7 +41,14 @@ export class AnalisisIaSchema extends BaseModel {
 }
 
 export class AplicacionesTratamientoSchema extends BaseModel {
-  static $columns = ['fechaAplicacion', 'fechaRegistro', 'idAplicacion', 'idTratamiento', 'idUsuario', 'observacion'] as const
+  static $columns = [
+    'fechaAplicacion',
+    'fechaRegistro',
+    'idAplicacion',
+    'idTratamiento',
+    'idUsuario',
+    'observacion',
+  ] as const
   $columns = AplicacionesTratamientoSchema.$columns
   @column.date()
   declare fechaAplicacion: DateTime
@@ -48,7 +65,14 @@ export class AplicacionesTratamientoSchema extends BaseModel {
 }
 
 export class AsignacionesExpertoSchema extends BaseModel {
-  static $columns = ['fechaActualizacion', 'fechaAsignada', 'fechaRegistro', 'idAsignacion', 'idExperto', 'idFinca'] as const
+  static $columns = [
+    'fechaActualizacion',
+    'fechaAsignada',
+    'fechaRegistro',
+    'idAsignacion',
+    'idExperto',
+    'idFinca',
+  ] as const
   $columns = AsignacionesExpertoSchema.$columns
   @column.dateTime()
   declare fechaActualizacion: DateTime
@@ -65,7 +89,18 @@ export class AsignacionesExpertoSchema extends BaseModel {
 }
 
 export class AuthAccessTokenSchema extends BaseModel {
-  static $columns = ['abilities', 'createdAt', 'expiresAt', 'hash', 'id', 'lastUsedAt', 'name', 'tokenableId', 'type', 'updatedAt'] as const
+  static $columns = [
+    'abilities',
+    'createdAt',
+    'expiresAt',
+    'hash',
+    'id',
+    'lastUsedAt',
+    'name',
+    'tokenableId',
+    'type',
+    'updatedAt',
+  ] as const
   $columns = AuthAccessTokenSchema.$columns
   @column()
   declare abilities: string
@@ -208,7 +243,18 @@ export class CatTiposTratamientoSchema extends BaseModel {
 }
 
 export class CultivoSchema extends BaseModel {
-  static $columns = ['createdAt', 'fotoUrl', 'idCultivo', 'idEstado', 'idFinca', 'nombreCultivo', 'numeroArboles', 'tipoCultivo', 'updatedAt', 'variedadCafe'] as const
+  static $columns = [
+    'createdAt',
+    'fotoUrl',
+    'idCultivo',
+    'idEstado',
+    'idFinca',
+    'nombreCultivo',
+    'numeroArboles',
+    'tipoCultivo',
+    'updatedAt',
+    'variedadCafe',
+  ] as const
   $columns = CultivoSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
@@ -233,7 +279,13 @@ export class CultivoSchema extends BaseModel {
 }
 
 export class FcmTokenSchema extends BaseModel {
-  static $columns = ['fechaActualizacion', 'fechaRegistro', 'idFcmToken', 'idUsuario', 'token'] as const
+  static $columns = [
+    'fechaActualizacion',
+    'fechaRegistro',
+    'idFcmToken',
+    'idUsuario',
+    'token',
+  ] as const
   $columns = FcmTokenSchema.$columns
   @column.dateTime()
   declare fechaActualizacion: DateTime | null
@@ -248,7 +300,21 @@ export class FcmTokenSchema extends BaseModel {
 }
 
 export class FincaSchema extends BaseModel {
-  static $columns = ['activo', 'altitudMsnm', 'areaHectareas', 'departamento', 'fechaActualizacion', 'fechaRegistro', 'fotoUrl', 'idFinca', 'idUsuario', 'latitud', 'longitud', 'municipio', 'nombreFinca'] as const
+  static $columns = [
+    'activo',
+    'altitudMsnm',
+    'areaHectareas',
+    'departamento',
+    'fechaActualizacion',
+    'fechaRegistro',
+    'fotoUrl',
+    'idFinca',
+    'idUsuario',
+    'latitud',
+    'longitud',
+    'municipio',
+    'nombreFinca',
+  ] as const
   $columns = FincaSchema.$columns
   @column()
   declare activo: boolean | null
@@ -279,7 +345,13 @@ export class FincaSchema extends BaseModel {
 }
 
 export class ImageneSchema extends BaseModel {
-  static $columns = ['fechaActualizacion', 'fechaRegistro', 'idImagen', 'idMonitoreo', 'rutaImagen'] as const
+  static $columns = [
+    'fechaActualizacion',
+    'fechaRegistro',
+    'idImagen',
+    'idMonitoreo',
+    'rutaImagen',
+  ] as const
   $columns = ImageneSchema.$columns
   @column.dateTime()
   declare fechaActualizacion: DateTime | null
@@ -294,7 +366,14 @@ export class ImageneSchema extends BaseModel {
 }
 
 export class InsumoSchema extends BaseModel {
-  static $columns = ['descripcion', 'fechaActualizacion', 'fechaRegistro', 'idInsumo', 'idTipoInsumo', 'nombre'] as const
+  static $columns = [
+    'descripcion',
+    'fechaActualizacion',
+    'fechaRegistro',
+    'idInsumo',
+    'idTipoInsumo',
+    'nombre',
+  ] as const
   $columns = InsumoSchema.$columns
   @column()
   declare descripcion: string | null
@@ -311,7 +390,15 @@ export class InsumoSchema extends BaseModel {
 }
 
 export class MonitoreoSchema extends BaseModel {
-  static $columns = ['fechaActualizacion', 'fechaMonitoreo', 'fechaRegistro', 'idCultivo', 'idMonitoreo', 'idUsuario', 'observaciones'] as const
+  static $columns = [
+    'fechaActualizacion',
+    'fechaMonitoreo',
+    'fechaRegistro',
+    'idCultivo',
+    'idMonitoreo',
+    'idUsuario',
+    'observaciones',
+  ] as const
   $columns = MonitoreoSchema.$columns
   @column.dateTime()
   declare fechaActualizacion: DateTime
@@ -330,7 +417,17 @@ export class MonitoreoSchema extends BaseModel {
 }
 
 export class NotificacioneSchema extends BaseModel {
-  static $columns = ['fechaRegistro', 'idNotificacion', 'idReferencia', 'idUsuario', 'leida', 'mensaje', 'tablaReferencia', 'tipo', 'titulo'] as const
+  static $columns = [
+    'fechaRegistro',
+    'idNotificacion',
+    'idReferencia',
+    'idUsuario',
+    'leida',
+    'mensaje',
+    'tablaReferencia',
+    'tipo',
+    'titulo',
+  ] as const
   $columns = NotificacioneSchema.$columns
   @column.dateTime()
   declare fechaRegistro: DateTime | null
@@ -353,7 +450,18 @@ export class NotificacioneSchema extends BaseModel {
 }
 
 export class RecomendacioneSchema extends BaseModel {
-  static $columns = ['descripcion', 'fechaActualizacion', 'fechaLimite', 'fechaRegistro', 'idExpertoEmisor', 'idMonitoreo', 'idPrioridad', 'idRecomendacion', 'idTipo', 'idTratamiento'] as const
+  static $columns = [
+    'descripcion',
+    'fechaActualizacion',
+    'fechaLimite',
+    'fechaRegistro',
+    'idExpertoEmisor',
+    'idMonitoreo',
+    'idPrioridad',
+    'idRecomendacion',
+    'idTipo',
+    'idTratamiento',
+  ] as const
   $columns = RecomendacioneSchema.$columns
   @column()
   declare descripcion: string | null
@@ -378,7 +486,18 @@ export class RecomendacioneSchema extends BaseModel {
 }
 
 export class TratamientoSchema extends BaseModel {
-  static $columns = ['descripcion', 'dosis', 'fechaActualizacion', 'fechaRegistro', 'frecuencia', 'idInsumo', 'idTipoTratamiento', 'idTratamiento', 'nombre', 'observaciones'] as const
+  static $columns = [
+    'descripcion',
+    'dosis',
+    'fechaActualizacion',
+    'fechaRegistro',
+    'frecuencia',
+    'idInsumo',
+    'idTipoTratamiento',
+    'idTratamiento',
+    'nombre',
+    'observaciones',
+  ] as const
   $columns = TratamientoSchema.$columns
   @column()
   declare descripcion: string | null
@@ -420,7 +539,24 @@ export class UserSchema extends BaseModel {
 }
 
 export class UsuarioSchema extends BaseModel {
-  static $columns = ['activo', 'apellido', 'cedula', 'correo', 'fechaActualizacion', 'fechaRegistro', 'fotoPerfil', 'genero', 'idRol', 'idUsuario', 'nombre', 'observaciones', 'passwordHash', 'resetToken', 'resetTokenExpires', 'telefono'] as const
+  static $columns = [
+    'activo',
+    'apellido',
+    'cedula',
+    'correo',
+    'fechaActualizacion',
+    'fechaRegistro',
+    'fotoPerfil',
+    'genero',
+    'idRol',
+    'idUsuario',
+    'nombre',
+    'observaciones',
+    'passwordHash',
+    'resetToken',
+    'resetTokenExpires',
+    'telefono',
+  ] as const
   $columns = UsuarioSchema.$columns
   @column()
   declare activo: boolean | null

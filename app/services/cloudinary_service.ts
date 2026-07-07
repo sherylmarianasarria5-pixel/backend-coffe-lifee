@@ -2,7 +2,12 @@ import { v2 as cloudinary } from 'cloudinary'
 import env from '#start/env'
 
 function resolverValor(valor: unknown): string {
-  if (valor && typeof valor === 'object' && 'release' in valor && typeof (valor as any).release === 'function') {
+  if (
+    valor &&
+    typeof valor === 'object' &&
+    'release' in valor &&
+    typeof (valor as any).release === 'function'
+  ) {
     return (valor as { release(): string }).release()
   }
   return String(valor)
@@ -10,7 +15,7 @@ function resolverValor(valor: unknown): string {
 
 cloudinary.config({
   cloud_name: resolverValor(env.get('CLOUDINARY_CLOUD_NAME')),
-  api_key:    resolverValor(env.get('CLOUDINARY_API_KEY')),
+  api_key: resolverValor(env.get('CLOUDINARY_API_KEY')),
   api_secret: resolverValor(env.get('CLOUDINARY_API_SECRET')),
 })
 

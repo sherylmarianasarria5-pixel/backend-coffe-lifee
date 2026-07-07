@@ -3,18 +3,23 @@ import Imagene from '#models/imagene'
 import app from '@adonisjs/core/services/app'
 import { subirImagen } from '#services/cloudinary_service'
 
-
 export default class ImagenesController {
   async index({ request, response }: HttpContext) {
     try {
       const page = Number(request.input('page', 1))
-      const limit       = Number(request.input('limit', 10))
+      const limit = Number(request.input('limit', 10))
       const idMonitoreo = request.input('id_monitoreo')
       const query = Imagene.query()
       if (idMonitoreo) {
         query.where('id_monitoreo', idMonitoreo)
       }
-      const ALLOWED = ['id_imagen', 'id_monitoreo', 'ruta_imagen', 'fecha_registro', 'fecha_actualizacion']
+      const ALLOWED = [
+        'id_imagen',
+        'id_monitoreo',
+        'ruta_imagen',
+        'fecha_registro',
+        'fecha_actualizacion',
+      ]
       const orderBy = request.input('order_by', 'id_imagen')
       const orderDir = request.input('order_dir', 'desc')
       const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_imagen'
@@ -23,7 +28,10 @@ export default class ImagenesController {
       const imagenes = await query.paginate(page, limit)
       return response.ok(imagenes)
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener imágenes', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener imágenes',
+        error: error.message,
+      })
     }
   }
 
@@ -57,7 +65,10 @@ export default class ImagenesController {
 
       return response.created({ message: 'Imagen subida correctamente', data: imagen })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al subir imagen', error: error.message })
+      return response.internalServerError({
+        message: 'Error al subir imagen',
+        error: error.message,
+      })
     }
   }
 
@@ -79,7 +90,10 @@ export default class ImagenesController {
       await imagen.save()
       return response.ok({ message: 'Imagen actualizada correctamente', data: imagen })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al actualizar imagen', error: error.message })
+      return response.internalServerError({
+        message: 'Error al actualizar imagen',
+        error: error.message,
+      })
     }
   }
 
@@ -89,7 +103,10 @@ export default class ImagenesController {
       await imagen.delete()
       return response.ok({ message: 'Imagen eliminada correctamente' })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al eliminar imagen', error: error.message })
+      return response.internalServerError({
+        message: 'Error al eliminar imagen',
+        error: error.message,
+      })
     }
   }
 }

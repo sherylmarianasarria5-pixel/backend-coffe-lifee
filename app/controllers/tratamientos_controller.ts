@@ -2,18 +2,16 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Tratamiento from '#models/tratamiento'
 
 export default class TratamientosController {
-
   async index({ request, response }: HttpContext) {
     try {
-      const page        = Number(request.input('page', 1))
-      const limit       = Number(request.input('limit', 10))
-      const search      = request.input('search', '')
-      const idTipo      = request.input('id_tipo')
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 10))
+      const search = request.input('search', '')
+      const idTipo = request.input('id_tipo')
       const query = Tratamiento.query().preload('tipoTratamiento').preload('insumo')
       if (search) {
         query.where((q) => {
-          q.whereILike('nombre', `%${search}%`)
-           .orWhereILike('descripcion', `%${search}%`)
+          q.whereILike('nombre', `%${search}%`).orWhereILike('descripcion', `%${search}%`)
         })
       }
       if (idTipo) {
@@ -64,29 +62,27 @@ export default class TratamientosController {
         return response.badRequest({ message: 'El nombre es obligatorio' })
       }
 
-      const existe = await Tratamiento.query()
-        .whereILike('nombre', data.nombre.trim())
-        .first()
+      const existe = await Tratamiento.query().whereILike('nombre', data.nombre.trim()).first()
 
       if (existe) {
         return response.conflict({
           message: `Ya existe un tratamiento con el nombre "${data.nombre}". Usa uno diferente o edita el existente.`,
           data: {
             idTratamiento: existe.idTratamiento,
-            nombre:        existe.nombre,
-            descripcion:   existe.descripcion,
-          }
+            nombre: existe.nombre,
+            descripcion: existe.descripcion,
+          },
         })
       }
 
       const tratamiento = await Tratamiento.create({
         idTipoTratamiento: data.id_tipo_tratamiento ?? null,
-        idInsumo:          data.id_insumo          ?? null,
-        nombre:            data.nombre,
-        descripcion:       data.descripcion        ?? null,
-        dosis:             data.dosis              ?? null,
-        frecuencia:        data.frecuencia          ?? null,
-        observaciones:     data.observaciones       ?? null,
+        idInsumo: data.id_insumo ?? null,
+        nombre: data.nombre,
+        descripcion: data.descripcion ?? null,
+        dosis: data.dosis ?? null,
+        frecuencia: data.frecuencia ?? null,
+        observaciones: data.observaciones ?? null,
       })
 
       await tratamiento.load('tipoTratamiento')
@@ -119,13 +115,14 @@ export default class TratamientosController {
       ])
 
       const payload: Record<string, any> = {}
-      if (data.id_tipo_tratamiento !== undefined) payload.idTipoTratamiento = data.id_tipo_tratamiento
-      if (data.id_insumo          !== undefined) payload.idInsumo          = data.id_insumo
-      if (data.nombre             !== undefined) payload.nombre            = data.nombre
-      if (data.descripcion        !== undefined) payload.descripcion       = data.descripcion
-      if (data.dosis              !== undefined) payload.dosis             = data.dosis
-      if (data.frecuencia         !== undefined) payload.frecuencia        = data.frecuencia
-      if (data.observaciones      !== undefined) payload.observaciones     = data.observaciones
+      if (data.id_tipo_tratamiento !== undefined)
+        payload.idTipoTratamiento = data.id_tipo_tratamiento
+      if (data.id_insumo !== undefined) payload.idInsumo = data.id_insumo
+      if (data.nombre !== undefined) payload.nombre = data.nombre
+      if (data.descripcion !== undefined) payload.descripcion = data.descripcion
+      if (data.dosis !== undefined) payload.dosis = data.dosis
+      if (data.frecuencia !== undefined) payload.frecuencia = data.frecuencia
+      if (data.observaciones !== undefined) payload.observaciones = data.observaciones
 
       tratamiento.merge(payload)
       await tratamiento.save()

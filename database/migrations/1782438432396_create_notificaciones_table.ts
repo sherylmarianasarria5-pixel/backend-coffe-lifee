@@ -6,8 +6,13 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id_notificacion')
-      table.integer('id_usuario').unsigned().notNullable()
-        .references('id_usuario').inTable('usuarios').onDelete('CASCADE')
+      table
+        .integer('id_usuario')
+        .unsigned()
+        .notNullable()
+        .references('id_usuario')
+        .inTable('usuarios')
+        .onDelete('CASCADE')
       table.string('tipo', 50).notNullable()
       table.string('titulo', 200).notNullable()
       table.text('mensaje').notNullable()

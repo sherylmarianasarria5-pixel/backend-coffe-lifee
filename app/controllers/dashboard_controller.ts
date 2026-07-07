@@ -53,11 +53,11 @@ function estadoRoya(m: any): 'sin_roya' | 'con_roya' | 'pendiente' {
   // 2) nombre del nivel cargado por relación
   const nombreNivel = ultimo.nivelRoya?.nombreNivel?.toLowerCase() ?? ''
   const nivelesConRoya = ['bajo', 'medio', 'alto', 'critico', 'con roya', 'roya']
-  if (nivelesConRoya.some(n => nombreNivel.includes(n))) return 'con_roya'
+  if (nivelesConRoya.some((n) => nombreNivel.includes(n))) return 'con_roya'
 
   // 3) resultado directo de la columna (class devuelto por la IA)
   const resultado = (ultimo.resultado ?? '').toLowerCase()
-  if (nivelesConRoya.some(n => resultado.includes(n))) return 'con_roya'
+  if (nivelesConRoya.some((n) => resultado.includes(n))) return 'con_roya'
 
   return 'sin_roya'
 }
@@ -68,7 +68,10 @@ function severidadRoya(m: any): string | null {
   return ultimo?.nivelRoya?.nombreNivel ?? null
 }
 
-function estadoVisible(m: any, tieneRecomendacion: boolean): 'Revisado' | 'Pendiente' | 'Tratamiento enviado' {
+function estadoVisible(
+  m: any,
+  tieneRecomendacion: boolean
+): 'Revisado' | 'Pendiente' | 'Tratamiento enviado' {
   const roya = estadoRoya(m)
   if (roya === 'sin_roya') return 'Revisado'
   if (roya === 'con_roya') return tieneRecomendacion ? 'Tratamiento enviado' : 'Pendiente'
@@ -79,7 +82,9 @@ async function cargarMonitoreosCompletos(query: any) {
   return query
     .preload('cultivo', (q: any) => q.preload('finca'))
     .preload('usuario')
-    .preload('imagenes', (q: any) => q.preload('analisis', (qa: any) => qa.preload('nivelRoya').preload('estadoAnalisis')))
+    .preload('imagenes', (q: any) =>
+      q.preload('analisis', (qa: any) => qa.preload('nivelRoya').preload('estadoAnalisis'))
+    )
     .preload('recomendaciones')
 }
 
@@ -106,22 +111,55 @@ export default class DashboardController {
       }
 
       const [
-        fincasActivasActual, fincasActivasAnterior,
-        expertosActivosActual, expertosActivosAnterior,
-        cafeterosActivosActual, cafeterosActivosAnterior,
-        monitoreosMesActual, monitoreosMesAnterior,
+        fincasActivasActual,
+        fincasActivasAnterior,
+        expertosActivosActual,
+        expertosActivosAnterior,
+        cafeterosActivosActual,
+        cafeterosActivosAnterior,
+        monitoreosMesActual,
+        monitoreosMesAnterior,
       ] = await Promise.all([
         Finca.query().where('activo', true).count('* as total').first(),
-        Finca.query().where('activo', true).where('fecha_registro', '<', finSemanaAnterior.toSQL()!).count('* as total').first(),
+        Finca.query()
+          .where('activo', true)
+          .where('fecha_registro', '<', finSemanaAnterior.toSQL()!)
+          .count('* as total')
+          .first(),
 
-        Usuario.query().where('activo', true).whereHas('rol', (q) => q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['experto'])).count('* as total').first(),
-        Usuario.query().where('activo', true).whereHas('rol', (q) => q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['experto'])).where('fecha_registro', '<', finSemanaAnterior.toSQL()!).count('* as total').first(),
+        Usuario.query()
+          .where('activo', true)
+          .whereHas('rol', (q) => q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['experto']))
+          .count('* as total')
+          .first(),
+        Usuario.query()
+          .where('activo', true)
+          .whereHas('rol', (q) => q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['experto']))
+          .where('fecha_registro', '<', finSemanaAnterior.toSQL()!)
+          .count('* as total')
+          .first(),
 
-        Usuario.query().where('activo', true).whereHas('rol', (q) => q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero'])).count('* as total').first(),
-        Usuario.query().where('activo', true).whereHas('rol', (q) => q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero'])).where('fecha_registro', '<', finSemanaAnterior.toSQL()!).count('* as total').first(),
+        Usuario.query()
+          .where('activo', true)
+          .whereHas('rol', (q) => q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero']))
+          .count('* as total')
+          .first(),
+        Usuario.query()
+          .where('activo', true)
+          .whereHas('rol', (q) => q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero']))
+          .where('fecha_registro', '<', finSemanaAnterior.toSQL()!)
+          .count('* as total')
+          .first(),
 
-        Monitoreo.query().where('fecha_monitoreo', '>=', inicioMes.toSQL()!).count('* as total').first(),
-        Monitoreo.query().where('fecha_monitoreo', '>=', inicioMesAnterior.toSQL()!).where('fecha_monitoreo', '<', finMesAnterior.toSQL()!).count('* as total').first(),
+        Monitoreo.query()
+          .where('fecha_monitoreo', '>=', inicioMes.toSQL()!)
+          .count('* as total')
+          .first(),
+        Monitoreo.query()
+          .where('fecha_monitoreo', '>=', inicioMesAnterior.toSQL()!)
+          .where('fecha_monitoreo', '<', finMesAnterior.toSQL()!)
+          .count('* as total')
+          .first(),
       ])
 
       const extraer = (r: any) => Number(r?.$extras?.total ?? 0)
@@ -129,23 +167,38 @@ export default class DashboardController {
       return response.ok({
         fincasActivas: {
           total: extraer(fincasActivasActual),
-          variacionPorcentual: variacion(extraer(fincasActivasActual), extraer(fincasActivasAnterior)),
+          variacionPorcentual: variacion(
+            extraer(fincasActivasActual),
+            extraer(fincasActivasAnterior)
+          ),
         },
         expertosActivos: {
           total: extraer(expertosActivosActual),
-          variacionPorcentual: variacion(extraer(expertosActivosActual), extraer(expertosActivosAnterior)),
+          variacionPorcentual: variacion(
+            extraer(expertosActivosActual),
+            extraer(expertosActivosAnterior)
+          ),
         },
         cafeterosActivos: {
           total: extraer(cafeterosActivosActual),
-          variacionPorcentual: variacion(extraer(cafeterosActivosActual), extraer(cafeterosActivosAnterior)),
+          variacionPorcentual: variacion(
+            extraer(cafeterosActivosActual),
+            extraer(cafeterosActivosAnterior)
+          ),
         },
         monitoreosEsteMes: {
           total: extraer(monitoreosMesActual),
-          variacionPorcentual: variacion(extraer(monitoreosMesActual), extraer(monitoreosMesAnterior)),
+          variacionPorcentual: variacion(
+            extraer(monitoreosMesActual),
+            extraer(monitoreosMesAnterior)
+          ),
         },
       })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener resumen del dashboard', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener resumen del dashboard',
+        error: error.message,
+      })
     }
   }
 
@@ -182,12 +235,15 @@ export default class DashboardController {
 
       return response.ok({
         total,
-        sinRoya:    { cantidad: sinRoya,    porcentaje: pct(sinRoya) },
-        conRoya:    { cantidad: conRoya,    porcentaje: pct(conRoya) },
+        sinRoya: { cantidad: sinRoya, porcentaje: pct(sinRoya) },
+        conRoya: { cantidad: conRoya, porcentaje: pct(conRoya) },
         pendientes: { cantidad: pendientes, porcentaje: pct(pendientes) },
       })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener monitoreos por estado', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener monitoreos por estado',
+        error: error.message,
+      })
     }
   }
 
@@ -232,7 +288,10 @@ export default class DashboardController {
 
       return response.ok({ dias: resultado })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener tendencia de roya', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener tendencia de roya',
+        error: error.message,
+      })
     }
   }
 
@@ -246,13 +305,30 @@ export default class DashboardController {
     try {
       const limit = Number(request.input('limit', 10))
 
-      const [monitoreosRecientes, recomendacionesRecientes, cafeterosRecientes] = await Promise.all([
-        cargarMonitoreosCompletos(Monitoreo.query().orderBy('fecha_registro', 'desc').limit(limit)),
-        Recomendacione.query().preload('monitoreo', (q: any) => q.preload('cultivo', (qc: any) => qc.preload('finca'))).orderBy('fecha_registro', 'desc').limit(limit),
-        Usuario.query().whereHas('rol', (q) => q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero'])).orderBy('fecha_registro', 'desc').limit(limit),
-      ])
+      const [monitoreosRecientes, recomendacionesRecientes, cafeterosRecientes] = await Promise.all(
+        [
+          cargarMonitoreosCompletos(
+            Monitoreo.query().orderBy('fecha_registro', 'desc').limit(limit)
+          ),
+          Recomendacione.query()
+            .preload('monitoreo', (q: any) =>
+              q.preload('cultivo', (qc: any) => qc.preload('finca'))
+            )
+            .orderBy('fecha_registro', 'desc')
+            .limit(limit),
+          Usuario.query()
+            .whereHas('rol', (q) => q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['cafetero']))
+            .orderBy('fecha_registro', 'desc')
+            .limit(limit),
+        ]
+      )
 
-      const eventos: Array<{ tipo: string; titulo: string; detalle: string; fecha: string | null }> = []
+      const eventos: Array<{
+        tipo: string
+        titulo: string
+        detalle: string
+        fecha: string | null
+      }> = []
 
       for (const m of monitoreosRecientes) {
         const fincaNombre = m.cultivo?.finca?.nombreFinca ?? 'Finca sin asignar'
@@ -297,7 +373,10 @@ export default class DashboardController {
 
       return response.ok({ data: eventos.slice(0, limit) })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener actividad reciente', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener actividad reciente',
+        error: error.message,
+      })
     }
   }
 
@@ -322,7 +401,12 @@ export default class DashboardController {
           finca: m.cultivo?.finca?.nombreFinca ?? null,
           lote: m.cultivo?.nombreCultivo ?? null,
           fecha: m.fechaMonitoreo,
-          resultadoIA: roya === 'con_roya' ? 'Tiene roya' : roya === 'sin_roya' ? 'Sin roya' : 'Pendiente de análisis',
+          resultadoIA:
+            roya === 'con_roya'
+              ? 'Tiene roya'
+              : roya === 'sin_roya'
+                ? 'Sin roya'
+                : 'Pendiente de análisis',
           severidad: roya === 'con_roya' ? severidadRoya(m) : null,
           experto: m.usuario ? `${m.usuario.nombre} ${m.usuario.apellido}` : null,
           estado: estadoVisible(m, tieneRecomendacion),
@@ -331,7 +415,10 @@ export default class DashboardController {
 
       return response.ok({ data })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener monitoreos recientes', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener monitoreos recientes',
+        error: error.message,
+      })
     }
   }
 
@@ -346,13 +433,20 @@ export default class DashboardController {
       const limit = Number(request.input('limit', 5))
       const monitoreos = await cargarMonitoreosCompletos(Monitoreo.query())
 
-      const conteoPorFinca = new Map<number, { nombreFinca: string; casosConRoya: number; porSeveridad: Record<string, number> }>()
+      const conteoPorFinca = new Map<
+        number,
+        { nombreFinca: string; casosConRoya: number; porSeveridad: Record<string, number> }
+      >()
       for (const m of monitoreos as any[]) {
         if (estadoRoya(m) !== 'con_roya') continue
         const finca = m.cultivo?.finca
         if (!finca) continue
         const sev = severidadRoya(m) ?? 'Sin clasificar'
-        const actual = conteoPorFinca.get(finca.idFinca) ?? { nombreFinca: finca.nombreFinca, casosConRoya: 0, porSeveridad: {} as Record<string, number> }
+        const actual = conteoPorFinca.get(finca.idFinca) ?? {
+          nombreFinca: finca.nombreFinca,
+          casosConRoya: 0,
+          porSeveridad: {} as Record<string, number>,
+        }
         actual.casosConRoya++
         actual.porSeveridad[sev] = (actual.porSeveridad[sev] ?? 0) + 1
         conteoPorFinca.set(finca.idFinca, actual)
@@ -365,7 +459,10 @@ export default class DashboardController {
 
       return response.ok({ data })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener top de fincas con roya', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener top de fincas con roya',
+        error: error.message,
+      })
     }
   }
 
@@ -405,7 +502,10 @@ export default class DashboardController {
 
       return response.ok({ data })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener próximos monitoreos', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener próximos monitoreos',
+        error: error.message,
+      })
     }
   }
 
@@ -416,17 +516,27 @@ export default class DashboardController {
    */
   async mapaFincas({ response }: HttpContext) {
     try {
-      const fincas = await Finca.query().where('activo', true).whereNotNull('latitud').whereNotNull('longitud')
+      const fincas = await Finca.query()
+        .where('activo', true)
+        .whereNotNull('latitud')
+        .whereNotNull('longitud')
       const monitoreos = await cargarMonitoreosCompletos(Monitoreo.query())
 
-      const ultimoEstadoPorFinca = new Map<number, { fecha: number; estado: 'sin_roya' | 'con_roya' | 'pendiente'; severidad: string | null }>()
+      const ultimoEstadoPorFinca = new Map<
+        number,
+        { fecha: number; estado: 'sin_roya' | 'con_roya' | 'pendiente'; severidad: string | null }
+      >()
       for (const m of monitoreos as any[]) {
         const idFinca = m.cultivo?.finca?.idFinca
         if (!idFinca) continue
         const fechaMillis = DateTime.fromISO(String(m.fechaMonitoreo)).toMillis()
         const actual = ultimoEstadoPorFinca.get(idFinca)
         if (!actual || fechaMillis > actual.fecha) {
-          ultimoEstadoPorFinca.set(idFinca, { fecha: fechaMillis, estado: estadoRoya(m), severidad: severidadRoya(m) })
+          ultimoEstadoPorFinca.set(idFinca, {
+            fecha: fechaMillis,
+            estado: estadoRoya(m),
+            severidad: severidadRoya(m),
+          })
         }
       }
 
@@ -441,7 +551,10 @@ export default class DashboardController {
 
       return response.ok({ data })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener mapa de fincas', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener mapa de fincas',
+        error: error.message,
+      })
     }
   }
 
@@ -478,8 +591,10 @@ export default class DashboardController {
         nota: 'reduccionPerdidaPorcentaje, ahorroFungicidasPorcentaje e incrementoProductividadPorcentaje requieren tablas de costos/cosecha que aún no existen en el esquema.',
       })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener impacto del sistema', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener impacto del sistema',
+        error: error.message,
+      })
     }
   }
-
 }

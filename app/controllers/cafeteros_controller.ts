@@ -2,7 +2,6 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Usuario from '#models/usuario'
 import CatRol from '#models/cat_rol'
 
-
 export default class CafeterosController {
   /**
    * @index
@@ -11,8 +10,8 @@ export default class CafeterosController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page   = Number(request.input('page', 1))
-      const limit  = Number(request.input('limit', 10))
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 10))
       const search = request.input('search', '')
       const activo = request.input('activo')
 
@@ -25,13 +24,23 @@ export default class CafeterosController {
       if (search) {
         query.where((q) => {
           q.whereILike('nombre', `%${search}%`)
-           .orWhereILike('apellido', `%${search}%`)
-           .orWhereILike('correo', `%${search}%`)
+            .orWhereILike('apellido', `%${search}%`)
+            .orWhereILike('correo', `%${search}%`)
         })
       }
-      if (activo !== undefined && activo !== '') query.where('activo', activo === 'true' || activo === '1')
+      if (activo !== undefined && activo !== '')
+        query.where('activo', activo === 'true' || activo === '1')
 
-      const ALLOWED = ['id_usuario', 'nombre', 'apellido', 'correo', 'telefono', 'activo', 'fecha_registro', 'fecha_actualizacion']
+      const ALLOWED = [
+        'id_usuario',
+        'nombre',
+        'apellido',
+        'correo',
+        'telefono',
+        'activo',
+        'fecha_registro',
+        'fecha_actualizacion',
+      ]
       const orderBy = request.input('order_by', 'id_usuario')
       const orderDir = request.input('order_dir', 'desc')
       const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_usuario'
@@ -40,7 +49,10 @@ export default class CafeterosController {
       const usuarios = await query.paginate(page, limit)
       return response.ok(usuarios.toJSON())
     } catch (error: any) {
-      return response.internalServerError({ message:'Error al obtener cafeteros', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener cafeteros',
+        error: error.message,
+      })
     }
   }
 
@@ -53,7 +65,15 @@ export default class CafeterosController {
    */
   async store({ request, response }: HttpContext) {
     try {
-      const data = request.only(['nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
+      const data = request.only([
+        'nombre',
+        'apellido',
+        'correo',
+        'telefono',
+        'password',
+        'observaciones',
+        'activo',
+      ])
 
       if (!data.nombre) return response.badRequest({ message: 'El nombre es obligatorio' })
       if (!data.correo) return response.badRequest({ message: 'El correo es obligatorio' })
@@ -78,7 +98,10 @@ export default class CafeterosController {
       })
       return response.created({ message: 'Cafetero creado correctamente', data: usuario })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al crear cafetero', error: error.message })
+      return response.internalServerError({
+        message: 'Error al crear cafetero',
+        error: error.message,
+      })
     }
   }
 
@@ -119,7 +142,15 @@ export default class CafeterosController {
         })
         .firstOrFail()
 
-      const data = request.only(['nombre', 'apellido', 'correo', 'telefono', 'password', 'observaciones', 'activo'])
+      const data = request.only([
+        'nombre',
+        'apellido',
+        'correo',
+        'telefono',
+        'password',
+        'observaciones',
+        'activo',
+      ])
 
       if (data.correo && data.correo !== usuario.correo) {
         const existe = await Usuario.findBy('correo', data.correo)
@@ -139,7 +170,10 @@ export default class CafeterosController {
       await usuario.save()
       return response.ok({ message: 'Cafetero actualizado correctamente', data: usuario })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al actualizar cafetero', error: error.message })
+      return response.internalServerError({
+        message: 'Error al actualizar cafetero',
+        error: error.message,
+      })
     }
   }
 
@@ -160,7 +194,10 @@ export default class CafeterosController {
       await usuario.delete()
       return response.ok({ message: 'Cafetero eliminado correctamente' })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al eliminar cafetero', error: error.message })
+      return response.internalServerError({
+        message: 'Error al eliminar cafetero',
+        error: error.message,
+      })
     }
   }
 }

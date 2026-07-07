@@ -2,14 +2,13 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Notificacione from '#models/notificacione'
 
 export default class NotificacionesController {
-
   async index({ request, response }: HttpContext) {
     try {
-      const jwt     = (request as any).usuarioJwt
+      const jwt = (request as any).usuarioJwt
       const idUsuario = jwt?.id
 
-      const page   = Number(request.input('page', 1))
-      const limit  = Number(request.input('limit', 20))
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 20))
       const soloNoLeidas = request.input('no_leidas')
 
       const query = Notificacione.query()
@@ -33,7 +32,10 @@ export default class NotificacionesController {
         ...notificaciones.toJSON(),
       })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener notificaciones', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener notificaciones',
+        error: error.message,
+      })
     }
   }
 
@@ -64,7 +66,10 @@ export default class NotificacionesController {
 
       return response.ok({ message: 'Todas las notificaciones marcadas como leídas' })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al marcar notificaciones', error: error.message })
+      return response.internalServerError({
+        message: 'Error al marcar notificaciones',
+        error: error.message,
+      })
     }
   }
 

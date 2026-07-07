@@ -4,9 +4,7 @@ import app from '@adonisjs/core/services/app'
 import { subirImagen } from '#services/cloudinary_service'
 import { cultivoStoreValidator, cultivoUpdateValidator } from '#validators/validators'
 
-
 export default class CultivosController {
-
   /**
    * @index
    * @summary Listar cultivos
@@ -14,13 +12,13 @@ export default class CultivosController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page            = Number(request.input('page', 1))
-      const limit           = Number(request.input('limit', 10))
-      const idFinca         = request.input('id_finca')
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 10))
+      const idFinca = request.input('id_finca')
       const idEstadoCultivo = request.input('id_estado_cultivo')
-      const idUsuario       = request.input('id_usuario')
-      const tipoCultivo     = request.input('tipo_cultivo')
-      const search          = request.input('search', '')
+      const idUsuario = request.input('id_usuario')
+      const tipoCultivo = request.input('tipo_cultivo')
+      const search = request.input('search', '')
       const query = Cultivo.query()
       if (search) {
         query.whereILike('nombre_cultivo', `%${search}%`)
@@ -37,7 +35,15 @@ export default class CultivosController {
       if (tipoCultivo) {
         query.where('tipo_cultivo', tipoCultivo)
       }
-      const ALLOWED = ['id_cultivo', 'nombre_cultivo', 'tipo_cultivo', 'created_at', 'updated_at', 'id_finca', 'id_estado']
+      const ALLOWED = [
+        'id_cultivo',
+        'nombre_cultivo',
+        'tipo_cultivo',
+        'created_at',
+        'updated_at',
+        'id_finca',
+        'id_estado',
+      ]
       const orderBy = request.input('order_by', 'id_cultivo')
       const orderDir = request.input('order_dir', 'desc')
       const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_cultivo'
@@ -46,7 +52,10 @@ export default class CultivosController {
       const cultivos = await query.paginate(page, limit)
       return response.ok(cultivos)
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener cultivos', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener cultivos',
+        error: error.message,
+      })
     }
   }
 
@@ -62,11 +71,11 @@ export default class CultivosController {
       const data = await request.validateUsing(cultivoStoreValidator)
 
       const cultivo = await Cultivo.create({
-        idFinca:         data.id_finca,
-        nombreCultivo:   data.nombre_cultivo,
-        tipoCultivo:     data.tipo_cultivo,
+        idFinca: data.id_finca,
+        nombreCultivo: data.nombre_cultivo,
+        tipoCultivo: data.tipo_cultivo,
         idEstadoCultivo: data.id_estado_cultivo ?? null,
-        numeroArboles:   data.numero_arboles ?? 0,
+        numeroArboles: data.numero_arboles ?? 0,
       })
 
       await cultivo.load('finca')
@@ -75,9 +84,15 @@ export default class CultivosController {
       return response.created({ message: 'Cultivo creado correctamente', data: cultivo })
     } catch (error: any) {
       if (error.code === 'E_VALIDATION_ERROR') {
-        return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
+        return response.unprocessableEntity({
+          message: 'Error de validación',
+          errors: error.messages,
+        })
       }
-      return response.internalServerError({ message: 'Error al crear cultivo', error: error.message })
+      return response.internalServerError({
+        message: 'Error al crear cultivo',
+        error: error.message,
+      })
     }
   }
 
@@ -110,13 +125,13 @@ export default class CultivosController {
   async update({ params, request, response }: HttpContext) {
     try {
       const cultivo = await Cultivo.findOrFail(params.id)
-      const data    = await request.validateUsing(cultivoUpdateValidator)
+      const data = await request.validateUsing(cultivoUpdateValidator)
 
       const payload: Record<string, any> = {}
-      if (data.nombre_cultivo    !== undefined) payload.nombreCultivo   = data.nombre_cultivo
-      if (data.tipo_cultivo      !== undefined) payload.tipoCultivo     = data.tipo_cultivo
+      if (data.nombre_cultivo !== undefined) payload.nombreCultivo = data.nombre_cultivo
+      if (data.tipo_cultivo !== undefined) payload.tipoCultivo = data.tipo_cultivo
       if (data.id_estado_cultivo !== undefined) payload.idEstadoCultivo = data.id_estado_cultivo
-      if (data.numero_arboles    !== undefined) payload.numeroArboles   = data.numero_arboles
+      if (data.numero_arboles !== undefined) payload.numeroArboles = data.numero_arboles
 
       cultivo.merge(payload)
       await cultivo.save()
@@ -126,9 +141,15 @@ export default class CultivosController {
       return response.ok({ message: 'Cultivo actualizado correctamente', data: cultivo })
     } catch (error: any) {
       if (error.code === 'E_VALIDATION_ERROR') {
-        return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
+        return response.unprocessableEntity({
+          message: 'Error de validación',
+          errors: error.messages,
+        })
       }
-      return response.internalServerError({ message: 'Error al actualizar cultivo', error: error.message })
+      return response.internalServerError({
+        message: 'Error al actualizar cultivo',
+        error: error.message,
+      })
     }
   }
 
@@ -181,7 +202,10 @@ export default class CultivosController {
       await cultivo.delete()
       return response.ok({ message: 'Cultivo eliminado correctamente' })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al eliminar cultivo', error: error.message })
+      return response.internalServerError({
+        message: 'Error al eliminar cultivo',
+        error: error.message,
+      })
     }
   }
 }

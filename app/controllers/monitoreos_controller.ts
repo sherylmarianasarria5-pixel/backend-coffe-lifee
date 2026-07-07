@@ -7,7 +7,24 @@ import { DateTime } from 'luxon'
 
 function serializar(m: Monitoreo) {
   const exp = m.usuario
-  const imagenes = m.imagenes? m.imagenes.map((img: any) => ({idImagen: img.idImagen, rutaImagen: img.rutaImagen,           analisis: img.analisis ? img.analisis.map((a: any) => ({ idAnalisis: a.idAnalisis, resultado: a.resultado, porcentajeConfianza: a.porcentajeConfianza, recomendaciones: a.recomendaciones ?? [], estadoAnalisis: a.estadoAnalisis ? { nombreEstado: a.estadoAnalisis.nombreEstado } : null, nivelRoya: a.nivelRoya ? { nombreNivel: a.nivelRoya.nombreNivel } : null, })) : [], })) : []
+  const imagenes = m.imagenes
+    ? m.imagenes.map((img: any) => ({
+        idImagen: img.idImagen,
+        rutaImagen: img.rutaImagen,
+        analisis: img.analisis
+          ? img.analisis.map((a: any) => ({
+              idAnalisis: a.idAnalisis,
+              resultado: a.resultado,
+              porcentajeConfianza: a.porcentajeConfianza,
+              recomendaciones: a.recomendaciones ?? [],
+              estadoAnalisis: a.estadoAnalisis
+                ? { nombreEstado: a.estadoAnalisis.nombreEstado }
+                : null,
+              nivelRoya: a.nivelRoya ? { nombreNivel: a.nivelRoya.nombreNivel } : null,
+            }))
+          : [],
+      }))
+    : []
   return {
     idMonitoreo: m.idMonitoreo,
     idCultivo: m.idCultivo,
@@ -15,27 +32,35 @@ function serializar(m: Monitoreo) {
     observaciones: m.observaciones,
     fechaRegistro: m.fechaRegistro,
     fechaActualizacion: m.fechaActualizacion,
-    cultivo: m.cultivo ? { idCultivo: m.cultivo.idCultivo, idFinca: m.cultivo.idFinca, nombreCultivo: m.cultivo.nombreCultivo,
-    } : null,
+    cultivo: m.cultivo
+      ? {
+          idCultivo: m.cultivo.idCultivo,
+          idFinca: m.cultivo.idFinca,
+          nombreCultivo: m.cultivo.nombreCultivo,
+        }
+      : null,
     imagenes,
-    recomendaciones: m.recomendaciones ? m.recomendaciones.map((r: any) => ({
-      idRecomendacion: r.idRecomendacion,
-      descripcion: r.descripcion,
-      tipo: r.tipo ? { nombre: r.tipo.nombreTipo || r.tipo.nombre } : null,
-      tratamientos: r.tratamientos ? r.tratamientos.map(() => ({})) : [],
-    })) : [],
-    usuario: exp ? {
-      idUsuario: exp.idUsuario,
-      nombre:    exp.nombre,
-      apellido:  exp.apellido,
-      correo:    exp.correo,
-      telefono:  exp.telefono,
-    } : null,
+    recomendaciones: m.recomendaciones
+      ? m.recomendaciones.map((r: any) => ({
+          idRecomendacion: r.idRecomendacion,
+          descripcion: r.descripcion,
+          tipo: r.tipo ? { nombre: r.tipo.nombreTipo || r.tipo.nombre } : null,
+          tratamientos: r.tratamientos ? r.tratamientos.map(() => ({})) : [],
+        }))
+      : [],
+    usuario: exp
+      ? {
+          idUsuario: exp.idUsuario,
+          nombre: exp.nombre,
+          apellido: exp.apellido,
+          correo: exp.correo,
+          telefono: exp.telefono,
+        }
+      : null,
   }
 }
 
 export default class MonitoreosController {
-
   /**
    * @index
    * @summary Listar todos los monitoreos
@@ -64,12 +89,20 @@ export default class MonitoreosController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page      = Number(request.input('page', 1))
-      const limit     = Number(request.input('limit', 10))
-      const search    = request.input('search', '')
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 10))
+      const search = request.input('search', '')
       const idCultivo = request.input('id_cultivo')
       const idExperto = request.input('id_experto')
-      const ALLOWED = ['id_monitoreo', 'fecha_monitoreo', 'observaciones', 'fecha_registro', 'fecha_actualizacion', 'id_cultivo', 'id_usuario']
+      const ALLOWED = [
+        'id_monitoreo',
+        'fecha_monitoreo',
+        'observaciones',
+        'fecha_registro',
+        'fecha_actualizacion',
+        'id_cultivo',
+        'id_usuario',
+      ]
       const orderBy = request.input('order_by', 'id_monitoreo')
       const orderDir = request.input('order_dir', 'desc')
       const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_monitoreo'
@@ -85,7 +118,7 @@ export default class MonitoreosController {
         })
         .preload('recomendaciones', (r) => {
           r.preload('tipo')
-           r.preload('tratamiento')
+          r.preload('tratamiento')
         })
 
       if (search) {
@@ -100,13 +133,13 @@ export default class MonitoreosController {
 
       const paginado = await query.paginate(page, limit)
       const json = paginado.toJSON()
-      json.data  = paginado.all().map(serializar)
+      json.data = paginado.all().map(serializar)
 
       return response.ok(json)
     } catch (error: any) {
-      return response.internalServerError({ 
-        message: 'Error al obtener monitoreos', 
-        error: error.message 
+      return response.internalServerError({
+        message: 'Error al obtener monitoreos',
+        error: error.message,
       })
     }
   }
@@ -143,22 +176,20 @@ export default class MonitoreosController {
    */
   async store({ request, response }: HttpContext) {
     try {
-      const jwt       = (request as any).usuarioJwt
+      const jwt = (request as any).usuarioJwt
       const idUsuario = jwt?.id as number | undefined
 
       if (!idUsuario) {
-        return response.unauthorized({ 
-          message: 'Token inválido: no se encontró el id del usuario' 
+        return response.unauthorized({
+          message: 'Token inválido: no se encontró el id del usuario',
         })
       }
 
-      const usuario = await Usuario.query()
-        .where('id_usuario', idUsuario)
-        .first()
+      const usuario = await Usuario.query().where('id_usuario', idUsuario).first()
 
       if (!usuario) {
-        return response.forbidden({ 
-          message: 'Usuario no encontrado' 
+        return response.forbidden({
+          message: 'Usuario no encontrado',
         })
       }
 
@@ -186,18 +217,18 @@ export default class MonitoreosController {
       // ───────────────────────────────────────────────────────────────
 
       const monitoreo = await Monitoreo.create({
-        idCultivo:      data.id_cultivo,
-        idUsuario:      idUsuario,
+        idCultivo: data.id_cultivo,
+        idUsuario: idUsuario,
         fechaMonitoreo: fechaMonitoreo,
-        observaciones:  data.observaciones ?? null,
+        observaciones: data.observaciones ?? null,
       })
 
       // ── Notificar al admin y al experto asignado sobre nuevo monitoreo ──
       try {
-        const { crearNotificacion }      = await import('#services/notificacion_service')
-        const { emitirEventoFinca }      = await import('#start/socket')
-        const { default: Usuario }       = await import('#models/usuario')
-        const { default: Cultivo }       = await import('#models/cultivo')
+        const { crearNotificacion } = await import('#services/notificacion_service')
+        const { emitirEventoFinca } = await import('#start/socket')
+        const { default: Usuario } = await import('#models/usuario')
+        const { default: Cultivo } = await import('#models/cultivo')
         const { default: AsignacionExperto } = await import('#models/asignacion_experto')
 
         const cultivo = await Cultivo.query()
@@ -210,11 +241,11 @@ export default class MonitoreosController {
         const admins = await Usuario.query().where('id_rol', 2).where('activo', true)
         for (const admin of admins) {
           await crearNotificacion({
-            idUsuario:       admin.idUsuario,
-            tipo:            'monitoreo_nuevo',
-            titulo:          'Nuevo monitoreo registrado',
-            mensaje:         `Se registró un nuevo monitoreo en ${nombreFinca} - ${cultivo?.nombreCultivo ?? ''}.`,
-            idReferencia:    monitoreo.idMonitoreo,
+            idUsuario: admin.idUsuario,
+            tipo: 'monitoreo_nuevo',
+            titulo: 'Nuevo monitoreo registrado',
+            mensaje: `Se registró un nuevo monitoreo en ${nombreFinca} - ${cultivo?.nombreCultivo ?? ''}.`,
+            idReferencia: monitoreo.idMonitoreo,
             tablaReferencia: 'monitoreos',
           })
         }
@@ -228,11 +259,11 @@ export default class MonitoreosController {
           if (asignacion?.idExperto) {
             // crearNotificacion ya guarda en BD y emite por WebSocket internamente
             await crearNotificacion({
-              idUsuario:       asignacion.idExperto,
-              tipo:            'monitoreo_nuevo',
-              titulo:          'Nuevo monitoreo en tu finca asignada',
-              mensaje:         `Se registró un nuevo monitoreo en ${nombreFinca} - ${cultivo?.nombreCultivo ?? ''}.`,
-              idReferencia:    monitoreo.idMonitoreo,
+              idUsuario: asignacion.idExperto,
+              tipo: 'monitoreo_nuevo',
+              titulo: 'Nuevo monitoreo en tu finca asignada',
+              mensaje: `Se registró un nuevo monitoreo en ${nombreFinca} - ${cultivo?.nombreCultivo ?? ''}.`,
+              idReferencia: monitoreo.idMonitoreo,
               tablaReferencia: 'monitoreos',
             })
           }
@@ -241,11 +272,11 @@ export default class MonitoreosController {
         // Evento en tiempo real para quien esté viendo el dashboard de esta finca
         if (cultivo?.idFinca) {
           emitirEventoFinca(cultivo.idFinca, 'monitoreo:created', {
-            idMonitoreo:    monitoreo.idMonitoreo,
-            idCultivo:      monitoreo.idCultivo,
-            nombreCultivo:  cultivo.nombreCultivo,
+            idMonitoreo: monitoreo.idMonitoreo,
+            idCultivo: monitoreo.idCultivo,
+            nombreCultivo: cultivo.nombreCultivo,
             fechaMonitoreo: monitoreo.fechaMonitoreo,
-            observaciones:  monitoreo.observaciones,
+            observaciones: monitoreo.observaciones,
           })
         }
       } catch (e) {
@@ -256,29 +287,29 @@ export default class MonitoreosController {
       return response.created({
         message: 'Monitoreo creado correctamente',
         data: {
-          idMonitoreo:    monitoreo.idMonitoreo,
-          idCultivo:      monitoreo.idCultivo,
+          idMonitoreo: monitoreo.idMonitoreo,
+          idCultivo: monitoreo.idCultivo,
           fechaMonitoreo: monitoreo.fechaMonitoreo,
-          observaciones:  monitoreo.observaciones,
+          observaciones: monitoreo.observaciones,
           usuario: {
             idUsuario: usuario.idUsuario,
-            nombre:    usuario.nombre,
-            apellido:  usuario.apellido,
-            correo:    usuario.correo,
-            telefono:  usuario.telefono,
-          }
+            nombre: usuario.nombre,
+            apellido: usuario.apellido,
+            correo: usuario.correo,
+            telefono: usuario.telefono,
+          },
         },
       })
     } catch (error: any) {
       if (error.code === 'E_VALIDATION_ERROR') {
-        return response.unprocessableEntity({ 
-          message: 'Error de validación', 
-          errors: error.messages 
+        return response.unprocessableEntity({
+          message: 'Error de validación',
+          errors: error.messages,
         })
       }
-      return response.internalServerError({ 
-        message: 'Error al crear monitoreo', 
-        error: error.message 
+      return response.internalServerError({
+        message: 'Error al crear monitoreo',
+        error: error.message,
       })
     }
   }
@@ -318,7 +349,7 @@ export default class MonitoreosController {
         })
         .preload('recomendaciones', (r) => {
           r.preload('tipo')
-           r.preload('tratamiento')
+          r.preload('tratamiento')
         })
         .firstOrFail()
 
@@ -345,7 +376,7 @@ export default class MonitoreosController {
   async update({ params, request, response }: HttpContext) {
     try {
       const monitoreo = await Monitoreo.findOrFail(params.id)
-      const data      = await request.validateUsing(monitoreoUpdateValidator)
+      const data = await request.validateUsing(monitoreoUpdateValidator)
 
       const payload: Record<string, any> = {}
       if (data.observaciones !== undefined) payload.observaciones = data.observaciones
@@ -353,20 +384,20 @@ export default class MonitoreosController {
       monitoreo.merge(payload)
       await monitoreo.save()
 
-      return response.ok({ 
-        message: 'Monitoreo actualizado correctamente', 
-        data: monitoreo 
+      return response.ok({
+        message: 'Monitoreo actualizado correctamente',
+        data: monitoreo,
       })
     } catch (error: any) {
       if (error.code === 'E_VALIDATION_ERROR') {
-        return response.unprocessableEntity({ 
-          message: 'Error de validación', 
-          errors: error.messages 
+        return response.unprocessableEntity({
+          message: 'Error de validación',
+          errors: error.messages,
         })
       }
-      return response.internalServerError({ 
-        message: 'Error al actualizar monitoreo', 
-        error: error.message 
+      return response.internalServerError({
+        message: 'Error al actualizar monitoreo',
+        error: error.message,
       })
     }
   }
@@ -386,27 +417,25 @@ export default class MonitoreosController {
 
       const jwt = (request as any).usuarioJwt
       const idUsuarioJwt = jwt?.id
-      const nombreRol: string = (
-        jwt?.rol?.nombreRol ??
-        jwt?.rol?.nombre_rol ??
-        ''
-      ).toLowerCase().trim()
+      const nombreRol: string = (jwt?.rol?.nombreRol ?? jwt?.rol?.nombre_rol ?? '')
+        .toLowerCase()
+        .trim()
 
       const esAdmin = nombreRol === 'admin'
       const esDueño = monitoreo.idUsuario === idUsuarioJwt
 
       if (!esAdmin && !esDueño) {
-        return response.forbidden({ 
-          message: 'No tienes permiso para eliminar este monitoreo' 
+        return response.forbidden({
+          message: 'No tienes permiso para eliminar este monitoreo',
         })
       }
 
       await monitoreo.delete()
       return response.ok({ message: 'Monitoreo eliminado correctamente' })
     } catch (error: any) {
-      return response.internalServerError({ 
-        message: 'Error al eliminar monitoreo', 
-        error: error.message 
+      return response.internalServerError({
+        message: 'Error al eliminar monitoreo',
+        error: error.message,
       })
     }
   }

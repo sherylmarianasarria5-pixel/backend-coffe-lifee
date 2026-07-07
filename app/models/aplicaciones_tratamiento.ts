@@ -26,7 +26,6 @@ export default class AplicacionesTratamiento extends BaseModel {
   @column.dateTime({ autoCreate: true, columnName: 'fecha_registro' })
   declare fechaRegistro: DateTime
 
-
   @belongsTo(() => Tratamiento, {
     foreignKey: 'idTratamiento',
   })

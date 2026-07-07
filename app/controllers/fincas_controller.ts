@@ -4,7 +4,6 @@ import app from '@adonisjs/core/services/app'
 import { subirImagen } from '#services/cloudinary_service'
 import { fincaStoreValidator, fincaUpdateValidator } from '#validators/validators'
 
-
 export default class FincasController {
   private toDecimalString(value: number | undefined) {
     return value === undefined ? null : String(value)
@@ -17,9 +16,9 @@ export default class FincasController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page      = Number(request.input('page', 1))
-      const limit     = Number(request.input('limit', 10))
-      const search    = request.input('search', '')
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 10))
+      const search = request.input('search', '')
       const payload = (request as any).usuarioJwt
       const query = Finca.query()
       if (payload.rol?.nombreRol !== 'admin') {
@@ -28,50 +27,69 @@ export default class FincasController {
       if (search) {
         query.whereILike('nombre_finca', `%${search}%`)
       }
-      const ALLOWED = ['id_finca', 'nombre_finca', 'municipio', 'departamento', 'area_hectareas', 'altitud_msnm', 'latitud', 'longitud', 'id_usuario', 'activo', 'fecha_registro', 'fecha_actualizacion']
+      const ALLOWED = [
+        'id_finca',
+        'nombre_finca',
+        'municipio',
+        'departamento',
+        'area_hectareas',
+        'altitud_msnm',
+        'latitud',
+        'longitud',
+        'id_usuario',
+        'activo',
+        'fecha_registro',
+        'fecha_actualizacion',
+      ]
       const orderBy = request.input('order_by', 'id_finca')
       const orderDir = request.input('order_dir', 'desc')
       const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_finca'
       query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
       query.preload('usuario')
       query.preload('asignacionExperto', (q) => {
-        q.orderBy('fecha_asignada', 'desc')
-         .orderBy('id_asignacion', 'desc')
+        q.orderBy('fecha_asignada', 'desc').orderBy('id_asignacion', 'desc')
         q.preload('experto')
       })
 
       const paginado = await query.paginate(page, limit)
       const json = paginado.toJSON()
       json.data = paginado.all().map((f: any) => ({
-        idFinca:           f.idFinca,
-        nombreFinca:       f.nombreFinca,
-        municipio:         f.municipio,
-        departamento:      f.departamento,
-        latitud:           f.latitud,
-        longitud:          f.longitud,
-        altitudMsnm:       f.altitudMsnm,
-        areaHectareas:     f.areaHectareas,
-        fotoUrl:           f.fotoUrl,
-        activo:            f.activo,
-        fechaRegistro:     f.fechaRegistro,
+        idFinca: f.idFinca,
+        nombreFinca: f.nombreFinca,
+        municipio: f.municipio,
+        departamento: f.departamento,
+        latitud: f.latitud,
+        longitud: f.longitud,
+        altitudMsnm: f.altitudMsnm,
+        areaHectareas: f.areaHectareas,
+        fotoUrl: f.fotoUrl,
+        activo: f.activo,
+        fechaRegistro: f.fechaRegistro,
         fechaActualizacion: f.fechaActualizacion,
-        idUsuario:         f.idUsuario,
-        usuario: f.usuario ? {
-          idUsuario: f.usuario.idUsuario,
-          nombre:    f.usuario.nombre,
-          apellido:  f.usuario.apellido,
-          correo:    f.usuario.correo,
-          rol:       f.usuario.idRol === 3 ? 'cafetero' : f.usuario.idRol === 2 ? 'experto' : 'admin',
-        } : null,
-        expertoAsignado: f.asignacionExperto?.experto ? {
-          idUsuario: f.asignacionExperto.experto.idUsuario,
-          nombre:    f.asignacionExperto.experto.nombre,
-          apellido:  f.asignacionExperto.experto.apellido,
-        } : null,
+        idUsuario: f.idUsuario,
+        usuario: f.usuario
+          ? {
+              idUsuario: f.usuario.idUsuario,
+              nombre: f.usuario.nombre,
+              apellido: f.usuario.apellido,
+              correo: f.usuario.correo,
+              rol: f.usuario.idRol === 3 ? 'cafetero' : f.usuario.idRol === 2 ? 'experto' : 'admin',
+            }
+          : null,
+        expertoAsignado: f.asignacionExperto?.experto
+          ? {
+              idUsuario: f.asignacionExperto.experto.idUsuario,
+              nombre: f.asignacionExperto.experto.nombre,
+              apellido: f.asignacionExperto.experto.apellido,
+            }
+          : null,
       }))
       return response.ok(json)
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al obtener fincas', error: error.message })
+      return response.internalServerError({
+        message: 'Error al obtener fincas',
+        error: error.message,
+      })
     }
   }
 
@@ -86,20 +104,23 @@ export default class FincasController {
     try {
       const data = await request.validateUsing(fincaStoreValidator)
       const finca = await Finca.create({
-        idUsuario:     data.id_usuario,
-        nombreFinca:   data.nombre_finca,
-        municipio:     data.municipio     ?? '',
-        departamento:  data.departamento  ?? '',
-        latitud:       this.toDecimalString(data.latitud),
-        longitud:      this.toDecimalString(data.longitud),
-        altitudMsnm:   this.toDecimalString(data.altitud_msnm),
+        idUsuario: data.id_usuario,
+        nombreFinca: data.nombre_finca,
+        municipio: data.municipio ?? '',
+        departamento: data.departamento ?? '',
+        latitud: this.toDecimalString(data.latitud),
+        longitud: this.toDecimalString(data.longitud),
+        altitudMsnm: this.toDecimalString(data.altitud_msnm),
         areaHectareas: this.toDecimalString(data.area_hectareas),
       })
       await finca.load('usuario')
       return response.created({ message: 'Finca creada correctamente', data: finca })
     } catch (error: any) {
       if (error.code === 'E_VALIDATION_ERROR') {
-        return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
+        return response.unprocessableEntity({
+          message: 'Error de validación',
+          errors: error.messages,
+        })
       }
       return response.internalServerError({ message: 'Error al crear finca', error: error.message })
     }
@@ -118,8 +139,7 @@ export default class FincasController {
         .preload('usuario', (query) => query.preload('rol'))
         .preload('cultivos')
         .preload('asignacionExperto', (q) => {
-          q.orderBy('fecha_asignada', 'desc')
-           .orderBy('id_asignacion', 'desc')
+          q.orderBy('fecha_asignada', 'desc').orderBy('id_asignacion', 'desc')
           q.preload('experto')
         })
         .firstOrFail()
@@ -139,16 +159,16 @@ export default class FincasController {
   async update({ params, request, response }: HttpContext) {
     try {
       const finca = await Finca.findOrFail(params.id)
-      const data  = await request.validateUsing(fincaUpdateValidator)
+      const data = await request.validateUsing(fincaUpdateValidator)
 
       const payload: Record<string, any> = {}
-      if (data.id_usuario     !== undefined) payload.idUsuario     = data.id_usuario
-      if (data.nombre_finca   !== undefined) payload.nombreFinca   = data.nombre_finca
-      if (data.municipio      !== undefined) payload.municipio     = data.municipio
-      if (data.departamento   !== undefined) payload.departamento  = data.departamento
-      if (data.latitud        !== undefined) payload.latitud       = String(data.latitud)
-      if (data.longitud       !== undefined) payload.longitud      = String(data.longitud)
-      if (data.altitud_msnm   !== undefined) payload.altitudMsnm   = String(data.altitud_msnm)
+      if (data.id_usuario !== undefined) payload.idUsuario = data.id_usuario
+      if (data.nombre_finca !== undefined) payload.nombreFinca = data.nombre_finca
+      if (data.municipio !== undefined) payload.municipio = data.municipio
+      if (data.departamento !== undefined) payload.departamento = data.departamento
+      if (data.latitud !== undefined) payload.latitud = String(data.latitud)
+      if (data.longitud !== undefined) payload.longitud = String(data.longitud)
+      if (data.altitud_msnm !== undefined) payload.altitudMsnm = String(data.altitud_msnm)
       if (data.area_hectareas !== undefined) payload.areaHectareas = String(data.area_hectareas)
       if (data.activo !== undefined) payload.activo = data.activo
 
@@ -157,9 +177,15 @@ export default class FincasController {
       return response.ok({ message: 'Finca actualizada correctamente', data: finca })
     } catch (error: any) {
       if (error.code === 'E_VALIDATION_ERROR') {
-        return response.unprocessableEntity({ message: 'Error de validación', errors: error.messages })
+        return response.unprocessableEntity({
+          message: 'Error de validación',
+          errors: error.messages,
+        })
       }
-      return response.internalServerError({ message: 'Error al actualizar finca', error: error.message })
+      return response.internalServerError({
+        message: 'Error al actualizar finca',
+        error: error.message,
+      })
     }
   }
 
@@ -212,7 +238,10 @@ export default class FincasController {
       await finca.delete()
       return response.ok({ message: 'Finca eliminada correctamente' })
     } catch (error: any) {
-      return response.internalServerError({ message: 'Error al eliminar finca', error: error.message })
+      return response.internalServerError({
+        message: 'Error al eliminar finca',
+        error: error.message,
+      })
     }
   }
 }

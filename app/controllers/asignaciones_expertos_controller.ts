@@ -2,21 +2,23 @@ import type { HttpContext } from '@adonisjs/core/http'
 import AsignacionExperto from '#models/asignacion_experto'
 import Usuario from '#models/usuario'
 
-
 function serializar(a: AsignacionExperto) {
   const exp = a.experto
   return {
-    idAsignacion:  a.idAsignacion,
-    idExperto:     a.idExperto,
-    idFinca:       a.idFinca,
+    idAsignacion: a.idAsignacion,
+    idExperto: a.idExperto,
+    idFinca: a.idFinca,
     fechaAsignada: a.fechaAsignada,
     fechaRegistro: a.fechaRegistro,
-    experto: exp ? {idUsuario: exp.idUsuario,
-      nombre:    exp.nombre,
-      apellido:  exp.apellido,
-      correo:    exp.correo,
-      telefono:  exp.telefono,
-    } : null,
+    experto: exp
+      ? {
+          idUsuario: exp.idUsuario,
+          nombre: exp.nombre,
+          apellido: exp.apellido,
+          correo: exp.correo,
+          telefono: exp.telefono,
+        }
+      : null,
     finca: a.$preloaded.finca ? a.finca : undefined,
   }
 }
@@ -24,22 +26,17 @@ function serializar(a: AsignacionExperto) {
 async function validarExperto(idExperto: number, response: any) {
   const usuario = await Usuario.query()
     .where('id_usuario', idExperto)
-    .whereHas('rol', (q: any) =>
-      q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['experto'])
-    )
+    .whereHas('rol', (q: any) => q.whereRaw('LOWER(TRIM(nombre_rol)) = ?', ['experto']))
     .first()
 
   if (!usuario) {
-    response.badRequest({ 
-      message: 'El usuario no existe o no tiene rol de experto' 
-    })
+    response.badRequest({ message: 'El usuario no existe o no tiene rol de experto' })
     return null
   }
   return usuario
 }
 
 export default class AsignacionesExpertosController {
-
   /**
    * @index
    * @summary Listar todas las asignaciones de expertos
@@ -67,21 +64,26 @@ export default class AsignacionesExpertosController {
    */
   async index({ request, response }: HttpContext) {
     try {
-      const page      = Number(request.input('page', 1))
-      const limit     = Number(request.input('limit', 10))
+      const page = Number(request.input('page', 1))
+      const limit = Number(request.input('limit', 10))
       const idExperto = request.input('id_experto')
-      const idFinca   = request.input('id_finca')
-      const ALLOWED = ['id_asignacion', 'fecha_asignada', 'fecha_registro', 'fecha_actualizacion', 'id_experto', 'id_finca']
+      const idFinca = request.input('id_finca')
+      const ALLOWED = [
+        'id_asignacion',
+        'fecha_asignada',
+        'fecha_registro',
+        'fecha_actualizacion',
+        'id_experto',
+        'id_finca',
+      ]
       const orderBy = request.input('order_by', 'id_asignacion')
       const orderDir = request.input('order_dir', 'desc')
       const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_asignacion'
 
-      const query = AsignacionExperto.query()
-        .preload('experto')
-        .preload('finca')
+      const query = AsignacionExperto.query().preload('experto').preload('finca')
 
       if (idExperto) query.where('id_experto', idExperto)
-      if (idFinca)   query.where('id_finca', idFinca)
+      if (idFinca) query.where('id_finca', idFinca)
 
       query.orderBy(safeColumn, orderDir === 'asc' ? 'asc' : 'desc')
 
@@ -90,9 +92,9 @@ export default class AsignacionesExpertosController {
       json.data = paginado.all().map(serializar)
       return response.ok(json)
     } catch (error: any) {
-      return response.internalServerError({ 
-        message: 'Error al obtener asignaciones', 
-        error: error.message 
+      return response.internalServerError({
+        message: 'Error al obtener asignaciones',
+        error: error.message,
       })
     }
   }
@@ -168,9 +170,9 @@ export default class AsignacionesExpertosController {
   async store({ request, response }: HttpContext) {
     try {
       const { idExperto, idFinca, fechaAsignada } = request.only([
-        'idExperto', 
-        'idFinca', 
-        'fechaAsignada'
+        'idExperto',
+        'idFinca',
+        'fechaAsignada',
       ])
 
       // 🔍 LOG TEMPORAL — para rastrear quién está reasignando expertos
@@ -179,30 +181,31 @@ export default class AsignacionesExpertosController {
         fecha: new Date().toISOString(),
         ip: request.ip(),
         userAgent: request.header('user-agent'),
-        usuarioQueHaceLaPeticion: payload ? { id: payload.id, rol: payload.rol?.nombreRol } : 'sin-token',
+        usuarioQueHaceLaPeticion: payload
+          ? { id: payload.id, rol: payload.rol?.nombreRol }
+          : 'sin-token',
         body: { idExperto, idFinca, fechaAsignada },
       })
 
-      if (!idExperto)     return response.badRequest({ message: 'El campo idExperto es obligatorio' })
-      if (!idFinca)       return response.badRequest({ message: 'El campo idFinca es obligatorio' })
-      if (!fechaAsignada) return response.badRequest({ message: 'El campo fechaAsignada es obligatorio' })
+      if (!idExperto) return response.badRequest({ message: 'El campo idExperto es obligatorio' })
+      if (!idFinca) return response.badRequest({ message: 'El campo idFinca es obligatorio' })
+      if (!fechaAsignada)
+        return response.badRequest({ message: 'El campo fechaAsignada es obligatorio' })
 
       const experto = await validarExperto(idExperto, response)
       if (!experto) return
 
-      let asignacion = await AsignacionExperto.query()
-        .where('id_finca', idFinca)
-        .first()
+      let asignacion = await AsignacionExperto.query().where('id_finca', idFinca).first()
 
       if (asignacion) {
-        asignacion.idExperto     = idExperto
+        asignacion.idExperto = idExperto
         asignacion.fechaAsignada = fechaAsignada
         await asignacion.save()
       } else {
-        asignacion = await AsignacionExperto.create({ 
-          idExperto, 
-          idFinca, 
-          fechaAsignada 
+        asignacion = await AsignacionExperto.create({
+          idExperto,
+          idFinca,
+          fechaAsignada,
         })
       }
 
@@ -215,23 +218,25 @@ export default class AsignacionesExpertosController {
         const { emitirEventoFinca } = await import('#start/socket')
 
         await crearNotificacion({
-          idUsuario:       idExperto,
-          tipo:            'finca_asignada',
-          titulo:          'Nueva finca asignada',
-          mensaje:         `Se te asignó la finca "${asignacion.finca?.nombreFinca ?? 'sin nombre'}".`,
-          idReferencia:    asignacion.idFinca,
+          idUsuario: idExperto,
+          tipo: 'finca_asignada',
+          titulo: 'Nueva finca asignada',
+          mensaje: `Se te asignó la finca "${asignacion.finca?.nombreFinca ?? 'sin nombre'}".`,
+          idReferencia: asignacion.idFinca,
           tablaReferencia: 'fincas',
         })
 
         // Evento en tiempo real para quien esté viendo el dashboard de esta finca
         emitirEventoFinca(asignacion.idFinca!, 'finca:asignacion_actualizada', {
-          idFinca:    asignacion.idFinca,
-          idExperto:  asignacion.idExperto,
-          experto: asignacion.experto ? {
-            idUsuario: asignacion.experto.idUsuario,
-            nombre:    asignacion.experto.nombre,
-            apellido:  asignacion.experto.apellido,
-          } : null,
+          idFinca: asignacion.idFinca,
+          idExperto: asignacion.idExperto,
+          experto: asignacion.experto
+            ? {
+                idUsuario: asignacion.experto.idUsuario,
+                nombre: asignacion.experto.nombre,
+                apellido: asignacion.experto.apellido,
+              }
+            : null,
         })
       } catch (e) {
         console.error('Error al notificar asignación de experto:', e)
@@ -243,9 +248,9 @@ export default class AsignacionesExpertosController {
         data: serializar(asignacion),
       })
     } catch (error: any) {
-      return response.internalServerError({ 
-        message: 'Error al guardar asignación', 
-        error: error.message 
+      return response.internalServerError({
+        message: 'Error al guardar asignación',
+        error: error.message,
       })
     }
   }
@@ -294,14 +299,14 @@ export default class AsignacionesExpertosController {
       await asignacion.load('experto')
       await asignacion.load('finca')
 
-      return response.ok({ 
-        message: 'Asignación actualizada', 
-        data: serializar(asignacion) 
+      return response.ok({
+        message: 'Asignación actualizada',
+        data: serializar(asignacion),
       })
     } catch (error: any) {
-      return response.internalServerError({ 
-        message: 'Error al actualizar asignación', 
-        error: error.message 
+      return response.internalServerError({
+        message: 'Error al actualizar asignación',
+        error: error.message,
       })
     }
   }

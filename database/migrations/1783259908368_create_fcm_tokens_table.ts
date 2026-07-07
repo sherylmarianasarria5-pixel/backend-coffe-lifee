@@ -6,8 +6,14 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id_fcm_token')
-      table.integer('id_usuario').unsigned().notNullable().unique()
-        .references('id_usuario').inTable('usuarios').onDelete('CASCADE')
+      table
+        .integer('id_usuario')
+        .unsigned()
+        .notNullable()
+        .unique()
+        .references('id_usuario')
+        .inTable('usuarios')
+        .onDelete('CASCADE')
       table.string('token', 255).notNullable()
       table.timestamp('fecha_registro').defaultTo(this.now())
       table.timestamp('fecha_actualizacion').defaultTo(this.now())
