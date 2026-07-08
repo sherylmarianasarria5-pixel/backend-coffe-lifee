@@ -3,9 +3,13 @@ import env from '#start/env'
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
+  port: 587,
+  secure: false,
+  requireTLS: true,
   family: 4,
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 10000,
   auth: {
     user: env.get('SMTP_USER'),
     pass: env.get('SMTP_APP_PASSWORD'),
