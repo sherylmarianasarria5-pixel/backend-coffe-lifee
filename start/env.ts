@@ -37,6 +37,10 @@ export default await Env.create(new URL('../', import.meta.url), {
   SMTP_PORT: Env.schema.number(),
   RESEND_API_KEY: Env.schema.string(),
 
+  // Brevo (ex Sendinblue)
+  BREVO_API_KEY: Env.schema.string(),
+  BREVO_SENDER_EMAIL: Env.schema.string(),
+
   // CORS
   CORS_ORIGIN: Env.schema.string.optional(),
 
