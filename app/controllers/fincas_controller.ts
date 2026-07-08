@@ -188,7 +188,9 @@ export default class FincasController {
           fecha: new Date(),
         }
 
-        emitirNotificacion(finca.idUsuario, notificacionData)
+        if (finca.idUsuario !== null) {
+          emitirNotificacion(finca.idUsuario, notificacionData)
+        }
         emitirEventoFinca(finca.idFinca, 'notificacion', notificacionData)
       }
 
