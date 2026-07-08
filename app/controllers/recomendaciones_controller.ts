@@ -1,5 +1,8 @@
+import { DateTime } from 'luxon'
 import type { HttpContext } from '@adonisjs/core/http'
 import Recomendacione from '#models/recomendacione'
+import Cultivo from '#models/cultivo'
+import { aceptarRecomendacionValidator } from '#validators/progreso'
 
 function serializar(r: Recomendacione) {
   const exp = r.experto
@@ -231,5 +234,33 @@ export default class RecomendacionesController {
         error: error.message,
       })
     }
+  }
+
+  async aceptar({ params, request, response, auth }: HttpContext) {
+    const payload = await request.validateUsing(aceptarRecomendacionValidator)
+
+    const cultivo = await Cultivo.query()
+      .where('id_cultivo', payload.idCultivo)
+      .andWhere('id_usuario', auth.user!.id)
+      .first()
+
+    if (!cultivo) {
+      return response.forbidden({ success: false, message: 'Este cultivo no te pertenece' })
+    }
+
+    const recomendacion = await Recomendacione.query()
+      .where('id_recomendacion', params.idRecomendacion)
+      .andWhere('id_cultivo', payload.idCultivo)
+      .first()
+
+    if (!recomendacion) {
+      return response.notFound({ success: false, message: 'Recomendación no encontrada' })
+    }
+
+    recomendacion.aceptado = true
+    recomendacion.fechaAceptacion = DateTime.now()
+    await recomendacion.save()
+
+    return response.ok({ success: true, aceptado: true })
   }
 }

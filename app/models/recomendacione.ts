@@ -1,5 +1,6 @@
+import { DateTime } from 'luxon'
 import { RecomendacioneSchema } from '#database/schema'
-import { belongsTo } from '@adonisjs/lucid/orm'
+import { column, belongsTo } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 
 import Monitoreo from '#models/monitoreo'
@@ -9,6 +10,11 @@ import Tratamiento from '#models/tratamiento'
 import CatPrioridad from '#models/cat_prioridad'
 
 export default class Recomendacione extends RecomendacioneSchema {
+  @column()
+  declare aceptado: boolean
+
+  @column.dateTime({ columnName: 'fecha_aceptacion' })
+  declare fechaAceptacion: DateTime | null
   @belongsTo(() => Monitoreo, {
     foreignKey: 'idMonitoreo',
   })

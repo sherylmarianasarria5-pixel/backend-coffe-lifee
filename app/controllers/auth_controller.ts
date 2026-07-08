@@ -119,7 +119,12 @@ export default class AuthController {
       await usuario.load('rol')
 
       try {
-        await EmailService.enviarBienvenida(usuario.correo, usuario.nombre, usuario.rol.nombreRol, usuario.correo)
+        await EmailService.enviarBienvenida(
+          usuario.correo,
+          usuario.nombre,
+          usuario.rol.nombreRol,
+          usuario.correo
+        )
       } catch {
         // Si el correo falla, igual se crea la cuenta
       }

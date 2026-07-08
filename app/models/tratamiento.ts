@@ -29,6 +29,9 @@ export default class Tratamiento extends BaseModel {
   @column()
   declare frecuencia: string | null
 
+  @column({ columnName: 'duracion_dias' })
+  declare duracionDias: number | null
+
   @column()
   declare observaciones: string | null
 

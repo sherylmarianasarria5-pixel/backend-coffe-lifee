@@ -35,6 +35,7 @@ const AsignacionesExpertosController = () => import('#controllers/asignaciones_e
 const CatTiposInsumosController = () => import('#controllers/cat_tipos_insumos_controller')
 const InsumosController = () => import('#controllers/insumos_controller')
 const NotificacionesController = () => import('#controllers/notificaciones_controller')
+const ProgresosController = () => import('#controllers/progresos_controller')
 
 // ─── Público ──────────────────────────────────────────────────────────────────
 router.get('/', async () => ({
@@ -348,3 +349,12 @@ router
   })
   .prefix('/caficultor')
   .use(middleware.role(['cafetero']))
+
+// ─── Progreso y aceptación de recomendaciones (cualquier usuario autenticado) ─
+router
+  .group(() => {
+    router.post('/recomendaciones/:idRecomendacion/aceptar', [RecomendacionesController, 'aceptar'])
+    router.post('/progreso', [ProgresosController, 'store'])
+    router.get('/progreso', [ProgresosController, 'index'])
+  })
+  .use(middleware.auth())
