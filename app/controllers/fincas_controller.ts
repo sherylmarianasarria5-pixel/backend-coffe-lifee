@@ -3,6 +3,7 @@ import Finca from '#models/finca'
 import app from '@adonisjs/core/services/app'
 import { subirImagen } from '#services/cloudinary_service'
 import { fincaStoreValidator, fincaUpdateValidator } from '#validators/validators'
+import { emitirNotificacion, emitirEventoFinca } from '#services/socket_service'
 
 export default class FincasController {
   private toDecimalString(value: number | undefined) {
@@ -172,8 +173,25 @@ export default class FincasController {
       if (data.area_hectareas !== undefined) payload.areaHectareas = String(data.area_hectareas)
       if (data.activo !== undefined) payload.activo = data.activo
 
+      const cambioEstado = data.activo !== undefined && data.activo !== finca.activo
+
       finca.merge(payload)
       await finca.save()
+
+      if (cambioEstado) {
+        const notificacionData = {
+          tipo: 'finca_estado',
+          idFinca: finca.idFinca,
+          nombreFinca: finca.nombreFinca,
+          activo: finca.activo,
+          mensaje: `La finca ${finca.nombreFinca} fue ${finca.activo ? 'activada' : 'desactivada'}`,
+          fecha: new Date(),
+        }
+
+        emitirNotificacion(finca.idUsuario, notificacionData)
+        emitirEventoFinca(finca.idFinca, 'notificacion', notificacionData)
+      }
+
       return response.ok({ message: 'Finca actualizada correctamente', data: finca })
     } catch (error: any) {
       if (error.code === 'E_VALIDATION_ERROR') {
