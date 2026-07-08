@@ -2,12 +2,15 @@ import nodemailer from 'nodemailer'
 import env from '#start/env'
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
+  family: 4,
   auth: {
     user: env.get('SMTP_USER'),
     pass: env.get('SMTP_APP_PASSWORD'),
   },
-})
+} as nodemailer.TransportOptions)
 
 export default class EmailService {
   static async enviarBienvenida(destinatario: string, nombre: string, rol: string, correo: string) {
