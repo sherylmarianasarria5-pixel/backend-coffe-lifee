@@ -357,4 +357,4 @@ router
     router.post('/progreso', [ProgresosController, 'store'])
     router.get('/progreso', [ProgresosController, 'index'])
   })
-  .use(middleware.auth())
+  .use(middleware.jwtAuth())
