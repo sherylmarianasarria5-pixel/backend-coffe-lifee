@@ -21,6 +21,15 @@ export default class AplicacionesTratamiento extends BaseModel {
   declare fechaAplicacion: DateTime | null
 
   @column()
+  declare dosis: string | null
+
+  @column()
+  declare frecuencia: string | null
+
+  @column({ columnName: 'duracion_dias' })
+  declare duracionDias: number | null
+
+  @column()
   declare observacion: string | null
 
   @column.dateTime({ autoCreate: true, columnName: 'fecha_registro' })

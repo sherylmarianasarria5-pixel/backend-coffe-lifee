@@ -12,6 +12,9 @@ export default class AplicacionesTratamientosController {
 
       const ALLOWED = [
         'id_aplicacion',
+        'dosis',
+        'frecuencia',
+        'duracion_dias',
         'observacion',
         'fecha_aplicacion',
         'fecha_registro',
@@ -60,7 +63,15 @@ export default class AplicacionesTratamientosController {
 
   async store({ request, response }: HttpContext) {
     try {
-      const data = request.only(['id_tratamiento', 'id_usuario', 'fecha_aplicacion', 'observacion'])
+      const data = request.only([
+        'id_tratamiento',
+        'id_usuario',
+        'fecha_aplicacion',
+        'dosis',
+        'frecuencia',
+        'duracion_dias',
+        'observacion',
+      ])
 
       if (!data.id_tratamiento)
         return response.badRequest({ message: 'El id_tratamiento es obligatorio' })
@@ -69,6 +80,9 @@ export default class AplicacionesTratamientosController {
         idTratamiento: data.id_tratamiento,
         idUsuario: data.id_usuario ?? null,
         fechaAplicacion: data.fecha_aplicacion ?? null,
+        dosis: data.dosis ?? null,
+        frecuencia: data.frecuencia ?? null,
+        duracionDias: data.duracion_dias ?? null,
         observacion: data.observacion ?? null,
       })
 
@@ -90,12 +104,23 @@ export default class AplicacionesTratamientosController {
   async update({ params, request, response }: HttpContext) {
     try {
       const aplicacion = await AplicacionesTratamiento.findOrFail(params.id)
-      const data = request.only(['id_tratamiento', 'id_usuario', 'fecha_aplicacion', 'observacion'])
+      const data = request.only([
+        'id_tratamiento',
+        'id_usuario',
+        'fecha_aplicacion',
+        'dosis',
+        'frecuencia',
+        'duracion_dias',
+        'observacion',
+      ])
 
       const payload: Record<string, any> = {}
       if (data.id_tratamiento !== undefined) payload.idTratamiento = data.id_tratamiento
       if (data.id_usuario !== undefined) payload.idUsuario = data.id_usuario
       if (data.fecha_aplicacion !== undefined) payload.fechaAplicacion = data.fecha_aplicacion
+      if (data.dosis !== undefined) payload.dosis = data.dosis
+      if (data.frecuencia !== undefined) payload.frecuencia = data.frecuencia
+      if (data.duracion_dias !== undefined) payload.duracionDias = data.duracion_dias
       if (data.observacion !== undefined) payload.observacion = data.observacion
 
       aplicacion.merge(payload)
