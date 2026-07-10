@@ -173,6 +173,35 @@ export default class FincasController {
       if (data.area_hectareas !== undefined) payload.areaHectareas = String(data.area_hectareas)
       if (data.activo !== undefined) payload.activo = data.activo
 
+      // 📸 Caso 1: viene como multipart/form-data, campo "fotoUrl" con el archivo
+      const archivo = request.file('fotoUrl', {
+        size: '10mb',
+        extnames: ['jpg', 'jpeg', 'png', 'webp'],
+      })
+
+      if (archivo) {
+        if (!archivo.isValid) {
+          return response.badRequest({ message: 'Archivo inválido', errors: archivo.errors })
+        }
+        await archivo.move(app.tmpPath('uploads'))
+        payload.fotoUrl = await subirImagen(archivo.filePath!)
+      } else {
+        // 📸 Caso 2: viene como JSON con base64, campo "foto_finca"
+        const fotoBase64 = request.input('foto_finca')
+        if (fotoBase64) {
+          const { default: fs } = await import('node:fs/promises')
+          const { default: path } = await import('node:path')
+          const matches = String(fotoBase64).match(/^data:(image\/\w+);base64,(.+)$/)
+          const base64Data = matches ? matches[2] : fotoBase64
+          const ext = matches ? matches[1].split('/')[1] : 'jpg'
+          const fileName = `finca_${finca.idFinca}_${Date.now()}.${ext}`
+          const tmpPath = app.tmpPath('uploads', fileName)
+          await fs.mkdir(path.dirname(tmpPath), { recursive: true })
+          await fs.writeFile(tmpPath, Buffer.from(base64Data, 'base64'))
+          payload.fotoUrl = await subirImagen(tmpPath)
+        }
+      }
+
       const cambioEstado = data.activo !== undefined && data.activo !== finca.activo
 
       finca.merge(payload)

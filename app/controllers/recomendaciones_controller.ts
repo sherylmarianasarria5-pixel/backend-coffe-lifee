@@ -6,9 +6,13 @@ import { aceptarRecomendacionValidator } from '#validators/progreso'
 
 function serializar(r: Recomendacione) {
   const exp = r.experto
+  const cultivo = (r as any).monitoreo?.cultivo
+  const finca = cultivo?.finca
   return {
     idRecomendacion: r.idRecomendacion,
     idMonitoreo: r.idMonitoreo,
+    idFinca: finca?.idFinca ?? cultivo?.idFinca ?? null,
+    finca: finca ? { idFinca: finca.idFinca, nombreFinca: finca.nombreFinca } : null,
     descripcion: r.descripcion,
     idExpertoEmisor: r.idExpertoEmisor,
     experto: exp ? `${exp.nombre} ${exp.apellido}` : null,
@@ -34,6 +38,7 @@ export default class RecomendacionesController {
       const idPrioridad = request.input('id_prioridad')
       const idTipo = request.input('id_tipo')
       const idTratamiento = request.input('id_tratamiento')
+      const idFinca = request.input('idFinca')
       const ALLOWED = [
         'id_recomendacion',
         'descripcion',
@@ -50,11 +55,40 @@ export default class RecomendacionesController {
       const orderDir = request.input('order_dir', 'desc')
       const safeColumn = ALLOWED.includes(orderBy) ? orderBy : 'id_recomendacion'
 
+      const jwt = (request as any).usuarioJwt
+      const esAdmin = jwt?.rol?.nombreRol === 'admin'
+
       const query = Recomendacione.query()
         .preload('experto')
         .preload('tipo')
         .preload('tratamiento')
         .preload('prioridad')
+        .preload('monitoreo', (monQuery) => {
+          monQuery.preload('cultivo', (cultQuery) => {
+            cultQuery.preload('finca')
+          })
+        })
+
+      // 🔒 Un usuario normal (experto/cafetero) solo ve recomendaciones
+      // de fincas que le pertenecen a él (id_usuario del JWT).
+      if (!esAdmin) {
+        query.whereHas('monitoreo', (monQuery) => {
+          monQuery.whereHas('cultivo', (cultQuery) => {
+            cultQuery.whereHas('finca', (fincaQuery) => {
+              fincaQuery.where('id_usuario', jwt.id)
+            })
+          })
+        })
+      }
+
+      // 🌱 Filtro opcional adicional por finca específica (con validación de dueño)
+      if (idFinca) {
+        query.whereHas('monitoreo', (monQuery) => {
+          monQuery.whereHas('cultivo', (cultQuery) => {
+            cultQuery.where('id_finca', idFinca)
+          })
+        })
+      }
 
       if (search) {
         query.where((q) => {
