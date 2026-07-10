@@ -350,7 +350,7 @@ router
   .prefix('/caficultor')
   .use(middleware.role(['cafetero']))
 
-// ─── Progreso y aceptación de recomendaciones (cualquier usuario autenticado) ─
+// ─── Progreso y aceptación de recomendaciones (cualquier usuario autenticado) ───
 router
   .group(() => {
     router.post('/recomendaciones/:idRecomendacion/aceptar', [RecomendacionesController, 'aceptar'])
